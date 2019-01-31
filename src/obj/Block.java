@@ -2,26 +2,27 @@ package obj;
 
 import java.util.Date;
 
+import Utilities.Utilities;
 import config.Global;
 
 public class Block {
-	private int preHashCode; 	// hash of previous block
-	private int hashCode; 		// hash of current block
-	private int merkleRootHash; // hash of the root node of the merkleTree
+	private String preHashCode; 	// hash of previous block
+	private String hashCode; 		// hash of current block
+	private String merkleRootHash; // hash of the root node of the merkleTree
 	private Date timeStamp;
 	private int nBits;			// the difficulty of mining
 	private int nonce;			// Be used to calculate satisfied hash
 	private BlockBody blockBody;
 	
-	public int getPreHashCode() {
+	public String getPreHashCode() {
 		return preHashCode;
 	}
 
-	public int getHashCode() {
+	public String getHashCode() {
 		return hashCode;
 	}
 
-	public int getMerkleRootHash() {
+	public String getMerkleRootHash() {
 		return merkleRootHash;
 	}
 
@@ -41,7 +42,7 @@ public class Block {
 		return blockBody;
 	}
 	
-	public Block(int preHashCode, int merkleRootHash, int nonce) {
+	public Block(String preHashCode, String merkleRootHash, int nonce) {
 		this.preHashCode = preHashCode;
 		this.merkleRootHash = merkleRootHash;
 		this.timeStamp = new Date();
@@ -52,19 +53,14 @@ public class Block {
 	
 	// use preHashCode, merkleRootHash, timeStamp, 
 	// nBits and nonce to calculate the hash of current block
-	public int calculateHash() {
+	public String calculateHash() {
 		String content = "" + 
 						this.preHashCode +
 						this.merkleRootHash +
 						this.timeStamp +
 						this.nBits +
 						this.nonce;
-		return content.hashCode();
-	}
-	
-	
-	public static void main(int argv[]) {
-		System.out.println("123");
+		return Utilities.hashKeyForDisk(content);
 	}
 	
 }
