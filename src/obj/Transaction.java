@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Transaction {
 	private String txid;
-	private String hash;
+	private int hash;
 	private Vin vin;
 	private Vout vout;
 	private Date timestamp;
@@ -14,10 +14,10 @@ public class Transaction {
 	public void setTxid(String txid) {
 		this.txid = txid;
 	}
-	public String getHash() {
+	public int getHash() {
 		return hash;
 	}
-	public void setHash(String hash) {
+	public void setHash(int hash) {
 		this.hash = hash;
 	}
 	public Vin getVin() {
@@ -38,7 +38,7 @@ public class Transaction {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Transaction(String hash, Vin vin, Vout vout) {
+	public Transaction(int hash, Vin vin, Vout vout) {
 		this.hash = hash;
 		this.vin = vin;
 		this.vout = vout;

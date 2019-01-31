@@ -5,7 +5,7 @@ public class Global {
 	
 	public static int maxBlockTxNum = 16;
 	public static int minBlockTxNum = 4;
-	public static int nbits; //用于与其他节点同步获取合适的nbits
+	public int nbits; //用于与其他节点同步获取合适的nbits
 	public static Global getInstance() {
         return global;
     }
