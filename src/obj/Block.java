@@ -63,6 +63,8 @@ public class Block {
 	}
 	
 	
-	
+	public static void main(int argv[]) {
+		System.out.println("123");
+	}
 	
 }
