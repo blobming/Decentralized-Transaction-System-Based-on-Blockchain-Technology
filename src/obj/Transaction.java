@@ -4,32 +4,26 @@ import java.util.Date;
 
 public class Transaction {
 	private String txid;
-	private int hash;
-	private Vin vin;
-	private Vout vout;
+	private String hash;
+	private Vin[] vin;
+	private Vout[] vout;
 	private Date timestamp;
 	public String getTxid() {
 		return txid;
 	}
-	public void setTxid(String txid) {
-		this.txid = txid;
-	}
-	public int getHash() {
+	public String getHash() {
 		return hash;
 	}
-	public void setHash(int hash) {
-		this.hash = hash;
-	}
-	public Vin getVin() {
+	public Vin[] getVin() {
 		return vin;
 	}
-	public void setVin(Vin vin) {
+	public void setVin(Vin[] vin) {
 		this.vin = vin;
 	}
-	public Vout getVout() {
+	public Vout[] getVout() {
 		return vout;
 	}
-	public void setVout(Vout vout) {
+	public void setVout(Vout[] vout) {
 		this.vout = vout;
 	}
 	public Date getTimestamp() {
@@ -38,12 +32,22 @@ public class Transaction {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	public Transaction(int hash, Vin vin, Vout vout) {
-		this.hash = hash;
+	public Transaction(Vin[] vin, Vout[] vout) {
 		this.vin = vin;
 		this.vout = vout;
 		setTimestamp(new Date());
+		String toHash = "";
+		for(Vin in : vin) {
+			toHash += in.toString();
+		}
+		for(Vout out : vout) {
+			toHash += out.toString();
+		}
+		toHash += getTimestamp().toString();
+		this.hash = toHash;
+		this.txid = toHash;
 	} 
+	
 	public boolean validateTransaction(Transaction tx) {
 		return false;
 	}
