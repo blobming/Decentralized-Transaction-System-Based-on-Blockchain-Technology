@@ -18,6 +18,10 @@ public class Block {
 		return preHashCode;
 	}
 
+	public void setPreHashCode(String preHashCode) {
+		this.preHashCode = preHashCode;
+	}
+
 	public String getHashCode() {
 		return hashCode;
 	}
