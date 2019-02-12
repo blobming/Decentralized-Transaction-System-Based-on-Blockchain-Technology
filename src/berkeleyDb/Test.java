@@ -14,7 +14,7 @@ public class Test {
 	    environmentConfig.setAllowCreate(true);
 	    //homeDirectory鏄暟鎹簱瀛樻斁鐨勭洰褰�
 	    
-	    environmentConfig = null;
+	//    environmentConfig = null;
 	  //Open Environment
 	    environment=new Environment(new File("./Data"),environmentConfig);
 	    
