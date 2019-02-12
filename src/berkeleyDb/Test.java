@@ -8,22 +8,20 @@ public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		//鍚孍nvironmentConfig鏉ラ厤缃幆澧�
+		/*
+		
 	    EnvironmentConfig environmentConfig=new EnvironmentConfig();
 	    environmentConfig.setTransactional(true);
-	    environmentConfig.setAllowCreate(true);
-	    //homeDirectory鏄暟鎹簱瀛樻斁鐨勭洰褰�
+	    environmentConfig.setAllowCreate(true); //如果不存在则创建一个
 	    
 	//    environmentConfig = null;
 	  //Open Environment
 	    environment=new Environment(new File("./Data"),environmentConfig);
 	    
 	    String dbName = "test";
-	    DatabaseConfig dbconfig  = new DatabaseConfig();
-	    dbconfig.setAllowCreate(true);
-	    dbconfig.setTransactional(false);
-	    dbconfig.setSortedDuplicates(false);
-	    Database myClassDb = environment.openDatabase(null, "classDb", dbconfig);
+	    */
+		Environment env =  BerkeleyDb.GetInstance().GetEnvironment();
+	    Database myClassDb = env.openDatabase(null, "classDb", BerkeleyDb.GetDbConfig());
 	    String key = "key1";
 	    String value = "value1";
 	   try {
