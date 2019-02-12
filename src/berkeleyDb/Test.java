@@ -16,7 +16,7 @@ public class Test {
 	    
 	    environmentConfig = null;
 	  //Open Environment
-	    environment=new Environment(new File("./"),environmentConfig);
+	    environment=new Environment(new File("./Data"),environmentConfig);
 	    
 	    String dbName = "test";
 	    DatabaseConfig dbconfig  = new DatabaseConfig();
@@ -24,8 +24,8 @@ public class Test {
 	    dbconfig.setTransactional(false);
 	    dbconfig.setSortedDuplicates(false);
 	    Database myClassDb = environment.openDatabase(null, "classDb", dbconfig);
-	   String key = "key1";
-	   String value = "value1";
+	    String key = "key1";
+	    String value = "value1";
 	   try {
 		   //设置key/value,注意DatabaseEntry内使用的是bytes数组
 		   DatabaseEntry theKey=new DatabaseEntry(key.getBytes("UTF-8"));
