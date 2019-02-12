@@ -62,13 +62,42 @@ public class MyBerkeleyDB {
 			e.printStackTrace();
 		}
 	}
-	public String get(String key) throws UnsupportedEncodingException { 
+	
+	public void put(byte[] key, byte[] value) {
+		try {
+			DatabaseEntry k = new DatabaseEntry(key); 
+			DatabaseEntry v = new DatabaseEntry(value); 
+			database.put(null, k, v); 
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void put(String key, byte[] value) {
+		try {
+			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset));
+			DatabaseEntry v = new DatabaseEntry(value); 
+			database.put(null, k, v); 
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void put(byte[] key, String value) {
+		try {
+			DatabaseEntry k = new DatabaseEntry(key); 
+			DatabaseEntry v = new DatabaseEntry(value.getBytes(charset)); 
+			database.put(null, k, v); 
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Object get(String key) throws UnsupportedEncodingException { 
 		DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
 		DatabaseEntry v = new DatabaseEntry(); 
 		if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 			byte[] retData = v.getData();
-			String res = new String(retData,charset);
-			return res;
+			//String res = new String(retData,charset);
+			return Utilities.toObject(retData);
 		}else {
 			return null;
 		}

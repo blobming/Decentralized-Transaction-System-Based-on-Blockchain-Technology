@@ -1,8 +1,6 @@
 package berkeleyDb;
 import java.io.UnsupportedEncodingException;
 
-import com.sleepycat.je.*;
-
 public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

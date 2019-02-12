@@ -1,11 +1,16 @@
 package obj;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import Utilities.Utilities;
 import config.Global;
 
-public class Block {
+public class Block implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String preHashCode; 	// hash of previous block
 	private String hashCode; 		// hash of current block
 	private String merkleRootHash; // hash of the root node of the merkleTree
