@@ -1,8 +1,11 @@
 package berkeleyDb;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import com.sleepycat.je.*;
+
+import Utilities.Utilities;
 
 public class MyBerkeleyDB {
 	 private Environment environment;
@@ -13,31 +16,31 @@ public class MyBerkeleyDB {
 		 charset = "utf-8";
 	 }
 	 public void setPath(String path) {
-		//ÅĞ¶ÏPathÊÇ·ñ´æÔÚ 
+		//åˆ¤æ–­pathæ˜¯å¦å­˜åœ¨
 		File file = new File(path);
 		if(file.mkdir()){ 
-			System.out.println(path+" has been created"); //²»´æÔÚÔò´´½¨Ò»¸ö
+			System.out.println(path+" has been created"); //ä¸å­˜åœ¨å°±åˆ›å»ºä¸€ä¸ª
 		}else{
-			System.out.println(path+" exist!"); //´æÔÚÔòËµÃ÷ÒÑ´æÔÚ 
+			System.out.println(path+" exist!"); //å­˜åœ¨åˆ™è¯´æ˜å·²å­˜åœ¨
 		} 
-		//È·¶¨´æ´¢Â·¾¶ 
+		//ç¡®å®šå­˜å‚¨è·¯å¾„
 		this.path = path;
 	 }
 	 public void setEnvironment(String path , long chacheSize){
 		 setPath(path); 
 		 //setChacheSize(chacheSize); 
-		 //ÅäÖÃ»·¾³
+		 //é…ç½®ç¯å¢ƒ
 		 EnvironmentConfig envConfig = new EnvironmentConfig(); 
 		 envConfig.setAllowCreate(true); 
 		 //envConfig.setCacheSize(this.chacheSize); 
-		 //´´½¨»·¾³ 
+		 //åˆ›å»ºç¯å¢ƒ
 		 environment = new Environment(new File(this.path),envConfig); 
 	 }
 	 //open database
 	 public void open(String dbName) { 
 		 DatabaseConfig dbConfig = new DatabaseConfig(); 
 		 dbConfig.setAllowCreate(true); 
-		 dbConfig.setSortedDuplicates(false); //²»´æ´¢ÖØ¸´¹Ø¼ü×Ö 
+		 dbConfig.setSortedDuplicates(false); //ä¸å­˜å‚¨é‡å¤å…³é”®å­—
 		 this.database = environment.openDatabase(null, dbName, dbConfig); 
 	 }
 	 public void close()
@@ -54,13 +57,14 @@ public class MyBerkeleyDB {
 			 e.printStackTrace();
 		 }
 	 }
-	 public String get(String key) { 
+	 public String get(String key) throws UnsupportedEncodingException { 
 
 		 DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
 		 DatabaseEntry v = new DatabaseEntry(); 
 		 if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 			 byte[] retData = v.getData();
 			 String res = new String(retData,charset);
+			 return res;
 		 }else {
 			 return null;
 		 }
@@ -83,8 +87,11 @@ public class MyBerkeleyDB {
 		 cursor.close(); 
 		 return result; 
 	 }
-	 
-	
-	
-
+	//æŒ‰ç…§é”®å€¼åˆ é™¤æ•°æ®
+    public void del(Object key){
+        DatabaseEntry k = new DatabaseEntry(Utilities.toByteArray(key));  //é”®å€¼è½¬åŒ–
+        //Object value = get(key);                                //è·å–å€¼
+        database.removeSequence(null, k);                       //åˆ é™¤å€¼
+        //return value;                                           //è¿”å›åˆ é™¤çš„å€¼
+    }
 }

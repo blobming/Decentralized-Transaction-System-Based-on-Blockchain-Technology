@@ -32,10 +32,6 @@ public class Test {
 		  } catch (Exception e) {
 		      // 错误处理
 		  }
-		  
-		 
-	    
-	    
 	    
 	}
 
