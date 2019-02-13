@@ -8,6 +8,12 @@ public class Vin {
 	private String signature; // use payer's private key to sign the whole transaction
 	private String publickey; // payer's publickey
 	
+	public Vin(String txid, int voutNum, String publickey) {
+		this.txid = txid;
+		this.voutNum = voutNum;
+		this.publickey = publickey;
+	}
+
 	public String getTxid() {
 		return txid;
 	}

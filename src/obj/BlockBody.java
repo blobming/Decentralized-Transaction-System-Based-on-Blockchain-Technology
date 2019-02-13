@@ -6,7 +6,7 @@ import java.util.Queue;
 
 import config.Global;
 
-public class BlockBody {
+public class BlockBody{
 	private TreeNode[] nodes;
 	private TreeNode root;
 

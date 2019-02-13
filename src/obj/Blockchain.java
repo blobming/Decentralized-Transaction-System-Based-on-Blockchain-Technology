@@ -1,8 +1,8 @@
 package obj;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Iterator;
+
+import com.sleepycat.je.OperationStatus;
 
 import Utilities.Utilities;
 import berkeleyDb.MyBerkeleyDB;
@@ -15,9 +15,10 @@ public class Blockchain implements Iterable{
 		db.open("Test");  //存储block的数据库
 	}
 	
-	public Block newGenesisBlock() {
-		//return null;
-		return new Block("genesis",123456);
+	private Block newGenesisBlock() {
+		Block genesis = new Block("genesis",123456);
+		genesis.setPreHashCode("genesis");
+		return genesis;
 		//  https://blog.csdn.net/tostick/article/details/80140145
 	}
 	public void addBlock(Block newB) {
@@ -36,8 +37,7 @@ public class Blockchain implements Iterable{
 			tip = genesisHash;
 		}else {
 			tip = (String)db.get("0");
-		}
-		
+		}	
 	}
 
 	@Override
@@ -49,10 +49,9 @@ public class Blockchain implements Iterable{
 		String point = tip;
 		@Override
 		public boolean hasNext() {	
-			if(((String)db.get(point)).equals("0"))
+			if(db.get(point)== null)
 				return false;
-			else
-				return true;
+			else return true;
 		}
 
 		@Override
@@ -63,6 +62,7 @@ public class Blockchain implements Iterable{
 		}
 	}
 	
+	//for test
 	public static void main(String[] args) {
 		Blockchain chain = new Blockchain();
 		
