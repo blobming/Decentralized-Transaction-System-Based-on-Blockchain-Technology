@@ -65,14 +65,18 @@ public class Transaction {
 		int count = 0;
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
-			Transaction transaction = Transaction.GetTransactionById(vin.getTxid());
-			Vout vout = transaction.getVout()[vin.getVoutNum()];
+			Transaction transaction = Transaction.GetTransactionById(vin.getTxid()); 
+			//得到相应的vout
+			Vout vout = transaction.getVout()[vin.getVoutNum()]; 
 			Stack<String> stack = new Stack<String>();
+			
 			stack.push(vin.getSignature());
 			stack.push(vin.getPublickey());
 			stack.push(vin.getPublickey());
+			
 			String temp = Utilities.hashKeyForDisk(stack.pop());
 			stack.push(temp);
+			
 			stack.push(vout.getPubHash());
 			temp = stack.pop();
 			if(temp.equals(stack.pop())) {

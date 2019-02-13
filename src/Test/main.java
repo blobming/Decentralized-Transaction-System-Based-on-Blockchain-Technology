@@ -12,8 +12,9 @@ public class main {
 		// TODO Auto-generated method stub
 		Block block = new Block("",155);
 		System.out.println(block.getHashCode());
-		MyBerkeleyDB dbInstance = MyBerkeleyDB.GetInstance();
+		//MyBerkeleyDB dbInstance = MyBerkeleyDB.GetInstance();
 		//dbInstance.setEnvironment("./Data");
+		/*
 		dbInstance.open("Test");
 		dbInstance.put("b"+block.getHashCode(), Utilities.toByteArray(block));
 		for(String a:dbInstance.getAllKey()) {
@@ -30,8 +31,10 @@ public class main {
 			//if(block1 != null) {
 			//	System.out.println(block1.getHashCode());
 			//}
-		}
-		dbInstance.close();
+		}*/
+		//dbInstance.close();
+		
+		
 		
 	}
 
