@@ -9,44 +9,47 @@ import Utilities.Utilities;
 
 public class MyBerkeleyDB {
 	private static MyBerkeleyDB instance = null;
-	private Environment environment;
+	private static Environment environment;
 	private Database database;    
-	private String path;
+	private static String path;
 	private String charset;
 	private MyBerkeleyDB() {
 		charset = "utf-8";
 	}
 	public static MyBerkeleyDB GetInstance() {
-		if(instance == null) instance = new MyBerkeleyDB();
+		if(instance == null) {
+			instance = new MyBerkeleyDB();
+			setEnvironment("./Data");	
+		}
 		return instance;
 	}
-	public void setPath(String path) {
+	private static void setPath(String p) {
 		//判断path是否存在
-		File file = new File(path);
+		File file = new File(p);
 		if(file.mkdir()){ 
-			System.out.println(path+" has been created"); //不存在就创建一个
+			System.out.println(p+" has been created"); //不存在就创建一个
 		}else{
-			System.out.println(path+" exist!"); //存在则说明已存在
+			System.out.println(p+" exist!"); //存在则说明已存在
 		} 
 		//确定存储路径
-		this.path = path;
+		path = p;
 	}
-	public void setEnvironment(String path){
-		setPath(path); 
+	private static void setEnvironment(String p){
+		setPath(p); 
 		//setChacheSize(chacheSize); 
 		//配置环境
 		EnvironmentConfig envConfig = new EnvironmentConfig(); 
 		envConfig.setAllowCreate(true); 
 		//envConfig.setCacheSize(this.chacheSize); 
 		//创建环境
-		environment = new Environment(new File(this.path),envConfig); 
+		environment = new Environment(new File(p),envConfig); 
 	}
 	//open database
 	public void open(String dbName) { 
 		DatabaseConfig dbConfig = new DatabaseConfig(); 
 		dbConfig.setAllowCreate(true); 
 		dbConfig.setSortedDuplicates(false); //不存储重复关键字
-		this.database = environment.openDatabase(null, dbName, dbConfig); 
+		database = environment.openDatabase(null, dbName, dbConfig); 
 	}
 	public void close()
 	{
