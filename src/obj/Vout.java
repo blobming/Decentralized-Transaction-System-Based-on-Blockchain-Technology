@@ -1,12 +1,17 @@
 package obj;
 
 public class Vout {
-	
-	
 	private int value;
 	private int seqNum;
 	private String pubHash; //hash of publickey
 	
+	
+	public Vout(int value, int seqNum, String pubHash) {
+		this.value = value;
+		this.seqNum = seqNum;
+		this.pubHash = pubHash;
+	}
+
 	public int getValue() {
 		return value;
 	}

@@ -91,5 +91,16 @@ public class Transaction {
 		
 		return null;
 	}
+	public static Transaction newCoinbaseTx(String Toaddress,String pubkey){
+		Vin vin = new Vin("",-1,pubkey);
+		//to address取成哈希
+		Vout vout = new Vout(subsidy,0,Toaddress);
+		Vin vins[] = new Vin[0];
+		vins[0] = vin;
+		Vout vouts[] = new Vout[0];
+		vouts[0] = vout;
+		Transaction t = new Transaction(vins,vouts);
+		return t;
+	}
 	
 }
