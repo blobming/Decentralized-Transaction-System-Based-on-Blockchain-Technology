@@ -94,7 +94,6 @@ public class MyBerkeleyDB {
 		}
 	}
 	
-<<<<<<< HEAD
 	public Object get(String key){ 
 		try {
 			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
@@ -110,18 +109,6 @@ public class MyBerkeleyDB {
 			e.printStackTrace();
 		}catch(Exception e2) {
 			e2.printStackTrace();
-=======
-	public byte[] get(String key){ 
-		DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
-		DatabaseEntry v = new DatabaseEntry(); 
-		if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-			byte[] retData = v.getData();
-			//String res = new String(retData,charset);
-			//return Utilities.toObject(retData);
-			return retData;
-		}else {
-			return null;
->>>>>>> 607e82e710cc54fbee4d791e1b816c9673149672
 		}
 		return null;
 	}

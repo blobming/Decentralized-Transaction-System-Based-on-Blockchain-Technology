@@ -18,12 +18,7 @@ public class Test {
 		
 		for(String a:dbInstance.getAllKey()) {
 			System.out.println(a);
-			try {
-				System.out.println(dbInstance.get(a));
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			System.out.println(dbInstance.get(a));
 		}
 		dbInstance.close();
 	}

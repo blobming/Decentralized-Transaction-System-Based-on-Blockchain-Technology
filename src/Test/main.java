@@ -10,7 +10,7 @@ public class main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Block block = new Block("","",155);
+		Block block = new Block("",155);
 		System.out.println(block.getHashCode());
 		MyBerkeleyDB dbInstance = MyBerkeleyDB.GetInstance();
 		//dbInstance.setEnvironment("./Data");
