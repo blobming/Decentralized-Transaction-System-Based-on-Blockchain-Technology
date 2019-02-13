@@ -6,19 +6,40 @@ public class Vin {
 	private String signature; // use payer's private key to sign the whole transaction
 	private String publickey; // payer's publickey
 	
+	public String getTxid() {
+		return txid;
+	}
+
+	public void setTxid(String txid) {
+		this.txid = txid;
+	}
+
+	public int getVoutNum() {
+		return voutNum;
+	}
+
+	public void setVoutNum(int voutNum) {
+		this.voutNum = voutNum;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+
+	public String getPublickey() {
+		return publickey;
+	}
+
+	public void setPublickey(String publickey) {
+		this.publickey = publickey;
+	}
+
 	@Override
 	public String toString() {
 		return txid+voutNum+publickey;
 	}
 }
-
-
-/* 执行过程
- * 1. 先把签名压入栈
- * 2. 把公钥压入栈
- * 3. 把栈顶元素复制
- * 4. 把栈顶元素弹出取哈希，再把公钥哈希压入栈(要花这个钱的时候提供的公钥)
- * 5. 把输出脚本提供的(收款人，转给谁)公钥哈希值压入栈
- * 6. 弹出栈顶两个元素，两个哈希值是否相等然后栈顶元素消失
- * 7. 验证剩下两个元素是否正确
-*/

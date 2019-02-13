@@ -18,16 +18,18 @@ public class main {
 		dbInstance.put("b"+block.getHashCode(), Utilities.toByteArray(block));
 		for(String a:dbInstance.getAllKey()) {
 			System.out.println(a);
-			try {
+			System.out.println(a.getClass());
+			System.out.println(dbInstance.get(a).getClass());
+			
+			
+			//if(a.getClass()=="Block.class") {
 				
-				Block block1 = (Block)Utilities.toObject(dbInstance.get(a));
-				if(block1 != null) {
-					System.out.println(block1.getHashCode());
-				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//}
+			
+			//Block block1 = (Block)dbInstance.get(a);
+			//if(block1 != null) {
+			//	System.out.println(block1.getHashCode());
+			//}
 		}
 		dbInstance.close();
 		

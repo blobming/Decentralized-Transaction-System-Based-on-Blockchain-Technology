@@ -1,5 +1,4 @@
 package berkeleyDb;
-import java.io.UnsupportedEncodingException;
 /*
  * 
  * 备忘：存储block的数据库名为Block
