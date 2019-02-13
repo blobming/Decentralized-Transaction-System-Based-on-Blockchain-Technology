@@ -94,13 +94,14 @@ public class MyBerkeleyDB {
 		}
 	}
 	
-	public Object get(String key) throws UnsupportedEncodingException { 
+	public byte[] get(String key) throws UnsupportedEncodingException { 
 		DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
 		DatabaseEntry v = new DatabaseEntry(); 
 		if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 			byte[] retData = v.getData();
 			//String res = new String(retData,charset);
-			return Utilities.toObject(retData);
+			//return Utilities.toObject(retData);
+			return retData;
 		}else {
 			return null;
 		}

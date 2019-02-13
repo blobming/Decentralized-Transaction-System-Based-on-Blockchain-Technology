@@ -5,6 +5,11 @@ public class Vin {
 	private int voutNum; // get the index of vout of txid
 	private String signature; // use payer's private key to sign the whole transaction
 	private String publickey; // payer's publickey
+	
+	@Override
+	public String toString() {
+		return txid+voutNum+publickey;
+	}
 }
 
 
@@ -16,4 +21,4 @@ public class Vin {
  * 5. 把输出脚本提供的(收款人，转给谁)公钥哈希值压入栈
  * 6. 弹出栈顶两个元素，两个哈希值是否相等然后栈顶元素消失
  * 7. 验证剩下两个元素是否正确
-*/ 
+*/
