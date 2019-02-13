@@ -111,7 +111,7 @@ public class MyBerkeleyDB {
 		}catch(Exception e2) {
 			e2.printStackTrace();
 =======
-	public byte[] get(String key) throws UnsupportedEncodingException { 
+	public byte[] get(String key){ 
 		DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
 		DatabaseEntry v = new DatabaseEntry(); 
 		if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
