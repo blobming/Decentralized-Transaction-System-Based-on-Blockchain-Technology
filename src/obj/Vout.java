@@ -35,4 +35,9 @@ public class Vout {
 	public String toString() {
 		return ""+value+seqNum+pubHash;
 	}
+	
+	// IsLockedWithKey checks if the output can be used by the owner of the pubkey
+	public boolean IsLockedWithKey(String publicKeyHash) {
+		return this.pubHash.equals(publicKeyHash);
+	}
 }

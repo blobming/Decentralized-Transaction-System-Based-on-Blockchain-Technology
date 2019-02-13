@@ -1,5 +1,7 @@
 package obj;
 
+import Utilities.Utilities;
+
 public class Vin {
 	private String txid; //txid represents the hash of one specific transaction
 	private int voutNum; // get the index of vout of txid
@@ -41,5 +43,10 @@ public class Vin {
 	@Override
 	public String toString() {
 		return txid+voutNum+publickey;
+	}
+	
+	// UsesKey checks whether the address initiated the transaction
+	public boolean UsesKey(String publickeyHash) {
+		return Utilities.hashKeyForDisk(this.publickey).equals(publickeyHash);
 	}
 }
