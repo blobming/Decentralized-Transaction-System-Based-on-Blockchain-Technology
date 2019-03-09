@@ -9,7 +9,6 @@ import java.net.Socket;
  */
 public class PeerThread extends Thread
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PeerThread.class);
     private Socket socket;
     PeerReader peerReader;
     PeerWriter peerWriter;
@@ -26,7 +25,7 @@ public class PeerThread extends Thread
     @Override
     public void run()
     {
-    	LOGGER.info("Got connection from " + socket.getInetAddress() + ".");
+    	System.out.println("Got connection from " + socket.getInetAddress() + ".");
         peerReader = new PeerReader(socket);
         peerReader.start();
         peerWriter = new PeerWriter(socket);
@@ -41,7 +40,7 @@ public class PeerThread extends Thread
     {
         if (peerWriter == null)
         {
-        	LOGGER.error("Couldn't send " + data + " when outputThread is null");
+        	System.err.println("Couldn't send " + data + " when outputThread is null");
         }
         else
         {

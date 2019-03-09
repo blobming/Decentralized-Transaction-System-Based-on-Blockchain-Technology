@@ -1,7 +1,12 @@
 package Network;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -11,16 +16,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.v5ent.entity.Block;
-
-import spark.utils.StringUtils;
-
 /**
  * 结点
  * 
@@ -28,33 +23,45 @@ import spark.utils.StringUtils;
  *
  */
 public class Node {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Node.class);
-
 	/** 本地存储的区块链 */
-	private static List<Block> blockChain = new LinkedList<Block>();
-	private static final String VERSION = "0.1";
+	//private static List<Block> blockChain = new LinkedList<Block>();
+	//private static final String VERSION = "0.1";
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		final Gson gson = new GsonBuilder().create();
-		final Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
 		int port = 8015;
-		LOGGER.info("Starting peer network...  ");
+		System.out.println("Starting peer network...  ");
 		PeerNetwork peerNetwork = new PeerNetwork(port);
 		peerNetwork.start();
-		LOGGER.info("[  Node is Started in port:"+port+"  ]");
+		System.out.println("[  Node is Started in port:"+port+"  ]");
 
-		LOGGER.info("Starting RPC daemon...  ");
+		System.out.println("Starting RPC daemon...  ");
 		RpcServer rpcAgent = new RpcServer(port+1);
 		rpcAgent.start();
-		LOGGER.info("[  RPC agent is Started in port:"+(port+1)+"  ]");
+		System.out.println("[  RPC agent is Started in port:"+(port+1)+"  ]");
 		
 		ArrayList<String> peers = new ArrayList<String>();
 		File peerFile = new File("peers.list");
+		
 		if (!peerFile.exists()) {
 			String host = InetAddress.getLocalHost().toString();
-			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,true);
+			peerFile.createNewFile();
+			//FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,true);
+			FileWriter fileWritter = new FileWriter(peerFile.getName(),true);
+			fileWritter.write(host+":"+port);
+			fileWritter.close();
 		}else{
-			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
+			InputStreamReader inputReader = new InputStreamReader(new FileInputStream(peerFile));
+			BufferedReader bf = new BufferedReader(inputReader);
+			ArrayList<String> stringList = new ArrayList<>();
+			// 按行读取字符串
+			String str;
+			while ((str = bf.readLine()) != null) {
+				stringList.add(str);
+			}
+			bf.close();
+			inputReader.close();
+			
+			for (String peer : stringList) {
 				String[] addr = peer.split(":");
 				if(CommonUtils.isLocal(addr[0])&&String.valueOf(port).equals(addr[1])){
 					continue;
@@ -67,7 +74,9 @@ public class Node {
 
 		File dataFile = new File("block.bin");
 		if (!dataFile.exists()) {
+			//create block and add it to block chain
 			// hard code genesisBlock
+			/*
 			Block genesisBlock = new Block();
 			genesisBlock.setIndex(0);
 			genesisBlock.setTimestamp("2017-07-13 22:32:00");//my son's birthday
@@ -76,19 +85,27 @@ public class Node {
 			genesisBlock.setHash(BlockUtils.calculateHash(genesisBlock));
 			blockChain.add(genesisBlock);
 			FileUtils.writeStringToFile(dataFile,gson.toJson(genesisBlock), StandardCharsets.UTF_8,true);
+			*/
 		}else{
+			//Read block chain from file
+			/*
 			List<String> list = FileUtils.readLines(dataFile, StandardCharsets.UTF_8);
 			for(String line:list){
 				blockChain.add(gson.fromJson(line, Block.class));
 			}
+			*/
 		}
 		TimeUnit.SECONDS.sleep(2);
+		
 		//pretty print
-		LOGGER.info(prettyGson.toJson(blockChain));
+		//LOGGER.info(prettyGson.toJson(blockChain));
 
-		int bestHeight = blockChain.size();
+		int bestHeight = blockChain.size(); //best Height represents the longest chain of block
+		
 		//建立socket连接后，给大家广播握手
 		peerNetwork.broadcast("VERSION "+ bestHeight+" " + VERSION);
+		
+		//each node broadcasts all their version
 
 		/**
 		 * p2p 通讯
@@ -98,7 +115,7 @@ public class Node {
 			for (String peer : peerNetwork.peers) {
 				if (!peers.contains(peer)) {
 					peers.add(peer);
-					LOGGER.info("add peer to file:"+peer);
+					System.out.println("add peer to file:"+peer);
 					FileUtils.writeStringToFile(peerFile, "\r\n"+peer,StandardCharsets.UTF_8,true);
 				}
 			}
@@ -216,7 +233,7 @@ public class Node {
 							}
 						} catch (Exception e) {
 							th.res = "Syntax (no '<' or '>'): send <vac> - Virtual Asset Count(Integer)";
-							LOGGER.error("invalid vac - Virtual Asset Count(Integer)");
+							System.err.println("invalid vac - Virtual Asset Count(Integer)");
 						}
 					} else {
 						th.res = "Unknown command: \"" + parts[0] + "\" ";

@@ -51,13 +51,13 @@ public class PeerNetwork extends Thread {
 //    		socket.setSoTimeout(10000);
 			String remoteHost = socket.getInetAddress().getHostAddress();
 			int remotePort = socket.getPort();
-			LOGGER.info("socket " + remoteHost + ":" + remotePort + " connected.");
+			System.out.println("socket " + remoteHost + ":" + remotePort + " connected.");
 			peers.add(remoteHost + ":" + remotePort);
 			PeerThread pt = new PeerThread(socket);
 			peerThreads.add(pt);
 			pt.start();
 		} catch (IOException e) {
-			LOGGER.warn("socket " + host +":"+port+ " can't connect.",e);
+			System.err.println("socket " + host +":"+port+ " can't connect.");
 		}
     }
 
@@ -73,7 +73,8 @@ public class PeerNetwork extends Thread {
             }
             listenSocket.close();
         } catch (Exception e) {
-           LOGGER.error("{}",e);
+           //LOGGER.error("{}",e);
+           System.err.println("{}");
         }
     }
 
@@ -83,7 +84,7 @@ public class PeerNetwork extends Thread {
      */
     public void broadcast(String data) {
         for (PeerThread pt: peerThreads) {
-        	LOGGER.info("Sent:: " + data);
+        	System.out.println("Sent:: " + data);
             if( pt!=null){
             	pt.send(data);
             }

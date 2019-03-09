@@ -1,6 +1,5 @@
 package Network;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class PeerWriter extends Thread {
 			while (runFlag) {
 				if (!outputBuffer.isEmpty() && outputBuffer.get(0) != null) {
                     for (String line : outputBuffer) {
-                    	LOGGER.info("Sending " +line + " to " + socket.getInetAddress());
+                    	System.out.println("Sending " +line + " to " + socket.getInetAddress());
                         out.println(line);
                     }
                     outputBuffer = new ArrayList<String>();
@@ -39,7 +38,7 @@ public class PeerWriter extends Thread {
 				TimeUnit.MILLISECONDS.sleep(200);
 			}
 		} catch (Exception e) {
-			 S.info("Peer " + socket.getInetAddress() + " disconnected."+e); 
+			 System.err.println("Peer " + socket.getInetAddress() + " disconnected."+e); 
 		}
 	}
 
