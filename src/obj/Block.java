@@ -55,7 +55,7 @@ public class Block implements Serializable {
 		//this.preHashCode = preHashCode;
 		this.merkleRootHash = merkleRootHash;
 		this.timeStamp = new Date();
-		this.nBits = Global.getInstance().nbits;
+		this.nBits = Global.nbits;
 		this.nonce = nonce;
 		this.hashCode = this.calculateHash();
 	}

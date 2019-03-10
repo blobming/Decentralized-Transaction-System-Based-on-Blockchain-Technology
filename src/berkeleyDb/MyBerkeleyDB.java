@@ -8,22 +8,16 @@ import com.sleepycat.je.*;
 import Utilities.Utilities;
 
 public class MyBerkeleyDB {
-	private static MyBerkeleyDB instance = null;
-	private static Environment environment;
+	private Environment environment;
 	private Database database;    
-	private static String path;
+	private String path;
 	private String charset;
-	private MyBerkeleyDB() {
+	
+	public MyBerkeleyDB(String path) {
+		setEnvironment(path);	
 		charset = "utf-8";
 	}
-	public static MyBerkeleyDB GetInstance() {
-		if(instance == null) {
-			instance = new MyBerkeleyDB();
-			setEnvironment("./Data");	
-		}
-		return instance;
-	}
-	private static void setPath(String p) {
+	private void setPath(String p) {
 		//判断path是否存在
 		File file = new File(p);
 		if(file.mkdir()){ 
@@ -34,10 +28,8 @@ public class MyBerkeleyDB {
 		//确定存储路径
 		path = p;
 	}
-	private static void setEnvironment(String p){
+	private void setEnvironment(String p){
 		setPath(p); 
-		//setChacheSize(chacheSize); 
-		//配置环境
 		EnvironmentConfig envConfig = new EnvironmentConfig(); 
 		envConfig.setAllowCreate(true); 
 		//envConfig.setCacheSize(this.chacheSize); 
@@ -100,20 +92,17 @@ public class MyBerkeleyDB {
 			DatabaseEntry v = new DatabaseEntry(); 
 			if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 				byte[] retData = v.getData();
-				//String res = new String(retData,charset);
 				return Utilities.toObject(retData);
 			}else {
 				return null;
 			}
-		}catch(UnsupportedEncodingException e) {
-			e.printStackTrace();
 		}catch(Exception e2) {
 			e2.printStackTrace();
 		}
 		return null;
 	}
 	 
-	public ArrayList<String> getAllKey() { 
+	public ArrayList<String> getAllKey() throws UnsupportedEncodingException { 
 		ArrayList<String> result = new ArrayList<String>(); 
 		Cursor cursor = database.openCursor(null, null); 
 		DatabaseEntry key = new DatabaseEntry(); 
@@ -121,7 +110,7 @@ public class MyBerkeleyDB {
 		while(cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) { 
 			byte[] bytes = key.getData(); 
 			if(bytes != null) { 
-				result.add(new String(bytes)); 
+				result.add(new String(bytes,charset)); 
 				key = new DatabaseEntry(); 
 			}else{
 				key = new DatabaseEntry(); 

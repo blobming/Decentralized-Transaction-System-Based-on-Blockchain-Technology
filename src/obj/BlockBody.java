@@ -9,8 +9,10 @@ import config.Global;
 public class BlockBody{
 	private TreeNode[] nodes;
 	private TreeNode root;
-
+	public ArrayList<Transaction> transactions;
+	
 	public BlockBody(ArrayList<Transaction> txs) {
+		this.transactions = txs;
 		if(txs.size() > Global.maxBlockTxNum || txs.size() < Global.minBlockTxNum)	throw new java.lang.IllegalArgumentException("invalid tx num");
 		TreeNode[] nodes = new TreeNode[txs.size()];
 		Queue<TreeNode> queue = new LinkedList<>();
