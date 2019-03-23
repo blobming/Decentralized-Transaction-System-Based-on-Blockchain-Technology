@@ -15,7 +15,7 @@ public class RpcServer extends Thread
     private int port;
     private boolean runFlag = true;
 
-    List<RpcThread> rpcThreads;
+    public List<RpcThread> rpcThreads;
 
     /**
      * 默认配置

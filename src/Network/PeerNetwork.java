@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * p2p网络，负责处理peer之间的连接和通讯。每次起独立线程来处理
+ * 与每一个peer的连接均新建线程保存在peerThreads里面，最终的
  * @author Mignet
  */
 public class PeerNetwork extends Thread {
@@ -16,8 +17,8 @@ public class PeerNetwork extends Thread {
     private int port;
     private boolean runFlag = true;
     
-    List<PeerThread> peerThreads;
-    List<String> peers;
+    public List<PeerThread> peerThreads;
+    public List<String> peers;
 
     /**
      * 默认配置
@@ -40,15 +41,15 @@ public class PeerNetwork extends Thread {
     /**
      * 建立连接
      *
-     * @param host Peer to connect to
-     * @param port Port on peer to connect to
+     * @param 要连接的host
+     * @param 要连接的host的端口
      */
     public void connect(String host, int port){
     	Socket socket =null;
     	try {
     		socket = new Socket();
-    		socket.connect(new InetSocketAddress(host,port),10000); 
-//    		socket.setSoTimeout(10000);
+    		System.out.println(host);
+    		socket.connect(new InetSocketAddress(host,port),10000);
 			String remoteHost = socket.getInetAddress().getHostAddress();
 			int remotePort = socket.getPort();
 			System.out.println("socket " + remoteHost + ":" + remotePort + " connected.");
@@ -73,7 +74,6 @@ public class PeerNetwork extends Thread {
             }
             listenSocket.close();
         } catch (Exception e) {
-           //LOGGER.error("{}",e);
            System.err.println("{}");
         }
     }

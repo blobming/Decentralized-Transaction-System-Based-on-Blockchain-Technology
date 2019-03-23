@@ -10,8 +10,8 @@ import java.net.Socket;
 public class PeerThread extends Thread
 {
     private Socket socket;
-    PeerReader peerReader;
-    PeerWriter peerWriter;
+    public PeerReader peerReader;
+    public PeerWriter peerWriter;
     
     /**
      * 构造函数

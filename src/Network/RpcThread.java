@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class RpcThread extends Thread {
 	
     private Socket socket;
-    String res;
-    String req;
+    public String response;
+    public String request;
 
     /**
      * 默认构造函数
@@ -27,8 +27,8 @@ public class RpcThread extends Thread {
     @Override
     public void run(){
         try{
-            req = null;
-            res = null;
+            request = null;
+            response = null;
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input;
@@ -40,13 +40,13 @@ public class RpcThread extends Thread {
                     out.println("#     2) send <vac>    - Write <vac> to blockChain                                                    #");
                     out.println("#######################################################################################################");
                 } else {
-                    req = input;
-                    while (res == null){
+                    request = input;
+                    while (response == null){
                     	TimeUnit.MILLISECONDS.sleep(25);
                     }
-                    out.println(res);
-                    req = null;
-                    res = null;
+                    out.println(response);
+                    request = null;
+                    response = null;
                 }
             }
         } catch (Exception e){
