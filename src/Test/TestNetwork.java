@@ -67,6 +67,14 @@ public class TestNetwork {
 		peerNetwork.broadcast("VERSION "+ bestHeight+" " + VERSION);
 		//System.out.println("send broadcast success");
 		while (true) {
+			
+			for(int i = 1;i<peers.size();i++) {
+				if(!peerNetwork.peers.contains(peers.get(i))) {
+					peers.clear();
+					FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,false);
+				}
+			}
+			
 			//对新连接过的peer写入文件，下次启动直接连接
 			for (String peer : peerNetwork.peers) {
 				if (!peers.contains(peer)) {
