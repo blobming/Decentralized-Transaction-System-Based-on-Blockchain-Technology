@@ -2,6 +2,7 @@ package obj;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -48,36 +49,71 @@ public class Blockchain implements Iterable{
 		}	
 	}
 	/*
-	public ArrayList<String> FindUTXO(){
-		HashMap<String,Vout> UTXO = new HashMap<>();
-		HashMap<String,ArrayList<Integer>> spentTXOs = new HashMap<>();
-		Iterator iterator = this.iterator();
+	 * for every block:
+	 *  for every transaction:
+	 *      For Vin:
+	 *          if vin.transactionId in UTXO -->remove
+	 *          add into spentTXOs <vin.transactionId, vin.voutNum>  
+	 *      For Vout:
+	 *          if (thisTransaction.Id in spentTXOs && vout is in spentTXOs.get(thisTransactionId)):
+	 *          	remove from UTXO
+	 *          else:
+	 *          	add into UTXO
+	 */
+	public HashMap<String,HashSet<Vout>> FindUTXO(){
+		HashMap<String,HashSet<Vout>> UTXO = new HashMap<>();
+		HashMap<String,HashSet<Integer>> spentTXOs = new HashMap<>();
+		Iterator<Block> iterator = this.iterator();
 		while(iterator.hasNext()) {
 			Block block = (Block) iterator.next();
 			ArrayList<Transaction> txs = block.getBlockBody().transactions;
 			
 			for(Transaction tx : txs) {
 				String txID = tx.getTxid();
-				Outputs: 
-				for(int i=0; i < tx.getVout().length; i++) {
-					if(spentTXOs.get(txID) != null) {
-						for(int spentOutIdx : spentTXOs.get(txID)) {
-							if(spentOutIdx == i)	continue Outputs;
+				Vin[] vins = tx.getVin();
+				for(int i = 0; i < vins.length; i++) {
+					HashSet<Vout> temp = UTXO.get(vins[i].getTxid());
+					if(temp != null) {
+						for(Vout vout : temp) {
+							if(vout.getSeqNum() == i) {
+								temp.remove(vout);
+								break;
+							}
 						}
 					}
-					
+					if(!spentTXOs.containsKey(txID)) {
+						spentTXOs.put(txID, new HashSet<>());
+					}
+					spentTXOs.get(txID).add(vins[i].getVoutNum());
 				}
-			}
-			
+				Vout[] vouts = tx.getVout();
+				VoutLoop:for(int i = 0; i < vouts.length; i++) {
+					if(!spentTXOs.containsKey(txID)) {
+						if(UTXO.get(txID) == null) {
+							UTXO.put(txID, new HashSet<Vout>());
+						}
+						UTXO.get(txID).add(vouts[i]);
+					}else {
+						for(int index : spentTXOs.get(txID)) {
+							if(index == vouts[i].getSeqNum()) {
+								UTXO.get(txID).remove(vouts[i]);
+								continue VoutLoop;
+							}
+						}
+						UTXO.get(txID).add(vouts[i]);
+					}
+				}
+			}	
 		}
+		return UTXO;
 	}
-*/
+
 	@Override
-	public Iterator iterator() {
+	public Iterator<Block> iterator() {
 		return new BlockchainIterator();
 	}
 	
-	private class BlockchainIterator implements Iterator{
+	private class BlockchainIterator implements Iterator<Block>{
 		String point = tip;
 		@Override
 		public boolean hasNext() {	
@@ -105,7 +141,7 @@ public class Blockchain implements Iterable{
 		chain.addBlock(one);
 		chain.addBlock(two);
 		chain.addBlock(three);
-		Iterator iterator = chain.iterator();
+		Iterator<Block> iterator = chain.iterator();
 		while(iterator.hasNext()) {
 			Block b = (Block) iterator.next();
 			System.out.println(b.getMerkleRootHash());
