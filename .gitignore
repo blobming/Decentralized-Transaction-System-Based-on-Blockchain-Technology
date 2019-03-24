@@ -2,4 +2,4 @@ bin/
 .settings/
 .DS_Store
 Data/
-peers.list
+*.list
