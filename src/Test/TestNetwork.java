@@ -69,19 +69,6 @@ public class TestNetwork {
 		//建立socket连接后，给大家广播握手
 		peerNetwork.broadcast("VERSION "+ bestHeight+" " + VERSION);
 		//System.out.println("send broadcast success");
-		
-		try {
-			System.out.println("连接rpcClient");
-			Socket s = new Socket("127.0.0.1",8016);
-		    RpcWriter rpcWriter = new RpcWriter(s);
-		    RpcReader rpcReader = new RpcReader(s);
-		    rpcWriter.start();
-		    rpcReader.start();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		while (true) {
 			
 			for(int i = 1;i<peers.size();i++) {
@@ -206,12 +193,14 @@ public class TestNetwork {
 			// ********************************
 			// 处理RPC服务
 			// ********************************
-			for (RpcThread rpcthread:rpcAgent.rpcThreads) {
+			RpcThread rpcthread = null;
+			for(int i=0;i<rpcAgent.rpcThreads.size();i++) {
+				rpcthread = rpcAgent.rpcThreads.get(i);
 				if(!rpcthread.isAlive()) {
+					rpcAgent.rpcThreads.remove(i);
 					continue;
 				}
 				String request = rpcthread.request;
-				//System.out.println(request);
 				if (request != null) {
 					String[] parts = request.split(" ");
 					parts[0] = parts[0].toLowerCase();
