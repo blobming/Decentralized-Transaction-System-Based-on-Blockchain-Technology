@@ -15,7 +15,7 @@ public class MyBerkeleyDB {
 	
 	public MyBerkeleyDB(String path) {
 		setEnvironment(path);	
-		charset = "utf-8";
+		charset = "UTF-8";
 	}
 	private void setPath(String p) {
 		//判断path是否存在
@@ -48,47 +48,58 @@ public class MyBerkeleyDB {
 	   database.close();
 	   environment.close();
 	}
-	public void put(String key,String value) {
+	public void put(Object key, Object value) {
 		try {
-			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
-			DatabaseEntry v = new DatabaseEntry(value.getBytes(charset)); 
+			DatabaseEntry k = new DatabaseEntry(Utilities.toByteArray(key)); 
+			DatabaseEntry v = new DatabaseEntry(Utilities.toByteArray(value));
 			database.put(null, k, v); 
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void put(byte[] key, byte[] value) {
+//	public void put(String key,String value) {
+//		try {
+//			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
+//			System.out.println("put key:" +key.getBytes(charset));
+//			DatabaseEntry v = new DatabaseEntry(value.getBytes(charset));
+//			System.out.println("put value:" +value.getBytes(charset));
+//			database.put(null, k, v); 
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	public void put(byte[] key, byte[] value) {
+//		try {
+//			DatabaseEntry k = new DatabaseEntry(key); 
+//			DatabaseEntry v = new DatabaseEntry(value); 
+//			database.put(null, k, v); 
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	public void put(String key, byte[] value) {
+//		try {
+//			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset));
+//			DatabaseEntry v = new DatabaseEntry(value); 
+//			database.put(null, k, v); 
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	public void put(byte[] key, String value) {
+//		try {
+//			DatabaseEntry k = new DatabaseEntry(key); 
+//			DatabaseEntry v = new DatabaseEntry(value.getBytes(charset)); 
+//			database.put(null, k, v); 
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+	public Object get(Object key){ 
 		try {
-			DatabaseEntry k = new DatabaseEntry(key); 
-			DatabaseEntry v = new DatabaseEntry(value); 
-			database.put(null, k, v); 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void put(String key, byte[] value) {
-		try {
-			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset));
-			DatabaseEntry v = new DatabaseEntry(value); 
-			database.put(null, k, v); 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	public void put(byte[] key, String value) {
-		try {
-			DatabaseEntry k = new DatabaseEntry(key); 
-			DatabaseEntry v = new DatabaseEntry(value.getBytes(charset)); 
-			database.put(null, k, v); 
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Object get(String key){ 
-		try {
-			DatabaseEntry k = new DatabaseEntry(key.getBytes(charset)); 
+			DatabaseEntry k = new DatabaseEntry(Utilities.toByteArray(key)); 
 			DatabaseEntry v = new DatabaseEntry(); 
 			if(database.get(null, k, v, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
 				byte[] retData = v.getData();
@@ -102,6 +113,7 @@ public class MyBerkeleyDB {
 		return null;
 	}
 	 
+	//未改 用了的时候再改成utilities.tobyteArray的形式
 	public ArrayList<String> getAllKey() throws UnsupportedEncodingException { 
 		ArrayList<String> result = new ArrayList<String>(); 
 		Cursor cursor = database.openCursor(null, null); 

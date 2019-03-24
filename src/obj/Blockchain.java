@@ -17,8 +17,8 @@ public class Blockchain implements Iterable{
 	public String tip;	//tip means the last block of blockchain
 	private final String genesisCoinbaseData = "This is coinbase data";
 	private MyBerkeleyDB db;
-	public Blockchain() {
-		db = MyBerkeleyDB.GetInstance();
+	public Blockchain(MyBerkeleyDB blockDB) {
+		db = blockDB;
 		db.open("Block");  //存储block的数据库
 	}
 	
@@ -132,21 +132,21 @@ public class Blockchain implements Iterable{
 	
 	//for test
 	public static void main(String[] args) {
-		Blockchain chain = new Blockchain();
-		
-//		chain.newBlockchain();
-		Block one = new Block("one",234);
-		Block two = new Block("two",345);
-		Block three = new Block("three",567);
-		chain.addBlock(one);
-		chain.addBlock(two);
-		chain.addBlock(three);
-		Iterator<Block> iterator = chain.iterator();
-		while(iterator.hasNext()) {
-			Block b = (Block) iterator.next();
-			System.out.println(b.getMerkleRootHash());
-		}
-		
+//		Blockchain chain = new Blockchain();
+//		
+////		chain.newBlockchain();
+//		Block one = new Block("one",234);
+//		Block two = new Block("two",345);
+//		Block three = new Block("three",567);
+//		chain.addBlock(one);
+//		chain.addBlock(two);
+//		chain.addBlock(three);
+//		Iterator<Block> iterator = chain.iterator();
+//		while(iterator.hasNext()) {
+//			Block b = (Block) iterator.next();
+//			System.out.println(b.getMerkleRootHash());
+//		}
+//		
 	}
 }
 

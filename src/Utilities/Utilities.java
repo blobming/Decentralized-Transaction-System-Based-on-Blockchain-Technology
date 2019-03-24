@@ -47,7 +47,7 @@ public class Utilities {
             ObjectOutputStream oos = new ObjectOutputStream(bos);         
             oos.writeObject(obj);        
             oos.flush();         
-            bytes = bos.toByteArray ();      
+            bytes = bos.toByteArray();      
             oos.close();         
             bos.close();        
         } catch (IOException ex) {        
@@ -62,8 +62,8 @@ public class Utilities {
             return null;
         Object obj = null;      
         try {        
-            ByteArrayInputStream bis = new ByteArrayInputStream (bytes);        
-            ObjectInputStream ois = new ObjectInputStream (bis);        
+            ByteArrayInputStream bis = new ByteArrayInputStream(bytes);        
+            ObjectInputStream ois = new ObjectInputStream(bis);        
             obj = ois.readObject();      
             ois.close();   
             bis.close();   
