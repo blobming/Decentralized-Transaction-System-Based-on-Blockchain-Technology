@@ -3,6 +3,8 @@ package Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import Network.*;
+import Utilities.NetworkUtils;
 
 public class TestNetwork {
 	
@@ -32,13 +35,13 @@ public class TestNetwork {
 		
 		ArrayList<String> peers = new ArrayList<String>();
 		File peerFile = new File("peers.list");
-		String host = CommonUtils.getInternetIp();
-		if (!peerFile.exists()) {
+		String host = NetworkUtils.getInternetIp();
+		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
 			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,true);
 		}else {
 			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
 				String[] addr = peer.split(":");
-				if(CommonUtils.isLocal(addr[0])&&String.valueOf(port).equals(addr[1])){
+				if(NetworkUtils.isLocal(addr[0])&&String.valueOf(port).equals(addr[1])){
 					continue;
 				}
 				peers.add(peer);
@@ -66,6 +69,19 @@ public class TestNetwork {
 		//建立socket连接后，给大家广播握手
 		peerNetwork.broadcast("VERSION "+ bestHeight+" " + VERSION);
 		//System.out.println("send broadcast success");
+		
+		try {
+			System.out.println("连接rpcClient");
+			Socket s = new Socket("127.0.0.1",8016);
+		    RpcWriter rpcWriter = new RpcWriter(s);
+		    RpcReader rpcReader = new RpcReader(s);
+		    rpcWriter.start();
+		    rpcReader.start();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		while (true) {
 			
 			for(int i = 1;i<peers.size();i++) {
@@ -117,6 +133,7 @@ public class TestNetwork {
 							// 获取区块高度和版本号信息
 							String[] parts = payload.split(" ");
 							bestHeight = Integer.parseInt(parts[0]);
+							System.out.println("Recording IP Address");
 							//我方回复：知道了
 							//pt.peerWriter.write("VERACK " + blockChain.size() + " " + blockChain.get(blockChain.size() - 1).getHash());
 							pt.peerWriter.write("VERACK "+"2");

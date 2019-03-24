@@ -68,7 +68,11 @@ public class PeerNetwork extends Thread {
             ServerSocket listenSocket = new ServerSocket(port);
             while (runFlag) 
             {
-            	PeerThread peerThread = new PeerThread(listenSocket.accept());
+            	System.out.println("dedaole lianjie");
+            	Socket connectedSocket = listenSocket.accept();
+            	System.out.println("writing ip to network peers");
+            	peers.add(connectedSocket.getInetAddress().getHostAddress()+":8015");
+            	PeerThread peerThread = new PeerThread(connectedSocket);
                 peerThreads.add(peerThread);
                 peerThread.start();
             }
