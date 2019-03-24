@@ -117,6 +117,7 @@ public class TestNetwork {
 							// 获取区块高度和版本号信息
 							String[] parts = payload.split(" ");
 							bestHeight = Integer.parseInt(parts[0]);
+							System.out.println("Recording IP Address");
 							//我方回复：知道了
 							//pt.peerWriter.write("VERACK " + blockChain.size() + " " + blockChain.get(blockChain.size() - 1).getHash());
 							pt.peerWriter.write("VERACK "+"2");
