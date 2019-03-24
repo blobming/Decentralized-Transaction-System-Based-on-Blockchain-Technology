@@ -5,8 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Utilities {
 	/**
@@ -74,4 +80,34 @@ public class Utilities {
         }
         return obj;    
     }
+    
+    /**
+	 * 获得IP
+	 * 
+	 * @return 外网IP
+	 */
+	public static Map<String,String> getInternetIp() {
+		try {
+			Enumeration<NetworkInterface> networks = NetworkInterface.getNetworkInterfaces();
+			Map<String,String> networkCardMap = new HashMap<String,String>();
+			InetAddress ip = null;
+			Enumeration<InetAddress> addrs;
+			NetworkInterface networkInterface = null;
+			while (networks.hasMoreElements()) {
+				networkInterface = networks.nextElement();
+				if(networkInterface.isUp()&& !networkInterface.isVirtual()&&!networkInterface.isLoopback()) {
+					addrs = networkInterface.getInetAddresses();
+					while (addrs.hasMoreElements()) {
+						ip = addrs.nextElement();
+						if (ip != null && ip instanceof Inet4Address && ip.isSiteLocalAddress()) {
+							networkCardMap.put(networkInterface.getName(), ip.getHostAddress());
+						}
+					}
+				}
+			}
+			return networkCardMap;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

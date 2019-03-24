@@ -112,7 +112,6 @@ public class NetworkUtils {
 		Matcher m = p.matcher(inputLine);
 		if (m.find()) {
 			String ipstr = m.group(1);
-//			System.out.println(ipstr);
 			ip = ipstr;
 		}
 		return ip;
