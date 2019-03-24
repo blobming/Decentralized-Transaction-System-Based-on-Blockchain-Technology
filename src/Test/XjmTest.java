@@ -9,6 +9,7 @@ public class XjmTest {
 		for(String key:tempMap.keySet()) {
 			System.out.println("key: "+key+"   "+"ip"+tempMap.get(key));
 		}
+		System.out.println(tempMap.get("a"));
 	}
 
 }

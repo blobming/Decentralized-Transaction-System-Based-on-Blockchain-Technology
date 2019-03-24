@@ -8,7 +8,9 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -16,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import Network.*;
 import Utilities.NetworkUtils;
+import Utilities.Utilities;
 
 public class TestNetwork {
 	
@@ -35,7 +38,31 @@ public class TestNetwork {
 		
 		ArrayList<String> peers = new ArrayList<String>();
 		File peerFile = new File("peers.list");
+		
 		String host = NetworkUtils.getInternetIp();
+		
+		System.out.println("found that your computer has these following network Card");
+		Map<String, String> hostList = Utilities.getInternetIp();
+		for(String key:hostList.keySet()) {
+			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+		}
+		System.out.println("Please Choose one");
+		Scanner scanner = new Scanner(System.in);
+		host = hostList.get(scanner.nextLine());
+		scanner.close();
+		while(host == null) {
+			System.out.println("found that your computer has these following network Card");
+			hostList = Utilities.getInternetIp();
+			for(String key:hostList.keySet()) {
+				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+			}
+			System.out.println("Please Choose one");
+			scanner = new Scanner(System.in);
+			host = hostList.get(scanner.nextLine());
+			scanner.close();
+		}
+		
+		
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
 			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,true);
 		}else {
@@ -50,7 +77,11 @@ public class TestNetwork {
 			}
 			if(!FileUtils.readLines(peerFile,StandardCharsets.UTF_8).contains(host+":"+port)) {
 				System.out.println("Replace local Address");
-				peers.set(0, host+":"+port);
+				if(peers.size()>0) {
+					peers.set(0, host+":"+port);
+				}else {
+					peers.add(host+":"+port);
+				}
 				FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,false);
 				for(int i=1;i<peers.size();i++) {
 					FileUtils.writeStringToFile(peerFile, "\r\n"+peers.get(i),StandardCharsets.UTF_8,true);
