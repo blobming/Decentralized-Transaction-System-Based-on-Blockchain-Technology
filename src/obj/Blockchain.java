@@ -55,15 +55,14 @@ public class Blockchain implements Iterable{
 	 *          if vin.transactionId in UTXO -->remove
 	 *          add into spentTXOs <vin.transactionId, vin.voutNum>  
 	 *      For Vout:
-	 *          if (thisTransaction.Id in spentTXOs && vout is in spentTXOs.get(thisTransactionId)):
+	 *          if (thisTransaction.Id in spentTXOs && vout is in spentTXOs.get(thisTransactionId)):	//其实可以不要这段代码
 	 *          	remove from UTXO
 	 *          else:
 	 *          	add into UTXO
 	 */
-	public HashMap<String,HashSet<Vout>> FindUTXO(){
+	public static HashMap<String,HashSet<Vout>> FindUTXO(Iterator<Block> iterator){
 		HashMap<String,HashSet<Vout>> UTXO = new HashMap<>();
 		HashMap<String,HashSet<Integer>> spentTXOs = new HashMap<>();
-		Iterator<Block> iterator = this.iterator();
 		while(iterator.hasNext()) {
 			Block block = (Block) iterator.next();
 			ArrayList<Transaction> txs = block.getBlockBody().transactions;

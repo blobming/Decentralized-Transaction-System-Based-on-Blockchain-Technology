@@ -12,6 +12,7 @@ public class Transaction {
 	private Vin[] vin;
 	private Vout[] vout;
 	private Date timestamp;
+	private boolean isCoinBase;
 	public String getTxid() {
 		return txid;
 	}
@@ -36,6 +37,13 @@ public class Transaction {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+	
+	public boolean isCoinBase() {
+		return isCoinBase;
+	}
+	public void setCoinBase(boolean isCoinBase) {
+		this.isCoinBase = isCoinBase;
+	}
 	public Transaction(Vin[] vin, Vout[] vout) {
 		this.vin = vin;
 		this.vout = vout;
@@ -50,6 +58,7 @@ public class Transaction {
 		toHash += getTimestamp().toString();
 		this.hash = toHash;
 		this.txid = toHash;
+		this.isCoinBase = false;
 	} 
 	
 	/* 执行过程
@@ -102,6 +111,7 @@ public class Transaction {
 		Vout vouts[] = new Vout[0];
 		vouts[0] = vout;
 		Transaction t = new Transaction(vins, vouts);
+		t.isCoinBase = true;
 		return t;
 	}
 	

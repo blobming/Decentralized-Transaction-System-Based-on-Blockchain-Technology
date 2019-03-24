@@ -2,6 +2,7 @@ package berkeleyDb;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.sleepycat.je.*;
 
@@ -36,6 +37,11 @@ public class MyBerkeleyDB {
 		//创建环境
 		environment = new Environment(new File(p),envConfig); 
 	}
+	
+	public Environment getEnvironment() {
+		return environment;
+	}
+
 	//open database
 	public void open(String dbName) { 
 		DatabaseConfig dbConfig = new DatabaseConfig(); 
@@ -114,18 +120,19 @@ public class MyBerkeleyDB {
 	}
 	 
 	//未改 用了的时候再改成utilities.tobyteArray的形式
-	public ArrayList<String> getAllKey() throws UnsupportedEncodingException { 
-		ArrayList<String> result = new ArrayList<String>(); 
+	public HashMap<String, Object> getAllKey() { 
+		HashMap<String, Object> result = new HashMap<>();
 		Cursor cursor = database.openCursor(null, null); 
 		DatabaseEntry key = new DatabaseEntry(); 
 		DatabaseEntry value = new DatabaseEntry(); 
 		while(cursor.getNext(key, value, LockMode.DEFAULT) == OperationStatus.SUCCESS) { 
-			byte[] bytes = key.getData(); 
-			if(bytes != null) { 
-				result.add(new String(bytes,charset)); 
+			byte[] keyBytes = key.getData();
+			if(keyBytes != null) { 
+				byte[] valueBytes = value.getData();
+				result.put((String)Utilities.toObject(keyBytes), Utilities.toObject(valueBytes)); 
 				key = new DatabaseEntry(); 
 			}else{
-				key = new DatabaseEntry(); 
+				break; 
 			}
 		} 
 		cursor.close(); 

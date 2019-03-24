@@ -2,6 +2,7 @@ package berkeleyDb;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.util.Map.Entry;
 
 import Utilities.Utilities;
 
@@ -24,24 +25,18 @@ public class Test {
 		h.name = "hname";
 		blockDB.open("Block");
 		blockDB.put("2345", "zx");
-		blockDB.put("2345", "zx");
-		utxoDB.open("UTXO");
-	utxoDB.put(12, h);
-		H dbH = (H) utxoDB.get(12);
-		System.out.println(dbH.name);
+		blockDB.put("1234", "zb");
+		blockDB.put("1255", "bgg");
+		
 	
 		System.out.println(blockDB.get("2345"));
-		try {
-			for(String a:blockDB.getAllKey()) {
-		//		System.out.println(a);
-			//	System.out.println(blockDB.get(a));
-			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		for(Entry<String, Object> entry:blockDB.getAllKey().entrySet()) {
+			System.out.println((String)entry.getKey() + " " + (String)entry.getValue());
+		//	System.out.println(blockDB.get(a));
 		}
+	
 		blockDB.close();
-		String a = "2345";
 		
 	}
 
