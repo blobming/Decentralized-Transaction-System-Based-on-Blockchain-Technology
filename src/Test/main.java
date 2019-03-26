@@ -1,11 +1,5 @@
 package Test;
 
-import java.io.UnsupportedEncodingException;
-
-import Utilities.Utilities;
-import berkeleyDb.MyBerkeleyDB;
-import obj.Block;
-
 public class main {
 
 	public static void main(String[] args) {
@@ -14,13 +8,20 @@ public class main {
 		/*
 		 * 
 		 * 一个全节点的功能														测试情况
-		 * 	-> 提供RPC 服务														  ✔️
+		 * 	-> 提供RPC服务															✔
+		 * 		-> 发现IP
+		 * 		-> 成为矿工节点
+		 * 		-> 发送转账信息
+		 * 		-> 查看自己的余额
+		 * 		-> 查看区块链情况 + 对交易信息的检验️
 		 * 	-> 与其他节点通信️
 		 * 		-> 与其他节点通信功能列举
-		 * 			-> 1. 发送块
-		 * 			-> 2. 接收快
-		 * 			-> 3. 接收交易，生成交易池（如果是矿工节点）
-		 * 			-> 4. 
+		 * 			-> 1. 发送区块
+		 * 			-> 2. 接收区块
+		 * 			-> 3. 接收广播交易，生成交易池（如果是矿工节点）
+		 * 			-> 4. 挖矿后广播新区块
+		 * 			-> 5. 发送握手消息
+		 * 			-> 6. 回复握手消息
 		 * 	if(数据库中已存在现有区块链)
 		 * 		-> 取出现有区块链
 		 *  else
@@ -67,38 +68,12 @@ public class main {
 		
 		
 		/*
-		 * 准备测试的步骤
+		 * block 以及 transaction 的 toString 方法具体该怎么写
 		 * 
 		 * 
 		 * 
 		 * 
 		 */
-		
-		
-		//MyBerkeleyDB dbInstance = MyBerkeleyDB.GetInstance();
-		//dbInstance.setEnvironment("./Data");
-		/*
-		dbInstance.open("Test");
-		dbInstance.put("b"+block.getHashCode(), Utilities.toByteArray(block));
-		for(String a:dbInstance.getAllKey()) {
-			System.out.println(a);
-			System.out.println(a.getClass());
-			System.out.println(dbInstance.get(a).getClass());
-			
-			
-			//if(a.getClass()=="Block.class") {
-				
-			//}
-			
-			//Block block1 = (Block)dbInstance.get(a);
-			//if(block1 != null) {
-			//	System.out.println(block1.getHashCode());
-			//}
-		}*/
-		//dbInstance.close();
-		
-		
-		
 	}
 
 }

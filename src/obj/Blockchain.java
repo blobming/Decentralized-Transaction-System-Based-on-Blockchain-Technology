@@ -13,8 +13,8 @@ import berkeleyDb.MyBerkeleyDB;
 /*
  * 迭代器已通过测试
  */
-public class Blockchain implements Iterable{
-	public String tip;	//tip means the last block of blockchain
+public class Blockchain implements Iterable<Block>{
+	public String tip;	//tip means the last block of block chain
 	private final String genesisCoinbaseData = "This is coinbase data";
 	private MyBerkeleyDB db;
 	public Blockchain(MyBerkeleyDB blockDB) {
@@ -33,7 +33,10 @@ public class Blockchain implements Iterable{
 		if(tip == null)	return;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
-		db.put(tip, Utilities.toByteArray(newB));
+		// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
+		//db.put(tip, Utilities.toByteArray(newB));
+		db.put(tip, newB);
+		// modified by Jiaming end reason: db.put methond has been changed to Object,Object
 	}
 	public void newBlockchain(String address) {	 
 		String b = (String) db.get("0");	//check if genesis block(0) exist
@@ -41,8 +44,11 @@ public class Blockchain implements Iterable{
 			Transaction coinTx = Transaction.newCoinbaseTx(address, genesisCoinbaseData);
 			Block genesis = newGenesisBlock(coinTx);
 			String genesisHash = genesis.getHashCode();
-			db.put(genesisHash, Utilities.toByteArray(genesis));
+			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
+			//db.put(genesisHash, Utilities.toByteArray(genesis));
+			db.put(genesisHash, genesis);
 			db.put("0", genesisHash);
+			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
 			tip = genesisHash;
 		}else {
 			tip = (String)db.get("0");

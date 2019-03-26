@@ -15,7 +15,7 @@ public class MyBerkeleyDB {
 	private String charset;
 	
 	public MyBerkeleyDB(String path) {
-		setEnvironment(path);	
+		setEnvironment(path);
 		charset = "UTF-8";
 	}
 	private void setPath(String p) {
@@ -58,7 +58,7 @@ public class MyBerkeleyDB {
 		try {
 			DatabaseEntry k = new DatabaseEntry(Utilities.toByteArray(key)); 
 			DatabaseEntry v = new DatabaseEntry(Utilities.toByteArray(value));
-			database.put(null, k, v); 
+			database.put(null, k, v);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

@@ -2,6 +2,7 @@ package obj;
 
 import java.util.Date;
 import java.util.Stack;
+import java.util.Vector;
 
 import Utilities.Utilities;
 import config.Global;
@@ -98,7 +99,8 @@ public class Transaction {
 		return false;
 	}
 	public static Transaction GetTransactionById(String id) {
-		
+		//这里需要遍历以前的transaction 找到transaction id
+		//transaction list 在哪里
 		return null;
 	}
 	

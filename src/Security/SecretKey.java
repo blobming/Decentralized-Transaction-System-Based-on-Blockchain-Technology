@@ -175,7 +175,7 @@ public class SecretKey {
         return plainText;  
     }  
  
- 
+    // only for testing
     public static void main(String[] args) {
         Map<String, Object> keyMap;
         byte[] cipherText;
