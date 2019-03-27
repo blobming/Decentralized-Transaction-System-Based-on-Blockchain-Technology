@@ -86,4 +86,13 @@ public class UTXOSet {
 			db.put(tx.getTxid(), vouts);
 		}
 	}
+	public static HashSet<Vout> FindVoutByTransactionId(String txId){
+		
+		Object voutList = db.get(txId);
+		if(voutList instanceof HashSet<?>) {
+			return (HashSet<Vout>) db.get(txId);
+		}
+		return null;
+		
+	}
 }

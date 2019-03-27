@@ -1,9 +1,8 @@
 package obj;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Stack;
-import java.util.Vector;
-
 import Utilities.Utilities;
 import config.Global;
 
@@ -76,9 +75,17 @@ public class Transaction {
 		int count = 0;
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
-			Transaction transaction = Transaction.GetTransactionById(vin.getTxid()); 
+			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid()); 
+			HashSet<Vout> voutList = UTXOSet.FindVoutByTransactionId(tx.getTxid());
 			//得到相应的vout
-			Vout vout = transaction.getVout()[vin.getVoutNum()]; 
+			Vout vout = null;
+			for(Vout tempVout : voutList) {
+				if(tempVout.getSeqNum() == vin.getVoutNum()) {
+					vout = tempVout;
+					break;
+				}
+			}
+			//Vout vout = transaction.getVout()[vin.getVoutNum()]; 
 			Stack<String> stack = new Stack<String>();
 			
 			stack.push(vin.getSignature());
@@ -97,11 +104,6 @@ public class Transaction {
 		}
 		if(count == tx.vin.length) return true;
 		return false;
-	}
-	public static Transaction GetTransactionById(String id) {
-		//这里需要遍历以前的transaction 找到transaction id
-		//transaction list 在哪里
-		return null;
 	}
 	
 	public static Transaction newCoinbaseTx(String Toaddress,String pubkey){
