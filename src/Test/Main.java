@@ -1,10 +1,6 @@
 package Test;
 
-public class main {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
+public class Main {
 		/*
 		 * 
 		 * 一个全节点的功能														测试情况
@@ -68,12 +64,28 @@ public class main {
 		
 		
 		/*
-		 * block 以及 transaction 的 toString 方法具体该怎么写
-		 * 
-		 * 
+		 * requirements
+		 * -> 1. block 以及 transaction 的 toString 方法具体该怎么写 reason:  涉及到block的hash值计算问题
+		 * -> 2. UTXO需要维护一个能更新的未被花出去的交易的set -> 便于找到未被花出去的交易做验证 (Transaction 的 GetTransactionById 需要)
+		 * -> 3. 在完成2后完善 Transaction的GetTransactionByIde 的需求
+		 * -> 4. 组件代码测试所有函数正确性
+		 * -> 5. 写一个手动区块链节点测试整体区块链运行状态
+		 * -> 6. 完善RPC功能 开始写RPC手机客户端及桌面级程序
+		 * -> 7. 讲服务功能封装成jar包 写commander
 		 * 
 		 * 
 		 */
+		
+		
+		/*
+		 * ongoing : 
+		 * 		-> 设计block和transaction的toString方法
+		 * 		-> 测试区块链函数正确性
+		 */
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 	}
 
 }
