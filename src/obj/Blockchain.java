@@ -10,19 +10,25 @@ import com.sleepycat.je.OperationStatus;
 
 import Utilities.Utilities;
 import berkeleyDb.MyBerkeleyDB;
+import config.Global;
 /*
  * 迭代器已通过测试
  */
 public class Blockchain implements Iterable<Block>{
 	public String tip;	//tip means the last block of block chain
 	private final String genesisCoinbaseData = "This is coinbase data";
-	private MyBerkeleyDB db;
-	public Blockchain(MyBerkeleyDB blockDB) {
-		db = blockDB;
-		db.open("Block");  //存储block的数据库
+	private int height;
+	public Blockchain() {
+		//从configdb里取出链高度
+		height = (int) Global.blockDB.get("Height");
 	}
 	
+	public int getHeight() {
+		return height;
+	}
+
 	private Block newGenesisBlock(Transaction tx) {
+		
 		//FIXME 
 		Block genesis = new Block("genesis",123456);
 		genesis.setPreHashCode("genesis");
@@ -30,28 +36,28 @@ public class Blockchain implements Iterable<Block>{
 		//  https://blog.csdn.net/tostick/article/details/80140145
 	}
 	public void addBlock(Block newB) {
+		//链高度++
 		if(tip == null)	return;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
-		// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
-		//db.put(tip, Utilities.toByteArray(newB));
-		db.put(tip, newB);
-		// modified by Jiaming end reason: db.put methond has been changed to Object,Object
+		Global.blockDB.put(tip, Utilities.toByteArray(newB));
+		height++;
+		Global.blockDB.put("Height", height);
 	}
 	public void newBlockchain(String address) {	 
-		String b = (String) db.get("0");	//check if genesis block(0) exist
+		String b = (String) Global.blockDB.get("0");	//check if genesis block(0) exist
 		if(b == null) {
 			Transaction coinTx = Transaction.newCoinbaseTx(address, genesisCoinbaseData);
 			Block genesis = newGenesisBlock(coinTx);
 			String genesisHash = genesis.getHashCode();
 			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
 			//db.put(genesisHash, Utilities.toByteArray(genesis));
-			db.put(genesisHash, genesis);
-			db.put("0", genesisHash);
+			Global.blockDB.put(genesisHash, genesis);
+			Global.blockDB.put("0", genesisHash);
 			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
 			tip = genesisHash;
 		}else {
-			tip = (String)db.get("0");
+			tip = (String)Global.blockDB.get("0");
 		}	
 	}
 	/*
@@ -122,19 +128,25 @@ public class Blockchain implements Iterable<Block>{
 		String point = tip;
 		@Override
 		public boolean hasNext() {	
-			if(db.get(point)== null)
+			if(Global.blockDB.get(point)== null)
 				return false;
 			else return true;
 		}
 
 		@Override
 		public Block next() {
-			Block ret = (Block)db.get(point);
+			Block ret = (Block)Global.blockDB.get(point);
 			point = ret.getPreHashCode();
 			return ret;
 		}
 	}
 	
+	public static void writeBlock(ArrayList<Block> blockList) {
+		for(Block block: blockList) {
+			Global.blockDB.put(block.getHashCode(), Utilities.toByteArray(block));
+		}
+	}
+
 	//for test
 	public static void main(String[] args) {
 //		Blockchain chain = new Blockchain();
