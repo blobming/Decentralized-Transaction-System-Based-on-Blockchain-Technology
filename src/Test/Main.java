@@ -21,7 +21,6 @@ import Network.RpcThread;
 import Security.KeyValuePairs;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
-import berkeleyDb.MyBerkeleyDB;
 import config.Global;
 import obj.Blockchain;
 
@@ -105,7 +104,7 @@ public class Main {
 	private static int HEIGHT;
 	private static int bestHeight;
 	
-	public static void main(String[] args) throws NumberFormatException, IOException {
+	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
