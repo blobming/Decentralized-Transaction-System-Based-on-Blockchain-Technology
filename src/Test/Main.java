@@ -117,8 +117,8 @@ public class Main {
 		System.out.println("User's public key is :" + keyValuePairs.getPublicKey());
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		
-		
 		Blockchain blockChain = new Blockchain();
+		blockChain.newBlockchain();
 		
 		//取出链高度
 		HEIGHT = blockChain.getHeight();

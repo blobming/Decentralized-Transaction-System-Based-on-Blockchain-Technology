@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.sleepycat.je.OperationStatus;
 
+import Security.KeyValuePairs;
 import Utilities.Utilities;
 import berkeleyDb.MyBerkeleyDB;
 import config.Global;
@@ -20,20 +21,22 @@ public class Blockchain implements Iterable<Block>{
 	private int height;
 	public Blockchain() {
 		//从configdb里取出链高度
-		height = (int) Global.blockDB.get("Height");
+		height = Global.blockDB.get("Height") == null ? 0 : (int)Global.blockDB.get("Height");
 	}
 	
 	public int getHeight() {
 		return height;
 	}
 
-	private Block newGenesisBlock(Transaction tx) {
-		
-		//FIXME 
-		Block genesis = new Block("genesis",123456);
+	private Block newGenesisBlock() {
+		KeyValuePairs kv = new KeyValuePairs();
+		Transaction coinbase = Transaction.newCoinbaseTx(kv.getPublicKey());
+		ArrayList<Transaction> txs = new ArrayList<>();
+		txs.add(coinbase);
+		BlockBody blockBody = new BlockBody(txs);;
+		Block genesis = new Block(blockBody, 123456);
 		genesis.setPreHashCode("genesis");
 		return genesis;
-		//  https://blog.csdn.net/tostick/article/details/80140145
 	}
 	public void addBlock(Block newB) {
 		//链高度++
@@ -44,17 +47,13 @@ public class Blockchain implements Iterable<Block>{
 		height++;
 		Global.blockDB.put("Height", height);
 	}
-	public void newBlockchain(String address) {	 
+	public void newBlockchain() {	 
 		String b = (String) Global.blockDB.get("0");	//check if genesis block(0) exist
 		if(b == null) {
-			Transaction coinTx = Transaction.newCoinbaseTx(address, genesisCoinbaseData);
-			Block genesis = newGenesisBlock(coinTx);
+			Block genesis = newGenesisBlock();
 			String genesisHash = genesis.getHashCode();
-			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
-			//db.put(genesisHash, Utilities.toByteArray(genesis));
 			Global.blockDB.put(genesisHash, genesis);
 			Global.blockDB.put("0", genesisHash);
-			// modified by Jiaming begin reason: db.put methond has been changed to Object,Object
 			tip = genesisHash;
 		}else {
 			tip = (String)Global.blockDB.get("0");
