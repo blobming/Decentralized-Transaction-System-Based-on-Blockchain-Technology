@@ -194,7 +194,7 @@ public class Main {
 			}
 		}
 		System.out.println("broadcast ip address");
-		peerNetwork.broadcast("ADDR " + peers.get(0));
+		peerNetwork.broadcast("ADDR " + host+":"+port);
 		
 		System.out.println("begin send broadcast");
 		//建立socket连接后，给大家广播握手
