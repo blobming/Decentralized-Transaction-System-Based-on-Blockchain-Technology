@@ -118,9 +118,9 @@ public class Main {
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		
 		Blockchain blockChain = new Blockchain();
-		System.out.print("aaa");
-		blockChain.newBlockchain();
-		System.out.print("123456");
+		//System.out.print("aaa");
+		//blockChain.newBlockchain();
+		//System.out.print("123456");
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
 		System.out.print(HEIGHT);
@@ -198,7 +198,7 @@ public class Main {
 		
 		System.out.println("begin send broadcast");
 		//建立socket连接后，给大家广播握手
-		peerNetwork.broadcast("HEIGHT "+ HEIGHT);
+		peerNetwork.broadcast("VERSION "+ HEIGHT);
 		
 		while (true) {
 			
