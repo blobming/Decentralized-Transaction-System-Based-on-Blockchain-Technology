@@ -1,6 +1,7 @@
 package Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import Security.KeyValuePairs;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
 import berkeleyDb.MyBerkeleyDB;
+import config.Global;
 import obj.Blockchain;
 
 public class Main {
@@ -103,15 +105,13 @@ public class Main {
 	private static int HEIGHT;
 	private static int bestHeight;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NumberFormatException, IOException {
 		// TODO Auto-generated method stub
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
-		MyBerkeleyDB utxoDb = new MyBerkeleyDB("./UTXO");
-		MyBerkeleyDB blockDb = new MyBerkeleyDB("./Block");
-		blockDb.open("Block");
-		blockDb.open("Config");  //Height of the current Block Chain
-		utxoDb.open("UTXO");
+		Global.blockDB.open("Block");
+		Global.blockDB.open("Config");  //Height of the current Block Chain
+		Global.utxoDB.open("UTXO");
 		//FIXME base58
 		System.out.println("initiating user's keyPairs");
 		KeyValuePairs keyValuePairs = new KeyValuePairs();
@@ -119,7 +119,7 @@ public class Main {
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		
 		
-		Blockchain blockChain = new Blockchain(blockDb);
+		Blockchain blockChain = new Blockchain();
 		
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
@@ -375,9 +375,6 @@ public class Main {
 			// ****************
 			TimeUnit.MILLISECONDS.sleep(100);
 		}
-		
-		utxoDb.close();
-		blockDb.close();
 		
 	}
 
