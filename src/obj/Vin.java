@@ -1,8 +1,14 @@
 package obj;
 
+import java.io.Serializable;
+
 import Utilities.Utilities;
 
-public class Vin {
+public class Vin  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4259754698211250314L;
 	private String txid; //txid represents the hash of one specific transaction
 	private int voutNum; // get the index of vout of txid
 	private String signature; // use payer's private key to sign the whole transaction

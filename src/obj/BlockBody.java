@@ -1,12 +1,17 @@
 package obj;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import config.Global;
 
-public class BlockBody{
+public class BlockBody  implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9157268033609669878L;
 	private TreeNode[] nodes;
 	private TreeNode root;
 	public ArrayList<Transaction> transactions;

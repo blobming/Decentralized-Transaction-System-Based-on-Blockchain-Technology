@@ -1,12 +1,17 @@
 package obj;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Stack;
 import Utilities.Utilities;
 import config.Global;
 
-public class Transaction {
+public class Transaction implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3942888348848503303L;
 	private String txid;
 	private String hash;
 	private Vin[] vin;

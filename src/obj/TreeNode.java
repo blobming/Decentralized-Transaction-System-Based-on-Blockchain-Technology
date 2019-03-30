@@ -1,8 +1,14 @@
 package obj;
 
+import java.io.Serializable;
+
 import Utilities.Utilities;
 
-public class TreeNode {
+public class TreeNode implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -960926854704582471L;
 	private String tx1Hash;
 	private String tx2Hash;
 	private Transaction tx;
