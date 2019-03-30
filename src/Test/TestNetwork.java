@@ -23,8 +23,8 @@ import Utilities.Utilities;
 public class TestNetwork {
 	
 	private static final int port = 8015;
-	private static final String VERSION = "0.1";
-
+	private static int difficulty ;
+	
 	public static void main(String[] args) throws IOException, InterruptedException {
 		System.out.println("Starting peer network");
 		PeerNetwork peerNetwork = new PeerNetwork(port);

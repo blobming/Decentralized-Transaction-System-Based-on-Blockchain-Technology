@@ -1,5 +1,6 @@
 bin/
 .settings/
 .DS_Store
-Data/
+UTXO/
+Block/
 *.list
