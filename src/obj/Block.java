@@ -52,13 +52,14 @@ public class Block implements Serializable {
 		return blockBody;
 	}
 	
-	public Block(String merkleRootHash, int nonce) {
+	public Block(BlockBody blockBody, int nonce) {
 		//this.preHashCode = preHashCode;
-		this.merkleRootHash = merkleRootHash;
+		this.merkleRootHash = blockBody.getRoot().getHash();
 		this.timeStamp = new Date();
 		this.nBits = Global.nbits;
 		this.nonce = nonce;
 		this.hashCode = this.calculateHash();
+		this.blockBody = blockBody;
 	}
 	
 	// use preHashCode, merkleRootHash, timeStamp, 
