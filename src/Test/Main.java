@@ -118,11 +118,12 @@ public class Main {
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		
 		Blockchain blockChain = new Blockchain();
+		System.out.print("aaa");
 		blockChain.newBlockchain();
-		
+		System.out.print("123456");
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
-		
+		System.out.print(HEIGHT);
 		//开启网络
 		System.out.println("Starting peer network");
 		PeerNetwork peerNetwork = new PeerNetwork(port);

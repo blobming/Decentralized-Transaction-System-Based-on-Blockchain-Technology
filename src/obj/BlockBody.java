@@ -42,7 +42,7 @@ public class BlockBody{
 		this.transactions = txs;
 		TreeNode[] nodes = new TreeNode[txs.size()];
 		Queue<TreeNode> queue = new LinkedList<>();
-		for(int i=0;i<txs.size();i=i++) {
+		for(int i=0;i<txs.size();i++) {
 			TreeNode n = new TreeNode(txs.get(i));
 			nodes[i] = n;
 			queue.add(n);

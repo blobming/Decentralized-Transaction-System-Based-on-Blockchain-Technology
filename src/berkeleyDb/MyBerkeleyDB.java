@@ -56,6 +56,8 @@ public class MyBerkeleyDB {
 	}
 	public void put(Object key, Object value) {
 		try {
+			if(Utilities.toByteArray(key) == null)	System.out.println("null key");
+			if(Utilities.toByteArray(value) == null)	System.out.println("null value");
 			DatabaseEntry k = new DatabaseEntry(Utilities.toByteArray(key)); 
 			DatabaseEntry v = new DatabaseEntry(Utilities.toByteArray(value));
 			database.put(null, k, v);

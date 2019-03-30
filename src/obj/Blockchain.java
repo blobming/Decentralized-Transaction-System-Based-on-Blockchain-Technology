@@ -50,6 +50,7 @@ public class Blockchain implements Iterable<Block>{
 		if(b == null) {
 			Block genesis = newGenesisBlock();
 			String genesisHash = genesis.getHashCode();
+			System.out.println(genesis+"\t"+genesisHash);
 			Global.blockDB.put(genesisHash, genesis);
 			Global.blockDB.put("0", genesisHash);
 			tip = genesisHash;
