@@ -57,6 +57,8 @@ public class Blockchain implements Iterable<Block>{
 		}else {
 			tip = (String)Global.blockDB.get("0");
 		}	
+		height++;
+		Global.blockDB.put("Height", height);
 	}
 	/*
 	 * for every block:

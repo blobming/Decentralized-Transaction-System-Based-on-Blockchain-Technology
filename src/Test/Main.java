@@ -119,7 +119,7 @@ public class Main {
 		
 		Blockchain blockChain = new Blockchain();
 		//System.out.print("aaa");
-		//blockChain.newBlockchain();
+		blockChain.newBlockchain();
 		//System.out.print("123456");
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
@@ -261,6 +261,7 @@ public class Main {
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
 							System.out.println("Block:"+payload);
+						//
 							peerNetwork.broadcast("BLOCK "+payload);
 							/*
 							Block newBlock = gson.fromJson(payload, Block.class);
@@ -280,7 +281,8 @@ public class Main {
 							pt.peerWriter.write("BLOCK " + "aBlock");
 							//把对方请求的块给对方
 							/*
-							Block block = blockChain.get(Integer.parseInt(payload));
+							Block block = blockChain.get(Integer.parseInt(payload));wlan0
+							
 							if (block != null) {
 								LOGGER.info("Sending block " + payload + " to peer");
 								pt.peerWriter.write("BLOCK " + gson.toJson(block));

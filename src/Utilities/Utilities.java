@@ -57,7 +57,7 @@ public class Utilities {
             oos.close();         
             bos.close();        
         } catch (IOException ex) {        
-            //ex.printStackTrace();   
+            ex.printStackTrace();   
         }      
         return bytes;    
     }   
