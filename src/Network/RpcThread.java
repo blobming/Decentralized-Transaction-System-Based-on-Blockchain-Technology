@@ -35,10 +35,10 @@ public class RpcThread extends Thread {
             out.println("[   Welcome RPC Daemon    ]");
             while((input = in.readLine()) != null){
                 if ("HELP".equalsIgnoreCase(input)){
-                	out.println("############################################## COMMANDS ###############################################");
-                    out.println("#     1) getinfo       - Gets block chain infomations.                                                #");
-                    out.println("#     2) send <vac>    - Write <vac> to blockChain                                                    #");
-                    out.println("#######################################################################################################");
+                	out.println("############################################## COMMANDS ###############################################\n"
+                    + "#     1) getinfo       - Gets block chain infomations.                                                #\n"
+                    + "#     2) send <vac>    - Write <vac> to blockChain                                                    #\n"
+                    + "#######################################################################################################");
                 } else {
                     request = input;
                     while (response == null){
