@@ -9,8 +9,6 @@ import berkeleyDb.MyBerkeleyDB;
 import config.Global;
 
 public class UTXOSet {
-	//UTXODB  
-	//db.open("UTXO"); 
 	private static Blockchain blockchain;
 	//public FindSpendableOutputs(String address, int amount)
 	public static ArrayList<Vout> FindUTXO(String address) {

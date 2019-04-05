@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map.Entry;
 
 import Utilities.Utilities;
+import config.Global;
 
 
 /*
@@ -19,24 +20,13 @@ class H implements Serializable{
 public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MyBerkeleyDB blockDB = new MyBerkeleyDB("./Block");
-		MyBerkeleyDB utxoDB = new MyBerkeleyDB("./UTXO");
-		H h = new H();
-		h.name = "hname";
-		blockDB.open("Block");
-		blockDB.put("2345", "zx");
-		blockDB.put("1234", "zb");
-		blockDB.put("1255", "bgg");
-		
+		Global.blockDB.open("Block");
+		Global.blockDB.open("Config");  //Height of the current Block Chain
+		Global.utxoDB.open("UTXO");
+		String s = (String)Global.blockDB.get("0");
+		System.out.println(s);
 	
-		System.out.println(blockDB.get("2345"));
 		
-		for(Entry<String, Object> entry:blockDB.getAllKey().entrySet()) {
-			System.out.println((String)entry.getKey() + " " + (String)entry.getValue());
-		//	System.out.println(blockDB.get(a));
-		}
-	
-		blockDB.close();
 		
 	}
 

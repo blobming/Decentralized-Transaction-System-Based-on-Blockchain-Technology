@@ -9,13 +9,13 @@ public class Vin  implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 4259754698211250314L;
-	private String txid; //txid represents the hash of one specific transaction
-	private int voutNum; // get the index of vout of txid
+	private String txid; //txid represents the hash of the source(TX) of money
+	private int voutNum; // get the index of vout of the source transaction
 	private String signature; // use payer's private key to sign the whole transaction
 	private String publickey; // payer's publickey
 	
-	public Vin(int voutNum, String publickey) {
-		//this.txid = txid;
+	public Vin(String sourceTxid, int voutNum, String publickey) {
+		this.txid = sourceTxid;
 		this.voutNum = voutNum;
 		this.publickey = publickey;
 	}

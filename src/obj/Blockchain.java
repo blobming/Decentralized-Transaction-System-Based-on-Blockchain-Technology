@@ -47,14 +47,19 @@ public class Blockchain implements Iterable<Block>{
 	public void newBlockchain() {	 
 		String b = (String) Global.blockDB.get("0");	//check if genesis block(0) exist
 		if(b == null) {
+			System.out.println("add into db");
 			Block genesis = newGenesisBlock();
 			String genesisHash = genesis.getHashCode();
 			System.out.println(genesis+"\t"+genesisHash);
 			Global.blockDB.put(genesisHash, genesis);
+			System.out.println("hash:" + genesisHash);
 			Global.blockDB.put("0", genesisHash);
 			tip = genesisHash;
 		}else {
+			System.out.println("yes!");
 			tip = (String)Global.blockDB.get("0");
+			Block first = (Block)Global.blockDB.get(tip);
+			System.out.println("txid:"+ first.getBlockBody().transactions.get(0).getTxid());
 		}	
 		height++;
 		Global.blockDB.put("Height", height);

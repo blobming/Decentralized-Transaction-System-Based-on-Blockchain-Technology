@@ -115,7 +115,7 @@ public class Transaction implements Serializable {
 	}
 	
 	public static Transaction newCoinbaseTx(String Toaddress){
-		Vin vin = new Vin("", -1, null);
+		Vin vin = new Vin("",-1, null);
 		//to address取成哈希
 		Vout vout = new Vout(Global.subsidy, 0, Toaddress);
 		Vin vins[] = new Vin[1];
