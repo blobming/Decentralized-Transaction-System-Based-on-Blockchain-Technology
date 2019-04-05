@@ -14,8 +14,8 @@ public class Vin  implements Serializable {
 	private String signature; // use payer's private key to sign the whole transaction
 	private String publickey; // payer's publickey
 	
-	public Vin(String txid, int voutNum, String publickey) {
-		this.txid = txid;
+	public Vin(int voutNum, String publickey) {
+		//this.txid = txid;
 		this.voutNum = voutNum;
 		this.publickey = publickey;
 	}
@@ -54,7 +54,7 @@ public class Vin  implements Serializable {
 
 	@Override
 	public String toString() {
-		return txid+voutNum+publickey;
+		return voutNum+publickey;
 	}
 	
 	// UsesKey checks whether the address initiated the transaction
