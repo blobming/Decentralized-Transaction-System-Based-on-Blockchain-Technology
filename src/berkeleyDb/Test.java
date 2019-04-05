@@ -14,9 +14,7 @@ import config.Global;
  * 存储utxo的数据库名为UTXO
  * 
  */
-class H implements Serializable{
-	String name;
-}
+
 public class Test {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

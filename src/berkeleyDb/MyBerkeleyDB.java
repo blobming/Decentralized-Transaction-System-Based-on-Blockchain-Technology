@@ -32,6 +32,7 @@ public class MyBerkeleyDB {
 	private void setEnvironment(String p){
 		setPath(p); 
 		EnvironmentConfig envConfig = new EnvironmentConfig(); 
+		envConfig.setTransactional(true);
 		envConfig.setAllowCreate(true); 
 		//envConfig.setCacheSize(this.chacheSize); 
 		//创建环境
@@ -46,6 +47,7 @@ public class MyBerkeleyDB {
 	public void open(String dbName) { 
 		DatabaseConfig dbConfig = new DatabaseConfig(); 
 		dbConfig.setAllowCreate(true); 
+		dbConfig.setTransactional(true);
 		dbConfig.setSortedDuplicates(false); //不存储重复关键字
 		database = environment.openDatabase(null, dbName, dbConfig); 
 	}

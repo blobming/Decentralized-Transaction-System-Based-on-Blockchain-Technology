@@ -53,7 +53,7 @@ public class Blockchain implements Iterable<Block>{
 			System.out.println(genesis+"\t"+genesisHash);
 			Global.blockDB.put(genesisHash, genesis);
 			System.out.println("hash:" + genesisHash);
-			Global.blockDB.put("0", genesisHash);
+			Global.blockDB.put("0", genesisHash); 
 			tip = genesisHash;
 		}else {
 			System.out.println("yes!");
