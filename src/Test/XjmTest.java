@@ -47,8 +47,7 @@ public class XjmTest {
 				String temp1 = stack.pop();
 				System.out.println(temp);
 				System.out.println(temp1);
-				System.out.println(new KeyValuePairs().Verify(tx2.toString(), temp1, temp));
-				//if(temp.equals(stack.pop())) count++ ;
+				if(KeyValuePairs.Verify(tx2.toString(), temp1, temp)) count++;
 			}
 		}
 		if(count == tx2.getVin().length) return true;
@@ -57,11 +56,6 @@ public class XjmTest {
 		
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//HashMap<String,String> tempMap = (HashMap<String, String>) Utilities.Utilities.getInternetIp();
-		//for(String key:tempMap.keySet()) {
-		//	System.out.println("key: "+key+"   "+"ip"+tempMap.get(key));
-		//}
-		//System.out.println(tempMap.get("a"));
 		
 		KeyValuePairs keyValuePairsA = new KeyValuePairs();
 		KeyValuePairs keyValuePairsB = new KeyValuePairs();
@@ -78,14 +72,11 @@ public class XjmTest {
 		Transaction aToBTransaction = new Transaction(vinList,voutList);
 		vin.setTxid(aToBTransaction.getTxid());
 		System.out.println(keyValuePairsA.getPublicKey());
-		System.out.println(keyValuePairsA.Sign(aToBTransaction.toString()));
+		System.out.println(KeyValuePairs.Sign(aToBTransaction.toString(),keyValuePairsA.getPrivateKey()));
 		
-		vin.setSignature(keyValuePairsA.Sign(aToBTransaction.toString()));
+		vin.setSignature(KeyValuePairs.Sign(aToBTransaction.toString(),keyValuePairsA.getPrivateKey()));
 		
-		//System.out.print(keyValuePairsA.Verify(aToBTransaction, keyValuePairsA.Sign(aToBTransaction.toString()), keyValuePairsA.getPublicKey()));
-		
-		
-		//System.out.println(validateTransaction(transaction,aToBTransaction));
+		System.out.println(validateTransaction(transaction,aToBTransaction));
 		
 	}
 

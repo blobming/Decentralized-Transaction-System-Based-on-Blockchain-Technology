@@ -35,9 +35,11 @@ public class KeyValuePairs {
 	public void setPrivateKey(String privateKey) {
 		this.privateKey = privateKey;
 	}
-	public String Encrypt(String inputString,String publicKey) {
+
+	
+	public static String Encrypt(String text,String publicKey) {
 		try {
-			byte[] cipherText = SecretKey.encrypt(inputString.getBytes(), publicKey);
+			byte[] cipherText = SecretKey.encrypt(text.getBytes(), publicKey);
 			return Base64.getEncoder().encodeToString(cipherText);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -45,9 +47,9 @@ public class KeyValuePairs {
 		}
 		return null;
 	}
-	public String Decrypt(String inputString) {
+	public static String Decrypt(String cipherText, String privateKey) {
 		try {
-			byte[] plainText = SecretKey.decrypt(Base64.getDecoder().decode(inputString),privateKey);
+			byte[] plainText = SecretKey.decrypt(Base64.getDecoder().decode(cipherText),privateKey);
 			return new String(plainText);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -55,18 +57,20 @@ public class KeyValuePairs {
 		}
 		return null;
 	}
-	public String Sign(String inputString) {
+	
+	
+	public static String Sign(String text, String privateKey) {
 		try {
-			byte[] signature=SecretKey.sign(inputString.getBytes(),privateKey);
+			byte[] signature=SecretKey.sign(text.getBytes(),privateKey);
 			return Base64.getEncoder().encodeToString(signature);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public Boolean Verify(String inputString1,String inputString2,String publicKey) {
+	public static Boolean Verify(String plainText,String signedText,String publicKey) {
 		try {
-			return SecretKey.verify(inputString1.getBytes(), Base64.getDecoder().decode(inputString2),publicKey);
+			return SecretKey.verify(plainText.getBytes(), Base64.getDecoder().decode(signedText),publicKey);
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
