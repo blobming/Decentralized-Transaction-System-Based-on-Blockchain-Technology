@@ -61,8 +61,8 @@ public class Transaction implements Serializable {
 			toHash += out.toString();
 		}
 		toHash += getTimestamp().toString();
-		this.hash = toHash;
-		this.txid = toHash;
+		this.hash = Utilities.hashKeyForDisk(toHash);
+		this.txid = Utilities.hashKeyForDisk(toHash);
 		this.isCoinBase = false;
 	} 
 	
@@ -89,6 +89,9 @@ public class Transaction implements Serializable {
 					vout = tempVout;
 					break;
 				}
+			}
+			if(vout == null) {
+				return false;
 			}
 			//Vout vout = transaction.getVout()[vin.getVoutNum()]; 
 			Stack<String> stack = new Stack<String>();
