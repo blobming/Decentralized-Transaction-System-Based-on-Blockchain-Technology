@@ -30,14 +30,13 @@ public class Blockchain implements Iterable<Block>{
 
 	private Block newGenesisBlock() {
 		KeyValuePairs kv = new KeyValuePairs();
-		Transaction coinbase = Transaction.newCoinbaseTx(kv.getPublicKey());
+		Transaction coinbase = Transaction.genesisCoinbaseTx(kv.getPublicKey());
 		BlockBody blockBody = new BlockBody(coinbase);
 		Block genesis = new Block(blockBody, 123456);
 		genesis.setPreHashCode("genesis");
 		return genesis;
 	}
 	public void addBlock(Block newB) {
-		//链高度++
 		if(tip == null)	return;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
