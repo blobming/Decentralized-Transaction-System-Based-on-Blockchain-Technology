@@ -123,5 +123,17 @@ public class Transaction implements Serializable {
 		t.isCoinBase = true;
 		return t;
 	}
+	public static Transaction genesisCoinbaseTx(String Toaddress){
+		Vin vin = new Vin("", -1, null);
+		//to address取成哈希
+		Vout vout = new Vout(Global.genesisTransaction, 0, Toaddress);
+		Vin vins[] = new Vin[1];
+		vins[0] = vin;
+		Vout vouts[] = new Vout[1];
+		vouts[0] = vout;
+		Transaction t = new Transaction(vins, vouts);
+		t.isCoinBase = true;
+		return t;
+	}
 	
 }
