@@ -40,7 +40,7 @@ public class Blockchain implements Iterable<Block>{
 		if(tip == null)	return;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
-		Global.blockDB.put(tip, Utilities.toByteArray(newB));
+		Global.blockDB.put(tip, newB);
 		height++;
 		Global.blockDB.put("Height", height);
 	}
@@ -56,10 +56,9 @@ public class Blockchain implements Iterable<Block>{
 			Global.blockDB.put("0", genesisHash); 
 			tip = genesisHash;
 		}else {
-			System.out.println("yes!");
+			System.out.println("has sth in blochchain!");
 			tip = (String)Global.blockDB.get("0");
-			Block first = (Block)Global.blockDB.get(tip);
-			System.out.println("txid:"+ first.getBlockBody().transactions.get(0).getTxid());
+			System.out.println("first block:" + tip);
 		}	
 		height++;
 		Global.blockDB.put("Height", height);

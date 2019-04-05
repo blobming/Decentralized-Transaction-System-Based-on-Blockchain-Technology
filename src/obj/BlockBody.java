@@ -19,14 +19,14 @@ public class BlockBody  implements Serializable {
 	public BlockBody(ArrayList<Transaction> txs) {
 		this.transactions = txs;
 		if(txs.size() > Global.maxBlockTxNum || txs.size() < Global.minBlockTxNum)	throw new java.lang.IllegalArgumentException("invalid tx num");
-		TreeNode[] nodes = new TreeNode[txs.size()];
+		TreeNode[] nodes = new TreeNode[txs.size() * 2 -1];
 		Queue<TreeNode> queue = new LinkedList<>();
-		for(int i=0;i<txs.size();i=i++) {
+		int index = txs.size() * 2 - 2;
+		for(int i=0;i<txs.size();i++, index--) {
 			TreeNode n = new TreeNode(txs.get(i));
-			nodes[i] = n;
+			nodes[index] = n;
 			queue.add(n);
 		}
-		this.nodes = nodes;
 		while(queue.size() != 1) {
 			TreeNode n1 = queue.poll();
 			TreeNode n2 = queue.poll();
@@ -34,35 +34,21 @@ public class BlockBody  implements Serializable {
 			n1.setFather(father);
 			n2.setFather(father);
 			queue.add(father);
+			nodes[index--] = father;
 		}
 		this.root = queue.poll();
 		root.setFather(null);
+		nodes[0] = root;
+		this.nodes = nodes;
 	}
-	
 	
 	public BlockBody(Transaction coinbaseTX) {
 		ArrayList<Transaction> txs = new ArrayList<>();
 		txs.add(coinbaseTX);
-		
 		this.transactions = txs;
-		TreeNode[] nodes = new TreeNode[txs.size()];
-		Queue<TreeNode> queue = new LinkedList<>();
-		for(int i=0;i<txs.size();i++) {
-			TreeNode n = new TreeNode(txs.get(i));
-			nodes[i] = n;
-			queue.add(n);
-		}
-		this.nodes = nodes;
-		while(queue.size() != 1) {
-			TreeNode n1 = queue.poll();
-			TreeNode n2 = queue.poll();
-			TreeNode father = new TreeNode(n1,n2);
-			n1.setFather(father);
-			n2.setFather(father);
-			queue.add(father);
-		}
-		this.root = queue.poll();
-		root.setFather(null);
+		TreeNode[] nodes = new TreeNode[1];
+		nodes[0] = new TreeNode(coinbaseTX);
+		this.root = nodes[0];
 	}
 
 	public TreeNode[] getNodes() {
@@ -79,7 +65,5 @@ public class BlockBody  implements Serializable {
 
 	public void setRoot(TreeNode root) {
 		this.root = root;
-	}
-	
-	
+	}	
 }

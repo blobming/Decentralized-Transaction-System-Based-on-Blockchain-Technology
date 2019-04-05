@@ -44,7 +44,7 @@ public class Vout  implements Serializable {
 	
 	@Override
 	public String toString() {
-		return ""+value+seqNum+pubHash;
+		return "" + value + seqNum + pubHash;
 	}
 	
 	// IsLockedWithKey checks if the output can be used by the owner of the pubkey

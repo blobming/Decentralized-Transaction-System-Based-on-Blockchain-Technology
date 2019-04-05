@@ -22,7 +22,9 @@ import Security.KeyValuePairs;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
 import config.Global;
+import obj.Block;
 import obj.Blockchain;
+import obj.Transaction;
 
 public class Main {
 		/*
@@ -119,6 +121,16 @@ public class Main {
 		
 		Blockchain blockChain = new Blockchain();
 		blockChain.newBlockchain();
+		blockChain.addBlock(TestAddData.newBlock());
+// view two block
+//		for(Block block: blockChain) {
+//			System.out.println(block.getBlockBody().transactions.size());
+//			for(Transaction t : block.getBlockBody().transactions) {
+//				System.out.println(t.toString());
+//			}
+//			System.out.println("==========");
+//		}
+		
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
 		System.out.print(HEIGHT);

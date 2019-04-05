@@ -1,6 +1,7 @@
 package obj;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Stack;
@@ -138,5 +139,11 @@ public class Transaction implements Serializable {
 		t.isCoinBase = true;
 		return t;
 	}
+	@Override
+	public String toString() {
+		return "Transaction [txid=" + txid + ", hash=" + hash + ", vin=" + Arrays.toString(vin) + ", vout="
+				+ Arrays.toString(vout) + ", timestamp=" + timestamp + ", isCoinBase=" + isCoinBase + "]";
+	}
+	
 	
 }

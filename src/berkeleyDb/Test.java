@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 
 import Utilities.Utilities;
 import config.Global;
+import obj.Block;
 
 
 /*
@@ -21,8 +22,9 @@ public class Test {
 		Global.blockDB.open("Block");
 		Global.blockDB.open("Config");  //Height of the current Block Chain
 		Global.utxoDB.open("UTXO");
-		String s = (String)Global.blockDB.get("0");
-		System.out.println(s);
+		Block b = (Block)Global.blockDB.get("35423881ba906984319ac95bc471218ba8cb161b0717315118380e5efdd2aab9");
+		System.out.println(b.getHashCode());
+		
 	
 		
 		
