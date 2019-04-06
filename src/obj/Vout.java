@@ -47,9 +47,9 @@ public class Vout  implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "" + value + seqNum + pubHash;
+		return "Vout [value=" + value + ", seqNum=" + seqNum + ", pubHash=" + pubHash + "]";
 	}
-	
+
 	// IsLockedWithKey checks if the output can be used by the owner of the pubkey
 	public boolean IsLockedWithKey(String publicKeyHash) {
 		return this.pubHash.equals(publicKeyHash);

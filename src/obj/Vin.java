@@ -51,12 +51,12 @@ public class Vin  implements Serializable {
 	public void setPublickey(String publickey) {
 		this.publickey = publickey;
 	}
-
+	
 	@Override
 	public String toString() {
-		return voutNum+publickey;
+		return "Vin [txid=" + txid + ", voutNum=" + voutNum + ", publickey=" + publickey + "]";
 	}
-	
+
 	// UsesKey checks whether the address initiated the transaction
 	public boolean UsesKey(String publickeyHash) {
 		return Utilities.hashKeyForDisk(this.publickey).equals(publickeyHash);

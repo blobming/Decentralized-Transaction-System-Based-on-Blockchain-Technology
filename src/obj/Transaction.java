@@ -52,7 +52,7 @@ public class Transaction implements Serializable {
 	public void setCoinBase(boolean isCoinBase) {
 		this.isCoinBase = isCoinBase;
 	}
-	public Transaction(Vin[] vin, Vout[] vout) {
+	public Transaction(Vin[] vin, Vout[] vout, Boolean isCoinBase, String payerPrivateKey) {
 		this.vin = vin;
 		this.vout = vout;
 		setTimestamp(new Date());
@@ -66,7 +66,14 @@ public class Transaction implements Serializable {
 		toHash += getTimestamp().toString();
 		this.hash = Utilities.hashKeyForDisk(toHash);
 		this.txid = Utilities.hashKeyForDisk(toHash);
-		this.isCoinBase = false;
+		this.isCoinBase = isCoinBase;
+		if(!isCoinBase) {
+			String singature = KeyValuePairs.Sign(this.toString(), payerPrivateKey);
+			for(Vin in : vin) {
+				in.setSignature(singature);
+			}
+		}
+		
 	} 
 	
 	/* 执行过程
@@ -131,8 +138,8 @@ public class Transaction implements Serializable {
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];
 		vouts[0] = vout;
-		Transaction t = new Transaction(vins, vouts);
-		t.isCoinBase = true;
+		Transaction t = new Transaction(vins, vouts, true, null);
+		//t.isCoinBase = true;
 		return t;
 	}
 	public static Transaction genesisCoinbaseTx(String Toaddress){
@@ -143,8 +150,7 @@ public class Transaction implements Serializable {
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];
 		vouts[0] = vout;
-		Transaction t = new Transaction(vins, vouts);
-		t.isCoinBase = true;
+		Transaction t = new Transaction(vins, vouts, true, null);
 		return t;
 	}
 	@Override
