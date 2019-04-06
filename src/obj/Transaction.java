@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Stack;
+
+import Security.KeyValuePairs;
 import Utilities.Utilities;
 import config.Global;
 
@@ -94,6 +96,8 @@ public class Transaction implements Serializable {
 			if(vout == null) {
 				return false;
 			}
+			
+			//交易验证通过
 			//Vout vout = transaction.getVout()[vin.getVoutNum()]; 
 			Stack<String> stack = new Stack<String>();
 			
@@ -107,8 +111,12 @@ public class Transaction implements Serializable {
 			stack.push(vout.getPubHash());
 			temp = stack.pop();
 			if(temp.equals(stack.pop())) {
+				System.out.println("初步匹配相等");
 				temp = stack.pop();
-				if(temp.equals(stack.pop())) count++ ;
+				String temp1 = stack.pop();
+				System.out.println(temp);
+				System.out.println(temp1);
+				if(KeyValuePairs.Verify(tx.toString(), temp1, temp)) count++;
 			}
 		}
 		if(count == tx.vin.length) return true;
