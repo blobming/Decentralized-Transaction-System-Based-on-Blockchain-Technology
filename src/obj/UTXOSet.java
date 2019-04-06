@@ -19,6 +19,7 @@ public class UTXOSet {
 			HashSet<Vout> vouts = (HashSet<Vout>) entry.getValue();
 			for(Vout vout : vouts) {
 				if(vout.IsLockedWithKey(Utilities.hashKeyForDisk(address))) {
+					System.out.println("not lock");
 					utxo.add(vout);
 				}
 			}

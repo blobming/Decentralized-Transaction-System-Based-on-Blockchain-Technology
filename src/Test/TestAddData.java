@@ -3,6 +3,7 @@ package Test;
 import java.util.ArrayList;
 
 import Utilities.Utilities;
+import config.Global;
 import obj.Block;
 import obj.BlockBody;
 import obj.Transaction;
@@ -11,29 +12,32 @@ import obj.Vout;
 
 public class TestAddData {
 	public static Block newBlock() {
-		String genesisTX = "11626ab12711bc28d6f426ddb9f0d737250b67d68ca15e39621c98a7e3340084";
-		String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCr3uHYP8s/nNQY+8GeHedSyClJcTiDvpdZTGuLDy/NpjEUNK9rYyEcnzNWDUvvlRRVvnqm2Zwt7HWfkZmaYfQ1GocBbyPofW5tfVJBmtldychafqAta9Acr3ElCWnmUdv4WmWy9ByX6L6uhl1tJyN6FFa20UoIq1x1fRS6XWccuQIDAQAB";
-		String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCS2hqpbQYShmJloGR5PeZdU2xqdSq6Pl6CH4UVFnKZ1Tzmkrv4M23nOXLJktu6GkzIwfzRVMSoBjfk9tP99Stjc6/5CPR3JAD52R3PfZnGiDUcher0extbuzZGMwHIoeOUbMW4auhfpElgHDvqyyxbqJ7bpqzBHqaWhoO7t7jpdQIDAQAB";
-		String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAClG15J6QIEMdaxH+CJEKduGtoQokw3hUsd2nQ5XdjNog/tqEI/MnVAJYGRXQZz4slctIf8ZTwplhykcnH4vfv45DkyY37bbjjtuVXWUCB5OP6dmFxJ8/W69B5l4I4Nuq8TvfCZNf9jPwI3jXrq1jGiZnkxUHrQ5Eeh8SLnO/+wIDAQAB";
-		String payeePubKey3 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCQ2E2uH0DjLcEnxgK6TOAxG24ghP0RePxTFuUNZJgUpFFcBolk3iQ2a+I51XU948uuOuubH5m3HhsnPh2ldXSwYP5ECg6qMF6NWfB5G37NHyiYfKBgdDkA8GtRDlhmjWgxynHTWFTX2BlZpb7HgbO/LEhTz+euOERMbJWL+/JDhQIDAQAB";
+		String genesisTX = "1442cfe64c782b6077f8445b829be215a3bed269871f1fe3a7141ad81c0aa377";
+		String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCryH4NG0hMI0P0uDaapwqgPvsIcaRvMMNzz9q5olmD1MVlIf7wT7SDDZITHFxjh607sZ3XfSGseLtKfwz+vrH5T6q4LlcvYwC3roVxp8OINzNKLKmRtVCpp/1AKqffO8aQGJcRmXvNlEkFWdBf5+fnHOtkmvxKH9oUIkA/kVydnwIDAQAB";
+		String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
+		String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrgxtZwKjrPGA9Vt0S7H579/CtCjQ0s5QzbVQSvW4Pia0kG+uggSH9CMSjtDzG1eaNlzf7ZBj/usAJAYpwEHwHq8hMv4eIywapoPhHsxMTzPi9wPNNAzpdhOgeKRBA1I3L9YJPZrxqbOpTaLrNxhD2XFJ28vKszuMSoROBsKpvIQIDAQAB";
+		String payeePubKey3 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzDFj+IaxyMddAR70wdGEwAj/yFsFNKk1nD9I8ApYqPt+Eh+PQJSVSoffRjsyxONR/L5tJoqYl25wKh/4iTcAvNdkLnpYTsGs3bZXyuFxsrY120ipXngIaxa1MmbzBYriiXQgaWjtSS6hZe7Jg0Grn1+I0B5U4G5nyJZJ2+Tg8DwIDAQAB";
+		String userPrivateKey = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKvIfg0bSEwjQ/S4NpqnCqA++whxpG8ww3PP2rmiWYPUxWUh/vBPtIMNkhMcXGOHrTuxndd9Iax4u0p/DP6+sflPqrguVy9jALeuhXGnw4g3M0osqZG1UKmn/UAqp987xpAYlxGZe82USQVZ0F/n5+cc62Sa/Eof2hQiQD+RXJ2fAgMBAAECgYBJpZYtBlJTmhbrVwLKAO10UCwNrbMCnJRfFXC/f1QDSfgq6I1E99b7DJlgqhsN7MAfRIHYPeRu7f/V62xl1tmzxA4MpIBrguZ8PPxm92hCkq0Wvfk0kGxHRKoYL9vFA6re92KypDgjDC8/a3SFzABD3E1I8zVMMHUY6STzXTEtgQJBAPYbINT8rhQqtbWPkzRG793he39hvIn1/s0w3oFbESFjlhxy3PyjyDyM1j6KMEswHwwJgmH9hWRMxJLyxVpHyt8CQQCysHMEbTXhum+IEM+89UY9DzWGSznvPUJLQ833uv02raDwG8SpuFj7QLYcfIqqaV74m8nIGqCQIlKXdWFXDEVBAkEAvwFvCd7SfHRpcvBrnzcvE1XdM4/3dFun1jkHd/3l3bQc3ReIy8uRrOzhmshFkxVWA1GeD89jp+Ss7B/fa6IsoQJBAKdkqLrS3BEUJ/tdVF59n0kAAHJH8oPt7Ta41DBomWEpkoScXsVnjuQAoRlaikRN5cwblRHB7/xWSuzb5042joECQQDePjtSGsqIHr3lZZhDAOyDqg256UNvKKZ/Teh3stJ5RKMHnQDdX45UZheQrzetMuK5bHKC5ek4Y/cd7uCJ6AQ5";
+		String payeePrivate1 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIBC/k7FG9akHuomPNZmaUj70aBzaSnAb+8+d46/4NT55MY0ISXwwq+ZkbL4aobCEXGFCkccHdrwbD4gyXYSKNUn1DTBrd1sOJDyn8tpSwtSLYG8xRRXxML175jM9Aj24yb2P9j27pjlVUR2/YZR1b2YVfFK2fo4kEcl1gNfn7IzAgMBAAECgYA1D4H1REXH/g1sAHWanLNhpguKvTP8OcgUyVrcizSP5vFlrZso/vkLfBRyXaJ0LUTaGZeu40rWkC+3ZAjz9388V+rnFRoIWUibUu+zxwnIg6w9BjcnbBUjnNvrn6eJGM3npOe2k8nCLUQrsATbvTOwVZD005uba+bsvOB50/74QQJBAM//rkaK6tLHAtMpYI9AT78o8S99y/Gk353GnKzCX13rmY7mEjSl76leoGQOto5y+QP+yqi2UoqTi3i7geybVp8CQQCd3Iq2C8gKNqrLSLqOhsVrFq/z5VToYqq/RkoMONTgvO4kWqZlN5vMLpse8DYZM/UQNh40mrZ9ZNGykZELJN/tAkAqZ5TvGsku+ZWw2SGvcswPS9iH9xyKAjP4pZIxglsQ+cRPpsYVZ7MJk5odbAZ52iS8VMiaRrljORtZHNkrFKw/AkAwDA8gB4f0K91iEBnQBY8S4A3f0v472MQVgaRKAgYw/PASmpCon/tIcyr9iKk+lITTUVVyN2Cx27zDd/DIjomlAkEAkImNYS0Dx30Pfd6JysQAmiIgDbCo60ATtJC1rIlrcyVNMOHiGQGLaNgOEfFVUQvNPYLT9XCwaoPoTbGWejpxqQ==";
+		String payeePrivate2 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKuDG1nAqOs8YD1W3RLsfnv38K0KNDSzlDNtVBK9bg+JrSQb66CBIf0IxKO0PMbV5o2XN/tkGP+6wAkBinAQfAeryEy/h4jLBqmg+EezExPM+L3A800DOl2E6B4pEEDUjcv1gk9mvGps6lNous3GEPZcUnby8qzO4xKhE4Gwqm8hAgMBAAECgYBVzp4cZTsdlXNAvPiVwyP0ubL7n6NGyqFWqVfqmEM8GtE4w487Gd/7TCu1CzNs9w8Fv6YOa6HmL3RsDQ1Jy7WA/wM1+maVdpB5nbIcMMdceBmwvkHDv1ZHZLS58QwPImBXpI/xx12BPwfD8li+VALyI5Z0Z2A1JnNWO4h1yoXzkQJBAN0ri0EGHVueH5Du+sggkdgEodGJMFInkMDSrBVY4UhUyp1zRo6nra87ZWXd03645TrxRcxFv9gqLZr0HTAZYzsCQQDGhZshRtzbY8pxopkxQGtJkpF9JvMtW1P4/PCcZgPlrBNTcJTrkx/FI73OK9SbuFXJlbj1y1co0BgIaaZAU5lTAkB3MvWtSNdfvlvy5+m/HFaeHvj7jj29uVc5pRFbu/hG3HQK4csALXzdOVzPxvsqjAn3d3uPuXPI1AqaPcDRYI1rAkBZ6I6Obpp93d8EwgAhVyx/4Jp1lNtTcmZAgMWz/1vKe7kw8+7uFe6wiPRgWGdssvpfVqiy4QmzWTNZNAfwYCwzAkEAriMCj2zZfeG79rkdDk9HjWFpuBp9ybkhVuNwxdpx7uAQKXBJIlthokjwHo1IdSi1Aw6wCHAlGrVFmOe9gzws1Q==";
 		/////////////////////////////////////////////////////////////
 		//User---20--->payeePubKey1
 		//User---30--->payeePubKey2
 		//User's balance: 50
 		//payeePubKey1's balance: 20
 		//payeePubKey2's balance: 30
-		Vin vin = new Vin(genesisTX, 0, userPubKey);
+		Vin vin = new Vin(Global.genesisTX, 0, Global.keyValuePairs.getPublicKey());
 		Vout vout1 = new Vout(20, 0, Utilities.hashKeyForDisk(payeePubKey1));
-		Vout vout2 = new Vout(50, 1, Utilities.hashKeyForDisk(payeePubKey2));
+		Vout vout2 = new Vout(30, 1, Utilities.hashKeyForDisk(payeePubKey2));
 		//剩下的钱返还给payer
-		Vout vout3 = new Vout(30, 2, Utilities.hashKeyForDisk(userPubKey));
+		Vout vout3 = new Vout(50, 2, Utilities.hashKeyForDisk(Global.keyValuePairs.getPublicKey()));
 		Vin[] vins1 = new Vin[1];
 		vins1[0] = vin;
 		Vout[] vouts1 = new Vout[3];
 		vouts1[0] = vout1;
 		vouts1[1] = vout2;
 		vouts1[2] = vout3;
-		Transaction t1 = new Transaction(vins1, vouts1);
+		Transaction t1 = new Transaction(vins1, vouts1, false, Global.keyValuePairs.getPrivateKey());
 		///////////////////////////////////////////////////
 		//payeePubKey2--5-->payeePubKey1
 		//User's balance: 50
@@ -47,11 +51,11 @@ public class TestAddData {
 		Vout[] vouts2 = new Vout[2];
 		vouts2[0] = vout4;
 		vouts2[1] = vout5;
-		Transaction t2 = new Transaction(vins2, vouts2);
+		Transaction t2 = new Transaction(vins2, vouts2, false, payeePrivate2);
 		//////////////////////////////////////////////////////
 		//payeePubKey1--22-->payeePubKey3
 		//User's balance: 50
-		//payeePubKey1's balance: 23
+		//payeePubKey1's balance: 3
 		//payeePubKey2's balance: 25
 		//payeePubKey3's balance: 22
 		Vin vin3 = new Vin(t1.getTxid(), 0, payeePubKey1);
@@ -64,14 +68,12 @@ public class TestAddData {
 		Vout[] vouts3 = new Vout[2];
 		vouts3[0] = vout6;
 		vouts3[1] = vout7;
-		Transaction t3 = new Transaction(vins3, vouts3);
+		Transaction t3 = new Transaction(vins3, vouts3, false, payeePrivate1);
 		ArrayList<Transaction> txs = new ArrayList<>();
 		txs.add(t1);
-		txs.add(t2);
-		txs.add(t3);
-		System.out.println("c");
+	//	txs.add(t2);
+	//	txs.add(t3);
 		BlockBody body = new BlockBody(txs);
-		System.out.println("d");
 		Block block = new Block(body, 123);
 		System.out.println("newBlock:" + block.getHashCode());
 		return block;

@@ -21,6 +21,29 @@ public class Transaction implements Serializable {
 	private Vout[] vout;
 	private Date timestamp;
 	private boolean isCoinBase;
+	
+	public Transaction(Vin[] vin, Vout[] vout, Boolean isCoinBase, String payerPrivateKey) {
+		this.vin = vin;
+		this.vout = vout;
+		setTimestamp(new Date());
+		String toHash = "";
+		for(Vin in : vin) {
+			toHash += in.toString();
+		}
+		for(Vout out : vout) {
+			toHash += out.toString();
+		}
+		toHash += getTimestamp().toString();
+		this.hash = Utilities.hashKeyForDisk(toHash);
+		this.txid = Utilities.hashKeyForDisk(toHash);
+		this.isCoinBase = isCoinBase;
+		if(!isCoinBase) {
+			String singature = KeyValuePairs.Sign(this.toString(), payerPrivateKey);
+			for(Vin in : vin) {
+				in.setSignature(singature);
+			}
+		}
+	}
 	public String getTxid() {
 		return txid;
 	}
@@ -52,29 +75,6 @@ public class Transaction implements Serializable {
 	public void setCoinBase(boolean isCoinBase) {
 		this.isCoinBase = isCoinBase;
 	}
-	public Transaction(Vin[] vin, Vout[] vout, Boolean isCoinBase, String payerPrivateKey) {
-		this.vin = vin;
-		this.vout = vout;
-		setTimestamp(new Date());
-		String toHash = "";
-		for(Vin in : vin) {
-			toHash += in.toString();
-		}
-		for(Vout out : vout) {
-			toHash += out.toString();
-		}
-		toHash += getTimestamp().toString();
-		this.hash = Utilities.hashKeyForDisk(toHash);
-		this.txid = Utilities.hashKeyForDisk(toHash);
-		this.isCoinBase = isCoinBase;
-		if(!isCoinBase) {
-			String singature = KeyValuePairs.Sign(this.toString(), payerPrivateKey);
-			for(Vin in : vin) {
-				in.setSignature(singature);
-			}
-		}
-		
-	} 
 	
 	/* 执行过程
 	 * 1. 先把签名压入栈
@@ -133,7 +133,7 @@ public class Transaction implements Serializable {
 	public static Transaction newCoinbaseTx(String Toaddress){
 		Vin vin = new Vin("",-1, null);
 		//to address取成哈希
-		Vout vout = new Vout(Global.subsidy, 0, Toaddress);
+		Vout vout = new Vout(Global.subsidy, 0, Utilities.hashKeyForDisk(Toaddress));
 		Vin vins[] = new Vin[1];
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];
@@ -145,7 +145,7 @@ public class Transaction implements Serializable {
 	public static Transaction genesisCoinbaseTx(String Toaddress){
 		Vin vin = new Vin("", -1, null);
 		//to address取成哈希
-		Vout vout = new Vout(Global.genesisTransaction, 0, Toaddress);
+		Vout vout = new Vout(Global.genesisTransaction, 0, Utilities.hashKeyForDisk(Toaddress));
 		Vin vins[] = new Vin[1];
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];

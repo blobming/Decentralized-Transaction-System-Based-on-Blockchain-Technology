@@ -29,8 +29,8 @@ public class Blockchain implements Iterable<Block>{
 	}
 
 	private Block newGenesisBlock() {
-		KeyValuePairs kv = new KeyValuePairs();
-		Transaction coinbase = Transaction.genesisCoinbaseTx(kv.getPublicKey());
+		Transaction coinbase = Transaction.genesisCoinbaseTx(Global.keyValuePairs.getPublicKey());
+		Global.genesisTX = coinbase.getHash();
 		BlockBody blockBody = new BlockBody(coinbase);
 		Block genesis = new Block(blockBody, 123456);
 		genesis.setPreHashCode("genesis");

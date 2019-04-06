@@ -1,5 +1,6 @@
 package config;
 
+import Security.KeyValuePairs;
 import berkeleyDb.MyBerkeleyDB;
 
 public class Global {
@@ -12,4 +13,6 @@ public class Global {
 	public static final double subsidy = 0.02;
 	public static MyBerkeleyDB utxoDB = new MyBerkeleyDB("./UTXO");
 	public static MyBerkeleyDB blockDB = new MyBerkeleyDB("./Block");
+	public static KeyValuePairs keyValuePairs;
+	public static String genesisTX;
 }
