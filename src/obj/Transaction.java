@@ -84,7 +84,7 @@ public class Transaction implements Serializable {
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
 			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid()); 
-			HashSet<Vout> voutList = UTXOSet.FindVoutByTransactionId(tx.getTxid());
+			HashSet<Vout> voutList = Vout.FindVoutByTransactionId(tx.getTxid());
 			//得到相应的vout
 			Vout vout = null;
 			for(Vout tempVout : voutList) {

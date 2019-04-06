@@ -3,27 +3,36 @@ package obj;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
+import Utilities.Utilities;
 import berkeleyDb.MyBerkeleyDB;
 import config.Global;
 
 public class UTXOSet {
-	private static Blockchain blockchain;
+	public static Blockchain blockchain;
 	//public FindSpendableOutputs(String address, int amount)
 	public static ArrayList<Vout> FindUTXO(String address) {
 		ArrayList<Vout> utxo = new ArrayList<Vout>();
 		for(Entry<String, Object> entry : Global.utxoDB.getAllKey().entrySet()) {
 			HashSet<Vout> vouts = (HashSet<Vout>) entry.getValue();
 			for(Vout vout : vouts) {
-				if(vout.IsLockedWithKey(address)) {
+				if(vout.IsLockedWithKey(Utilities.hashKeyForDisk(address))) {
 					utxo.add(vout);
 				}
 			}
 		}
 		return utxo;
 	}
-	
+	public static double getBalance(String address) {
+		ArrayList<Vout> vouts = FindUTXO(address);
+		double balance = 0;
+		for(Vout vout : vouts) {
+			balance += vout.getValue();
+		}
+		return balance;
+	}
 	public static HashMap<String, HashSet<Vout>> FindSpendableOutputs(String address, double amount) {
 		HashMap<String, HashSet<Vout>> unspentOutputs = new HashMap<>();
 		double accumulated = 0;
@@ -42,8 +51,10 @@ public class UTXOSet {
 		return unspentOutputs;
 	}
 	public static void Reindex() {
+		Global.utxoDB.closeDatabase();
 		Global.utxoDB.getEnvironment().truncateDatabase(null, "UTXO", false);
-		HashMap<String,HashSet<Vout>> utxo = Blockchain.FindUTXO(blockchain.iterator());
+		Global.utxoDB.open("UTXO");
+		HashMap<String,HashSet<Vout>> utxo = FindAllUTXO(blockchain);
 		for(Entry<String, HashSet<Vout>> entry : utxo.entrySet()) {
 			Global.utxoDB.put(entry.getKey(), entry.getValue());
 		}
@@ -84,13 +95,66 @@ public class UTXOSet {
 			Global.utxoDB.put(tx.getTxid(), vouts);
 		}
 	}
-	public static HashSet<Vout> FindVoutByTransactionId(String txId){
-		
-		Object voutList = Global.utxoDB.get(txId);
-		if(voutList instanceof HashSet<?>) {
-			return (HashSet<Vout>) Global.utxoDB.get(txId);
+	
+	/*
+	 * for every block:
+	 *  for every transaction:
+	 *      For Vin:
+	 *          if vin.transactionId in UTXO -->remove
+	 *          add into spentTXOs <vin.transactionId, vin.voutNum>  
+	 *      For Vout:
+	 *          if (thisTransaction.Id in spentTXOs && vout is in spentTXOs.get(thisTransactionId)):	//其实可以不要这段代码
+	 *          	remove from UTXO
+	 *          else:
+	 *          	add into UTXO
+	 */
+	public static HashMap<String,HashSet<Vout>> FindAllUTXO(Blockchain blockchain){
+		HashMap<String,HashSet<Vout>> UTXO = new HashMap<>();
+		HashMap<String,HashSet<Integer>> spentTXOs = new HashMap<>();
+		Iterator<Block> iterator = blockchain.iterator();
+		while(iterator.hasNext()) {
+			Block block = (Block) iterator.next();
+			ArrayList<Transaction> txs = block.getBlockBody().transactions;
+			for(Transaction tx : txs) {
+				String txID = tx.getTxid();
+				Vin[] vins = tx.getVin();
+				for(int i = 0; i < vins.length; i++) {
+					HashSet<Vout> temp = UTXO.get(vins[i].getTxid());
+					if(temp != null) {
+						for(Vout vout : temp) {
+							if(vout.getSeqNum() == i) {
+								temp.remove(vout);
+								if(temp.size() == 0)	UTXO.remove(vins[i].getTxid());
+								break;
+							}
+						}
+					}
+					if(!spentTXOs.containsKey(vins[i].getTxid())) {
+						spentTXOs.put(vins[i].getTxid(), new HashSet<>());
+					}
+					spentTXOs.get(vins[i].getTxid()).add(vins[i].getVoutNum());
+				}
+				Vout[] vouts = tx.getVout();
+				VoutLoop:for(int i = 0; i < vouts.length; i++) {
+					if(!spentTXOs.containsKey(txID)) {
+						if(UTXO.get(txID) == null) {
+							UTXO.put(txID, new HashSet<Vout>());
+						}
+						UTXO.get(txID).add(vouts[i]);
+					}
+//					else {
+//						for(int index : spentTXOs.get(txID)) {
+//							if(index == vouts[i].getSeqNum()) {
+//								spentTXOs.get(txID).remove(vouts[i].getSeqNum());
+//								continue VoutLoop;
+//							}
+//						}
+//						UTXO.get(txID).add(vouts[i]);
+//					}
+				}
+			}	
 		}
-		return null;
-		
+		return UTXO;
 	}
+
 }

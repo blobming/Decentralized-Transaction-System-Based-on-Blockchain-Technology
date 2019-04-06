@@ -1,6 +1,9 @@
 package obj;
 
 import java.io.Serializable;
+import java.util.HashSet;
+
+import config.Global;
 
 public class Vout  implements Serializable {
 	/**
@@ -50,5 +53,15 @@ public class Vout  implements Serializable {
 	// IsLockedWithKey checks if the output can be used by the owner of the pubkey
 	public boolean IsLockedWithKey(String publicKeyHash) {
 		return this.pubHash.equals(publicKeyHash);
+	}
+	
+	public static HashSet<Vout> FindVoutByTransactionId(String txId){
+		
+		Object voutList = Global.utxoDB.get(txId);
+		if(voutList instanceof HashSet<?>) {
+			return (HashSet<Vout>) Global.utxoDB.get(txId);
+		}
+		return null;
+		
 	}
 }

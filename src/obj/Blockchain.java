@@ -63,65 +63,7 @@ public class Blockchain implements Iterable<Block>{
 		height++;
 		Global.blockDB.put("Height", height);
 	}
-	/*
-	 * for every block:
-	 *  for every transaction:
-	 *      For Vin:
-	 *          if vin.transactionId in UTXO -->remove
-	 *          add into spentTXOs <vin.transactionId, vin.voutNum>  
-	 *      For Vout:
-	 *          if (thisTransaction.Id in spentTXOs && vout is in spentTXOs.get(thisTransactionId)):	//其实可以不要这段代码
-	 *          	remove from UTXO
-	 *          else:
-	 *          	add into UTXO
-	 */
-	public static HashMap<String,HashSet<Vout>> FindUTXO(Iterator<Block> iterator){
-		HashMap<String,HashSet<Vout>> UTXO = new HashMap<>();
-		HashMap<String,HashSet<Integer>> spentTXOs = new HashMap<>();
-		while(iterator.hasNext()) {
-			Block block = (Block) iterator.next();
-			ArrayList<Transaction> txs = block.getBlockBody().transactions;
-			
-			for(Transaction tx : txs) {
-				String txID = tx.getTxid();
-				Vin[] vins = tx.getVin();
-				for(int i = 0; i < vins.length; i++) {
-					HashSet<Vout> temp = UTXO.get(vins[i].getTxid());
-					if(temp != null) {
-						for(Vout vout : temp) {
-							if(vout.getSeqNum() == i) {
-								temp.remove(vout);
-								break;
-							}
-						}
-					}
-					if(!spentTXOs.containsKey(txID)) {
-						spentTXOs.put(txID, new HashSet<>());
-					}
-					spentTXOs.get(txID).add(vins[i].getVoutNum());
-				}
-				Vout[] vouts = tx.getVout();
-				VoutLoop:for(int i = 0; i < vouts.length; i++) {
-					if(!spentTXOs.containsKey(txID)) {
-						if(UTXO.get(txID) == null) {
-							UTXO.put(txID, new HashSet<Vout>());
-						}
-						UTXO.get(txID).add(vouts[i]);
-					}else {
-						for(int index : spentTXOs.get(txID)) {
-							if(index == vouts[i].getSeqNum()) {
-								UTXO.get(txID).remove(vouts[i]);
-								continue VoutLoop;
-							}
-						}
-						UTXO.get(txID).add(vouts[i]);
-					}
-				}
-			}	
-		}
-		return UTXO;
-	}
-
+	
 	@Override
 	public Iterator<Block> iterator() {
 		return new BlockchainIterator();

@@ -17,6 +17,7 @@ public class MyBerkeleyDB {
 	public MyBerkeleyDB(String path) {
 		setEnvironment(path);
 		charset = "UTF-8";
+		
 	}
 	private void setPath(String p) {
 		//判断path是否存在
@@ -51,10 +52,12 @@ public class MyBerkeleyDB {
 		dbConfig.setSortedDuplicates(false); //不存储重复关键字
 		database = environment.openDatabase(null, dbName, dbConfig); 
 	}
-	public void close()
+	public void closeEnvironment()
 	{
-	   database.close();
 	   environment.close();
+	}
+	public void closeDatabase() {
+		database.close();
 	}
 	public void put(Object key, Object value) {
 		try {

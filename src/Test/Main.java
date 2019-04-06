@@ -25,6 +25,7 @@ import config.Global;
 import obj.Block;
 import obj.Blockchain;
 import obj.Transaction;
+import obj.UTXOSet;
 
 public class Main {
 		/*
@@ -122,6 +123,18 @@ public class Main {
 		Blockchain blockChain = new Blockchain();
 		blockChain.newBlockchain();
 		blockChain.addBlock(TestAddData.newBlock());
+		UTXOSet.blockchain = blockChain;
+		UTXOSet.Reindex();
+		String genesisTX = "11626ab12711bc28d6f426ddb9f0d737250b67d68ca15e39621c98a7e3340084";
+		String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCr3uHYP8s/nNQY+8GeHedSyClJcTiDvpdZTGuLDy/NpjEUNK9rYyEcnzNWDUvvlRRVvnqm2Zwt7HWfkZmaYfQ1GocBbyPofW5tfVJBmtldychafqAta9Acr3ElCWnmUdv4WmWy9ByX6L6uhl1tJyN6FFa20UoIq1x1fRS6XWccuQIDAQAB";
+		String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCS2hqpbQYShmJloGR5PeZdU2xqdSq6Pl6CH4UVFnKZ1Tzmkrv4M23nOXLJktu6GkzIwfzRVMSoBjfk9tP99Stjc6/5CPR3JAD52R3PfZnGiDUcher0extbuzZGMwHIoeOUbMW4auhfpElgHDvqyyxbqJ7bpqzBHqaWhoO7t7jpdQIDAQAB";
+		String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAClG15J6QIEMdaxH+CJEKduGtoQokw3hUsd2nQ5XdjNog/tqEI/MnVAJYGRXQZz4slctIf8ZTwplhykcnH4vfv45DkyY37bbjjtuVXWUCB5OP6dmFxJ8/W69B5l4I4Nuq8TvfCZNf9jPwI3jXrq1jGiZnkxUHrQ5Eeh8SLnO/+wIDAQAB";
+		String payeePubKey3 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCQ2E2uH0DjLcEnxgK6TOAxG24ghP0RePxTFuUNZJgUpFFcBolk3iQ2a+I51XU948uuOuubH5m3HhsnPh2ldXSwYP5ECg6qMF6NWfB5G37NHyiYfKBgdDkA8GtRDlhmjWgxynHTWFTX2BlZpb7HgbO/LEhTz+euOERMbJWL+/JDhQIDAQAB";
+		System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
+		System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
+		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
+		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
+		
 // view two block
 //		for(Block block: blockChain) {
 //			System.out.println(block.getBlockBody().transactions.size());
