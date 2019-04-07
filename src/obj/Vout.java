@@ -12,7 +12,7 @@ public class Vout  implements Serializable {
 	private static final long serialVersionUID = -4342461471962570533L;
 	private double value;
 	private int seqNum;     //表示这是这个交易里的第几个输出
-	private String pubHash; //hash of publickey
+	private String pubHash; //hash of payee's publickey
 	
 	
 	public Vout(double value, int seqNum, String pubHash) {

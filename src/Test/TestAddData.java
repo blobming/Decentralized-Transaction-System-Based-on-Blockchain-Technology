@@ -20,6 +20,7 @@ public class TestAddData {
 		String userPrivateKey = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKvIfg0bSEwjQ/S4NpqnCqA++whxpG8ww3PP2rmiWYPUxWUh/vBPtIMNkhMcXGOHrTuxndd9Iax4u0p/DP6+sflPqrguVy9jALeuhXGnw4g3M0osqZG1UKmn/UAqp987xpAYlxGZe82USQVZ0F/n5+cc62Sa/Eof2hQiQD+RXJ2fAgMBAAECgYBJpZYtBlJTmhbrVwLKAO10UCwNrbMCnJRfFXC/f1QDSfgq6I1E99b7DJlgqhsN7MAfRIHYPeRu7f/V62xl1tmzxA4MpIBrguZ8PPxm92hCkq0Wvfk0kGxHRKoYL9vFA6re92KypDgjDC8/a3SFzABD3E1I8zVMMHUY6STzXTEtgQJBAPYbINT8rhQqtbWPkzRG793he39hvIn1/s0w3oFbESFjlhxy3PyjyDyM1j6KMEswHwwJgmH9hWRMxJLyxVpHyt8CQQCysHMEbTXhum+IEM+89UY9DzWGSznvPUJLQ833uv02raDwG8SpuFj7QLYcfIqqaV74m8nIGqCQIlKXdWFXDEVBAkEAvwFvCd7SfHRpcvBrnzcvE1XdM4/3dFun1jkHd/3l3bQc3ReIy8uRrOzhmshFkxVWA1GeD89jp+Ss7B/fa6IsoQJBAKdkqLrS3BEUJ/tdVF59n0kAAHJH8oPt7Ta41DBomWEpkoScXsVnjuQAoRlaikRN5cwblRHB7/xWSuzb5042joECQQDePjtSGsqIHr3lZZhDAOyDqg256UNvKKZ/Teh3stJ5RKMHnQDdX45UZheQrzetMuK5bHKC5ek4Y/cd7uCJ6AQ5";
 		String payeePrivate1 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAIBC/k7FG9akHuomPNZmaUj70aBzaSnAb+8+d46/4NT55MY0ISXwwq+ZkbL4aobCEXGFCkccHdrwbD4gyXYSKNUn1DTBrd1sOJDyn8tpSwtSLYG8xRRXxML175jM9Aj24yb2P9j27pjlVUR2/YZR1b2YVfFK2fo4kEcl1gNfn7IzAgMBAAECgYA1D4H1REXH/g1sAHWanLNhpguKvTP8OcgUyVrcizSP5vFlrZso/vkLfBRyXaJ0LUTaGZeu40rWkC+3ZAjz9388V+rnFRoIWUibUu+zxwnIg6w9BjcnbBUjnNvrn6eJGM3npOe2k8nCLUQrsATbvTOwVZD005uba+bsvOB50/74QQJBAM//rkaK6tLHAtMpYI9AT78o8S99y/Gk353GnKzCX13rmY7mEjSl76leoGQOto5y+QP+yqi2UoqTi3i7geybVp8CQQCd3Iq2C8gKNqrLSLqOhsVrFq/z5VToYqq/RkoMONTgvO4kWqZlN5vMLpse8DYZM/UQNh40mrZ9ZNGykZELJN/tAkAqZ5TvGsku+ZWw2SGvcswPS9iH9xyKAjP4pZIxglsQ+cRPpsYVZ7MJk5odbAZ52iS8VMiaRrljORtZHNkrFKw/AkAwDA8gB4f0K91iEBnQBY8S4A3f0v472MQVgaRKAgYw/PASmpCon/tIcyr9iKk+lITTUVVyN2Cx27zDd/DIjomlAkEAkImNYS0Dx30Pfd6JysQAmiIgDbCo60ATtJC1rIlrcyVNMOHiGQGLaNgOEfFVUQvNPYLT9XCwaoPoTbGWejpxqQ==";
 		String payeePrivate2 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKuDG1nAqOs8YD1W3RLsfnv38K0KNDSzlDNtVBK9bg+JrSQb66CBIf0IxKO0PMbV5o2XN/tkGP+6wAkBinAQfAeryEy/h4jLBqmg+EezExPM+L3A800DOl2E6B4pEEDUjcv1gk9mvGps6lNous3GEPZcUnby8qzO4xKhE4Gwqm8hAgMBAAECgYBVzp4cZTsdlXNAvPiVwyP0ubL7n6NGyqFWqVfqmEM8GtE4w487Gd/7TCu1CzNs9w8Fv6YOa6HmL3RsDQ1Jy7WA/wM1+maVdpB5nbIcMMdceBmwvkHDv1ZHZLS58QwPImBXpI/xx12BPwfD8li+VALyI5Z0Z2A1JnNWO4h1yoXzkQJBAN0ri0EGHVueH5Du+sggkdgEodGJMFInkMDSrBVY4UhUyp1zRo6nra87ZWXd03645TrxRcxFv9gqLZr0HTAZYzsCQQDGhZshRtzbY8pxopkxQGtJkpF9JvMtW1P4/PCcZgPlrBNTcJTrkx/FI73OK9SbuFXJlbj1y1co0BgIaaZAU5lTAkB3MvWtSNdfvlvy5+m/HFaeHvj7jj29uVc5pRFbu/hG3HQK4csALXzdOVzPxvsqjAn3d3uPuXPI1AqaPcDRYI1rAkBZ6I6Obpp93d8EwgAhVyx/4Jp1lNtTcmZAgMWz/1vKe7kw8+7uFe6wiPRgWGdssvpfVqiy4QmzWTNZNAfwYCwzAkEAriMCj2zZfeG79rkdDk9HjWFpuBp9ybkhVuNwxdpx7uAQKXBJIlthokjwHo1IdSi1Aw6wCHAlGrVFmOe9gzws1Q==";
+		String payeePrivate3 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALMMWP4hrHIx10BHvTB0YTACP/IWwU0qTWcP0jwClio+34SH49AlJVKh99GOzLE41H8vm0mipiXbnAqH/iJNwC812QuelhOwazdtlfK4XGytjXbSKleeAhrFrUyZvMFiuKJdCBpaO1JLqFl7smDQaufX4jQHlTgbmfIlknb5ODwPAgMBAAECgYBkf0zAL8RsQF9yXBHrzZbzbH/Z8T3Egzb43x+AwW7p/WpWKDQNk5v0WqcPv5hS7PQRA3alCR865p4aJyTUulFg/bd5gwMlVXJg/upRUYzmImUeCyWJ2h5hBcGfuDlB18KNheiUnkERMOcZf5cXt+NcheCxulTkWWMXgfKvFEY6kQJBAODHw1Kxhd4mr5044xJL6bJXG4NSsjykzz5apz9MmMAAeBQYj+ILth/JOxBvseD863+rSM+1s4x/2kuDc8uBERkCQQDL6ouHBZoAyTp+T30ezQdorKC/InAxPSYWGLaAj8gWnF/eZrA7a0bHvshpEjWSNyZrUQMfm8VLAiyx3fSpYZNnAkBX3l9BbToKfI774+gIF/rUB28u593bDQYitudYPEYeEFDgcjWUxMU+KbjYFQGxFM2ui7Ob1sjIbJZWHJ3geKTJAkEAlzIMTIwRuT17OoaTvk/Fi45cDfxp9YhiggXG5CI3+NPvnYbEavpK2/YQwR94SzbLLM0/pKMqMUimfSeWrjSkRwJALulj2nhX3DxhPusnJYFh6L9bLLMoxk2ZNY8F4FSZfDdXf2p1rwM36z8uIAairY3TaZFdQ5R82+nfJqIKhmFdQg==";
 		/////////////////////////////////////////////////////////////
 		//User---20--->payeePubKey1
 		//User---30--->payeePubKey2
@@ -61,7 +62,7 @@ public class TestAddData {
 		Vin vin3 = new Vin(t1.getTxid(), 0, payeePubKey1);
 		Vin vin4 = new Vin(t2.getTxid(), 0, payeePubKey1);
 		Vout vout6 = new Vout(22, 0, Utilities.hashKeyForDisk(payeePubKey3));
-		Vout vout7 = new Vout(23, 1, Utilities.hashKeyForDisk(payeePubKey1));
+		Vout vout7 = new Vout(3, 1, Utilities.hashKeyForDisk(payeePubKey1));
 		Vin[] vins3 = new Vin[2];
 		vins3[0] = vin3;
 		vins3[1] = vin4;
@@ -71,8 +72,8 @@ public class TestAddData {
 		Transaction t3 = new Transaction(vins3, vouts3, false, payeePrivate1);
 		ArrayList<Transaction> txs = new ArrayList<>();
 		txs.add(t1);
-	//	txs.add(t2);
-	//	txs.add(t3);
+		txs.add(t2);
+		txs.add(t3);
 		BlockBody body = new BlockBody(txs);
 		Block block = new Block(body, 123);
 		System.out.println("newBlock:" + block.getHashCode());

@@ -12,14 +12,12 @@ import config.Global;
 
 public class UTXOSet {
 	public static Blockchain blockchain;
-	//public FindSpendableOutputs(String address, int amount)
 	public static ArrayList<Vout> FindUTXO(String address) {
 		ArrayList<Vout> utxo = new ArrayList<Vout>();
 		for(Entry<String, Object> entry : Global.utxoDB.getAllKey().entrySet()) {
 			HashSet<Vout> vouts = (HashSet<Vout>) entry.getValue();
 			for(Vout vout : vouts) {
 				if(vout.IsLockedWithKey(Utilities.hashKeyForDisk(address))) {
-					System.out.println("not lock");
 					utxo.add(vout);
 				}
 			}
@@ -40,7 +38,7 @@ public class UTXOSet {
 		for(Entry<String, Object> entry : Global.utxoDB.getAllKey().entrySet()) {
 			HashSet<Vout> vouts = (HashSet<Vout>) entry.getValue();
 			for(Vout vout : vouts) {
-				if(vout.IsLockedWithKey(address) && accumulated < vout.getValue()) {
+				if(vout.IsLockedWithKey(Utilities.hashKeyForDisk(address)) && accumulated < vout.getValue()) {
 					accumulated += vout.getValue();
 					if(!unspentOutputs.containsKey(entry.getKey())) {
 						unspentOutputs.put(entry.getKey(), new HashSet<Vout>());
@@ -72,15 +70,18 @@ public class UTXOSet {
 		ArrayList<Transaction> txs = blockbody.transactions;
 		for(Transaction tx : txs) {
 			if(!tx.isCoinBase()) {
+				System.out.println("not coinbase");
 				Vin[] vins = tx.getVin();
 				for(int i=0;i<vins.length;i++) {
 					HashSet<Vout> outputs = (HashSet<Vout>) Global.utxoDB.get(vins[i].getTxid());
 					HashSet<Vout> newOutputs = new HashSet<>();
+					System.out.println("old:" + outputs.size());
 					for(Vout vout : outputs) {
 						if(vout.getSeqNum() != vins[i].getVoutNum()) {
 							newOutputs.add(vout);
 						}
 					}
+					System.out.println("new:" + newOutputs.size());
 					if(newOutputs.size() == 0) {
 						Global.utxoDB.del(vins[i].getTxid());
 					}else {
@@ -123,7 +124,7 @@ public class UTXOSet {
 					HashSet<Vout> temp = UTXO.get(vins[i].getTxid());
 					if(temp != null) {
 						for(Vout vout : temp) {
-							if(vout.getSeqNum() == i) {
+							if(vout.getSeqNum() == vins[i].getVoutNum()) {
 								temp.remove(vout);
 								if(temp.size() == 0)	UTXO.remove(vins[i].getTxid());
 								break;
