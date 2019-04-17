@@ -1,0 +1,47 @@
+body{
+    background-color: aliceblue;
+    margin: 0;
+}
+main,header{
+    background-color: aliceblue;
+
+}
+.box{
+    background-color: #f0f0f0;
+    box-shadow: 0px 1px 5px  rgba(10, 126, 172, 0.2);
+    border:0px solid gainsboro;
+
+    border-radius: 10px;
+}
+
+.table-title{
+    background-color: rgba(47, 112, 233, 0.349);
+    border:0px solid gainsboro;
+    border-radius: 10px 10px 0 0;
+
+}
+.table-title p{
+    margin-top: 10px;
+}
+footer{
+    background-color: gainsboro;
+    text-align: center;
+}
+/* tbody tr {
+    margin-top: 20px;
+} */
+
+dt p, dl p{
+    text-align: start;
+}
+
+.transaction-title{
+    margin-top: 20px;
+    background-color: white;
+    border: 0 solid;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.transaction-title p{
+    margin: 10px 5px 5px 5px;
+}

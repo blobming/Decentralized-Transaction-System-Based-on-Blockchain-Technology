@@ -1,0 +1,445 @@
+from flask import Flask, url_for, render_template, redirect, flash, request, Response, stream_with_context
+from .models.user import User
+from .models.userfiledir import userfiledir
+from .models.file import File
+from flask_login import login_required, login_user, logout_user, current_user
+from .forms import *
+from .login_setup import login_init
+import json
+from werkzeug import secure_filename
+import os
+import hashlib
+import time
+import random
+import shutil
+from Crypto.Cipher import AES
+from Crypto import Random
+import base64
+
+UPLOAD_FOLDER = "./app/static/upload"
+key = '1234567890123456'
+
+app = Flask(__name__)
+login_init(app)  # set up flask-login Login Manager
+
+
+
+@app.route('/', methods=['GET'])
+@app.route('/login', methods=['GET'])
+def loginGet():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
+@app.route('/', methods=['POST'])
+@app.route('/login', methods=['POST'])
+def loginPost():
+    form = LoginForm()
+    print("User information:",form.username.data,form.password.data,sep="\t",end="\n")
+    os.system("echo 'username:'")
+    os.system("echo '"+form.username.data+"'")
+    os.system("echo 'password:'")
+    os.system("echo '"+form.password.data+"'")
+    if User.authenticate(form.username.data, form.password.data):
+        if form.validate_on_submit():
+            login_user(User(form.username.data))
+            return redirect(url_for('home'))
+        else:
+            flash("Submit Error")
+            return render_template('login.html', form=form)
+
+    else:
+        flash("Incurrect information")
+        return render_template('login.html', form=form)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("loginGet"))
+
+@app.route('/register', methods=['GET'])
+def registerGet():
+    form = RegisterForm()
+    return render_template('register.html', form=form)
+
+
+@app.route('/register', methods=['POST'])
+def registerPost():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if(User.checkUsername(form.username.data)):
+            User.newUser(form.username.data, form.password.data, 31457280.00)
+            userfiledir.newUserFileDir(form.username.data, "d", "root", None, None)
+            # 向数据库中发送注册信息
+            return redirect(url_for('loginGet'))
+        else:
+            flash("username exist!")
+            return render_template("register.html", form=form)
+    else:
+        flash("Incurrect information")
+        return render_template("register.html", form=form)
+
+@app.route('/reset', methods=['POST'])
+@login_required
+def resetPwd():
+    password = request.form.get("pwd")
+    User.updateUser(password, current_user.username)
+    return redirect(url_for("home"))
+
+
+@app.route('/reset', methods=['GET'])
+@login_required
+def editUser():
+    return render_template('edit.html')
+
+
+@app.route('/home', methods=['GET'])
+@login_required
+def home():
+    return render_template('home.html')
+
+
+@app.route("/file/nextdir", methods=["POST"])
+@login_required
+def GetNextDir():
+    print("param1:" + request.form.get('param1'))
+    d = {}
+    d["father"] = {}
+    d["father"]["type"] = "d"
+    d["father"]["remainSize"] = User.calRemainQuota(current_user.username)
+    if request.form.get('param1') == "-1":
+        father = userfiledir(userfiledir.findRootId(current_user.username))
+        d["father"]["dirName"] = father.dirName
+        d["father"]["fatherUfdid"] = "-1"
+        d["father"]["fatherId"] = father.ufdid
+        folders = userfiledir.findNextDir(userfiledir.findRootId(current_user.username))
+    else:
+        father = userfiledir(request.form.get('param1'))
+        d["father"]["dirName"] = father.dirName
+        d["father"]["fatherUfdid"] = (father.fatherUfdid if father.fatherUfdid is not None else "-1")
+        d["father"]["fatherId"] = father.ufdid
+        folders = userfiledir.findNextDir(request.form.get('param1'))
+    for i in range(0, len(folders)):
+        d["dir" + str(i)] = {}
+        d["dir" + str(i)]["type"] = folders[i][2]
+        if(folders[i][2] == "f"):
+            file = File(folders[i][4])
+            d["dir" + str(i)]["fileUfdid"] = folders[i][0]
+            d["dir" + str(i)]["fileid"] = folders[i][4]
+            d["dir" + str(i)]["filename"] = folders[i][3]
+            d["dir" + str(i)]["fileType"] = file.type
+            d["dir" + str(i)]["size"] = file.size
+        else:
+            d["dir" + str(i)]["dirName"] = folders[i][3]
+            d["dir" + str(i)]["ufdid"] = folders[i][0]
+    JsonStr = json.dumps(d)
+    return JsonStr
+
+
+
+@app.route("/home/mkdir", methods=['POST'])
+@login_required
+def mkdir():
+    fatherFolderID = request.form.get("fatherId")
+    dirName = request.form.get("folderName")
+    userfiledir.newUserFileDir(current_user.username, "d", dirName, None, fatherFolderID)
+    return json.dumps({"status": "success"})
+
+
+@app.route("/home/move", methods=["POST"])
+@login_required
+def move():
+    dirId = request.form.get("folderId")
+    newFolderId = request.form.get("newFatherId")
+    if newFolderId == "-1":
+        newFolderId = userfiledir.findRootId(current_user.username)
+    def checkMoveSuccess(ufdid, MoveToId):
+        if ufdid == MoveToId:
+            return False
+        lastDir = userfiledir.findLastDir(MoveToId)
+        while lastDir != "None" and lastDir != str(ufdid):
+            lastDir = userfiledir.findLastDir(lastDir)
+        if lastDir == "None":
+            return True
+        else:
+            return False
+    if checkMoveSuccess(dirId, newFolderId):
+        userfiledir.changeFather(newFolderId, dirId)
+        return json.dumps({"moveStatus": "success"})
+    else:
+        return json.dumps({"moveStatus": "failure"})
+
+
+@app.route('/file/upload', methods=['POST'])
+@login_required
+def upload_part():  # 接收前端上传的一个分片
+    task = request.form.get('task_id')  # 获取文件的唯一标识符
+    chunk = request.form.get('chunk', 0)  # 获取该分片在所有分片中的序号
+    filename = '%s%s' % (task, chunk)  # 构造该分片的唯一标识符
+    print("file in part:" + filename)
+    upload_file = request.files['file']
+    upload_file.save(UPLOAD_FOLDER + '/%s' % filename)  # 保存分片到本地
+    return render_template('home.html')
+
+
+@app.route('/file/merge', methods=['GET'])
+@login_required
+def upload_success():  # 按序读出分片内容，并写入新文件
+    print(request.args)
+    userFilename = request.args.get('filename')
+    timestamp = int(time.time())
+    ranNum = int(random.random() * 100)
+    postfix = userFilename.split('.')[-1]
+    target_filename = str(timestamp) + str(ranNum) + "." + postfix
+    task = request.args.get('task_id')  # 获取文件的唯一标识符
+    chunk = 0  # 分片序号
+    with open(UPLOAD_FOLDER + '/%s' % target_filename, 'wb') as target_file:  # 创建新文件
+        while True:
+            try:
+                filename = UPLOAD_FOLDER + '/%s%d' % (task, chunk)
+                source_file = open(filename, 'rb')  # 按序打开每个分片
+                target_file.write(source_file.read())  # 读取分片内容写入新文件
+                source_file.close()
+            except IOError:
+                break
+
+            chunk += 1
+            os.remove(filename)  # 删除该分片，节c约空间
+    #filePath = os.path.join(UPLOAD_FOLDER, target_filename)
+    filePath = UPLOAD_FOLDER + "/" + target_filename
+    md5 = GetFileMd5(filePath)
+    if not File.checkFileExist(md5):
+        filesize = str(round(os.path.getsize(filePath) / 1024, 2))
+        File.newFile(md5, target_filename, postfix, filesize)
+    else:
+        os.remove(filePath)
+    userfiledir.newUserFileDir(current_user.username, "f", userFilename, md5, request.args.get('fatherid'))
+    #return redirect(url_for("home"))
+    return json.dumps({"state": "success"});
+
+
+@app.route('/file/predownload', methods=['POST'])
+@login_required
+def PreDownload():
+    def createFolder(path, tree):
+        for key in tree:
+            if tree[key] != {'file'}:
+                folder = userfiledir(key)
+                #print(path + '/%s' % folder.dirName)
+                os.mkdir(path + '/%s' % folder.dirName)
+                deepPath = path + '/%s' % folder.dirName
+                createFolder(deepPath, tree[key])
+            else:
+                file = userfiledir(key)
+                oldname = UPLOAD_FOLDER + "/" + File(file.fileid).filename
+                newname = path + "/" + file.dirName
+                shutil.copyfile(oldname, newname)
+
+    dirId = request.form.get('ufdid')
+    print(dirId)
+    file = userfiledir(dirId)
+    if file.type == 'f':
+        filename = File.getFilename(userfiledir(dirId).fileid)
+        return json.dumps({"state": "success","filename": filename})
+    else:
+        tree = fileTree(dirId)
+        timestamp = int(time.time())
+        ranNum = int(random.random() * 100)
+        #path = './' + str(timestamp) +str(ranNum)
+        #os.mkdir(path)
+        createFolder("./", tree)
+        Folder = userfiledir(dirId)
+        Zipname = str(timestamp) +str(ranNum) + ".zip"
+        print(userfiledir(dirId).dirName)
+        os.system('zip -r ' + Zipname  + " " + userfiledir(dirId).dirName)
+        os.system('rm -rf '+ userfiledir(dirId).dirName)
+        return json.dumps({"state": "success","filename": userfiledir(dirId).dirName+".zip","path": "./"+Zipname})
+
+
+@app.route('/file/download/<actname>', methods=['GET'])
+def file_download(actname):
+    filename = File.getFilename(userfiledir(request.args.get('ufdid')).fileid)
+    def send_chunk():  # 流式读取
+        store_path = UPLOAD_FOLDER +'/%s' % filename
+        with open(store_path, 'rb') as target_file:
+            while True:
+                chunk = target_file.read(20 * 1024 * 1024)
+                if not chunk:
+                    break
+                yield chunk
+
+    return Response(send_chunk(), content_type='application/octet-stream')
+
+
+@app.route('/file/downloadzip/<actname>', methods=['GET'])
+def file_download_zip(actname):
+    filename = actname
+    temppath = request.args.get("path")
+    def send_chunk():  # 流式读取
+        store_path = temppath
+        with open(store_path, 'rb') as target_file:
+            while True:
+                chunk = target_file.read(20 * 1024 * 1024)
+                if not chunk:
+                    os.system('rm '+ temppath)
+                    break
+                yield chunk
+
+    return Response(send_chunk(), content_type='application/octet-stream')
+
+
+
+
+@app.route('/testvideo')
+def testvideo():
+    return render_template('testvideo.html')
+
+@app.route('/file/share', methods=['POST'])
+@login_required
+def generateShareLink():
+    ufdid = request.form.get("ufdid")
+    iv = Random.new().read(AES.block_size)
+    cipher = AES.new(key, AES.MODE_CFB, iv)
+    encryptedId = iv + cipher.encrypt(ufdid)
+    encryptedId = base64.b64encode(encryptedId)
+    encryptedId = str(encryptedId, "UTF-8")
+    return json.dumps({"encryptedId": encryptedId})
+
+
+@app.route('/file/share', methods=['GET'])
+@login_required
+def getSharedFile():
+    encryptUfdid = request.args.get('encryptUfdid')
+    encryptUfdid = base64.b64decode(encryptUfdid)
+    iv = encryptUfdid[:16]
+    cipher = AES.new(key, AES.MODE_CFB, iv)
+    encryptUfdid = cipher.decrypt(encryptUfdid[16:])
+    ufdid = str(encryptUfdid, 'UTF-8')
+
+    fatherId = userfiledir.findRootId(current_user.username)
+    quota = User.calRemainQuota(current_user.username)
+    if userfiledir(ufdid).type == 'f':
+        tempfile = File(userfiledir(ufdid).fileid)
+        if float(tempfile.size) <= quota:
+            userfiledir.newUserFileDir(current_user.username, "f", userfiledir(ufdid).dirName, tempfile.md5, fatherId)
+            return json.dumps({"shareStatus": "success"})
+        else:
+            return json.dumps({"shareStatus": "failure"})
+    tree = fileTree(ufdid)
+
+    def checkSize(tree, calcsize):
+        for key in tree:
+            if tree[key] == {'file'}:
+                file = userfiledir(key)
+                calcsize += float(File(file.fileid).size)
+            elif tree[key] == {}:
+                pass
+            else:
+                calcsize += checkSize(tree[key],calcsize)
+        return calcsize
+
+    def createLink(ufdid, fatherId, tree):
+        for key in tree:
+            if tree[key] == {'file'}:
+                file = userfiledir(key)
+                userfiledir.newUserFileDir(current_user.username, "f", file.dirName, file.fileid, fatherId)
+            elif tree[key] == {}:
+                emptyFolder = userfiledir(key)
+                userfiledir.newUserFileDir(current_user.username, "d", emptyFolder.dirName, None, fatherId)
+            else:
+                filledFolder = userfiledir(key)
+                userfiledir.newUserFileDir(current_user.username, "d", filledFolder.dirName, None, fatherId)
+                fatherid = userfiledir.getId()
+                createLink(key, fatherid, tree[key])
+
+    if(checkSize(tree, calcsize=0) <= User.calRemainQuota(current_user.username)):
+        createLink(ufdid, fatherId, tree)
+        return json.dumps({"shareStatus": "success"})
+    else:
+        return json.dumps({"shareStatus": "failure"})
+
+
+@app.route("/home/delete", methods=["POST"])
+@login_required
+def delete():
+    dirId = request.form.get("deleteId")
+    print(dirId)
+    folder = userfiledir(dirId)
+    if folder.type == "f":
+        userfiledir.deleteDir(dirId)
+        return json.dumps({"deleteFile": "success"})
+    tree = fileTree(dirId)
+
+    def deleteLink(tree):
+        for key in tree:
+            if tree[key] == {'file'}:
+               # print("delete: ",key,sep="\t",end="\n")
+                userfiledir.deleteDir(key)
+            elif tree[key] == {}:
+               # print("delete: ",key,sep="\t",end="\n")
+                userfiledir.deleteDir(key)
+            else:
+                deleteLink(tree[key])
+    while fileTree(dirId) != {dirId:{}}:
+        print(fileTree(dirId))
+        deleteLink(fileTree(dirId))
+    userfiledir.deleteDir(dirId)
+    return json.dumps({"deleteFile": "success"})
+
+
+@app.route('/file/rename', methods=['POST'])
+@login_required
+def renameFile():
+    folderId = request.form.get("folderid")
+    newName = request.form.get("name")
+    userfiledir.renameUserFileDir(folderId, newName)
+    return json.dumps({"renameStatus": "success"})
+
+
+@app.route('/file/view', methods=['GET'])
+@login_required
+def viewFile():
+    md5 =  request.args.get("fileId")
+    filetype = request.args.get("filetype")
+    filename = File.getFilename(md5)
+    path = "/static/upload" + "/" + filename
+    print(path)
+    if filetype.lower() in ["mp4", "avi", "rmvb", "mkv", "amv"]:
+        return render_template('viewVideo.html', src=path)
+    elif filetype.lower() in ["jpg", "png", "jpeg"]:
+        return render_template('viewPicture.html', src=path)
+
+
+def create_app():
+    return app
+
+if __name__ == '__main__':
+    app.run()
+
+
+def GetFileMd5(filename):
+    myhash = hashlib.md5()
+    f = open(filename, 'rb')
+    while True:
+        b = f.read(8096)
+        if not b:
+            break
+        myhash.update(b)
+    f.close()
+    return myhash.hexdigest()
+
+
+def fileTree(ufdid):
+    d = {}
+    def subFileTree(ufdid):
+        d = {}
+        d[ufdid] = {}
+        results = userfiledir.findNextDir(ufdid)
+        for f in results:
+            if f[2] == "f":
+                d[ufdid][f[0]] = {"file"}
+            else:
+                d[ufdid][f[0]] = subFileTree(f[0])
+        return d[ufdid]
+    d[ufdid] = subFileTree(ufdid)
+    return d
