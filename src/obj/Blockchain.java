@@ -49,9 +49,8 @@ public class Blockchain implements Iterable<Block>{
 	
 	//not tested
 	public Block getBlock(String hashcode) {
-		Block block = null;
 		Object result = (Block) Global.blockDB.get(Utilities.toByteArray(hashcode));
-		if(result == null)	return block;
+		if(result == null)	return null;
 		else {
 			return (Block)result;
 		}
