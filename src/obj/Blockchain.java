@@ -36,14 +36,23 @@ public class Blockchain implements Iterable<Block>{
 		genesis.setPreHashCode("genesis");
 		return genesis;
 	}
-	public void addBlock(Block newB) {
-		if(tip == null)	return;
+	public boolean addBlock(Block newB) {
+		if(tip == null)	return false;
+		if(containBlock(newB))	return false;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
 		Global.blockDB.put(tip, newB);
 		height++;
 		Global.blockDB.put("Height", height);
+		return true;
 	}
+	
+	//not tested
+	public boolean containBlock(Block block) {
+		 Object result = (Block) Global.blockDB.get(Utilities.toByteArray(block.getHashCode()));
+		 return result != null;
+	}
+	
 	public void newBlockchain() {	 
 		String b = (String) Global.blockDB.get("0");	//check if genesis block(0) exist
 		if(b == null) {
