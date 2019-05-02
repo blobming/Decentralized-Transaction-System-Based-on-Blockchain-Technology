@@ -103,6 +103,17 @@ public class Blockchain implements Iterable<Block>{
 			Global.blockDB.put(block.getHashCode(), Utilities.toByteArray(block));
 		}
 	}
+	public static ArrayList<String> generateInv(Blockchain bc, String hashcode){
+		ArrayList<String> res = new ArrayList<>();
+		for(Block block : bc) {
+			if(!block.getHashCode().equals(hashcode)) {
+				res.add(0, block.getHashCode());
+			}else {
+				break;
+			}
+		}
+		return res;
+	}
 
 	//for test
 	public static void main(String[] args) {
