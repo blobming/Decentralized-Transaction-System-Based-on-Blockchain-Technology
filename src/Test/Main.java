@@ -333,17 +333,15 @@ public class Main {
 							pt.peerWriter.write("VERACK "+blockChain.getHeight());
 						} else if("GET_BLOCKS".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCKS:"+ payload);
-							ArrayList<String> hashList = Blockchain.generateInv(blockChain, payload);
-							pt.peerWriter.write("INVENTORY "+ Utilities.toByteArray(hashList).toString());
+							String hashList = Blockchain.generateInv(blockChain, payload);
+							pt.peerWriter.write("INVENTORY "+ hashList);
 						} else if("INVENTORY".equalsIgnoreCase(cmd)) {
 							System.out.println("INVENTORY:"+ payload);
-							if(Utilities.toObject(payload.getBytes()) instanceof ArrayList<?>) {
-								ArrayList<String> hashList = (ArrayList<String>) Utilities.toObject(payload.getBytes());
-								for(int j=0;j<hashList.size();j++) {
-									//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
-									pt.peerWriter.write("GET_BLOCK "+ hashList.get(j));
-									TimeUnit.MILLISECONDS.sleep(1000);
-								}
+							String[] hashList = payload.split(",");
+							for(int j=0;j<hashList.length;j++) {
+								//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
+								pt.peerWriter.write("GET_BLOCK "+ hashList[j]);
+								TimeUnit.MILLISECONDS.sleep(1000);
 							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
