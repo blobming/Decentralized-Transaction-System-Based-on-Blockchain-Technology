@@ -349,13 +349,19 @@ public class Main {
 							Block tempblock = blockChain.getBlock(payload);
 							if (tempblock != null) {
 								System.out.println("Sending block " + payload + " to peer");
-								pt.peerWriter.write("BLOCK " + new String(Utilities.toByteArray(tempblock)));
+								pt.peerWriter.write("BLOCK " + Utilities.serialize(tempblock));
 							}
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
 							System.out.println("Block:"+payload);
 							System.out.println("Attempting to add Block: " + payload);
-							Block newBlock = (Block) Utilities.toObject(payload.getBytes());
+							Block newBlock = null;
+							try {
+								newBlock = (Block) Utilities.serializeToObject(payload);
+							} catch (ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							if(blockChain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
 								peerNetwork.broadcast("BLOCK " + payload);
