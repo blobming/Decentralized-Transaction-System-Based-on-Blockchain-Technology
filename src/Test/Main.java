@@ -265,7 +265,7 @@ public class Main {
 		
 		System.out.println("begin send broadcast");
 		//建立socket连接后，给大家广播握手
-		peerNetwork.broadcast("VERSION "+ HEIGHT);
+		peerNetwork.broadcast("HEIGHT "+ HEIGHT);
 		
 		while (true) {
 			
@@ -308,14 +308,10 @@ public class Main {
 					if (StringUtils.isNotBlank(cmd)) {
 						if ("VERACK".equalsIgnoreCase(cmd)) {
 							System.out.println("VERACK:"+payload);
-							
-							
 							// 对方确认知道了,并给我区块高度
-							//String[] parts = payload.split(" ");
-							//bestHeight = Integer.parseInt(parts[0]);
-							//哈希暂时不校验
-						} else if ("VERSION".equalsIgnoreCase(cmd)) {
-							System.out.println("VERSION:"+payload);
+							bestHeight = Integer.parseInt(payload);
+						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
+							System.out.println("HEIGHT:"+payload);
 							// 对方发来握手信息
 							// 获取区块高度和版本号信息
 							int height = Integer.parseInt(payload);
@@ -324,6 +320,7 @@ public class Main {
 							}
 							//我方回复：知道了
 							//pt.peerWriter.write("VERACK " + blockChain.size() + " " + blockChain.get(blockChain.size() - 1).getHash());
+							
 							pt.peerWriter.write("VERACK "+HEIGHT);
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
@@ -381,17 +378,11 @@ public class Main {
 			// ********************************
 			// 		比较区块高度,同步区块
 			// ********************************
-			/*
-			int localHeight = blockChain.size();
-			if (bestHeight > localHeight) {
-				LOGGER.info("Local chain height: " + localHeight+" Best chain Height: " + bestHeight);
+			if(bestHeight > HEIGHT) {
+				System.out.println("Local chain height: " + HEIGHT+" peer Height: " + bestHeight);
 				TimeUnit.MILLISECONDS.sleep(300);
-				
-				for (int i = localHeight; i < bestHeight; i++) {
-					LOGGER.info("request get block[" + i + "]...");
-					peerNetwork.broadcast("GET_BLOCK " + i);
-				}
-			}*/
+				peerNetwork.broadcast("GET_BLOCK " + blockChain.tip + " " + bestHeight);
+			}
 
 			// ********************************
 			// 处理RPC服务
