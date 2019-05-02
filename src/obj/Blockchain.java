@@ -36,9 +36,10 @@ public class Blockchain implements Iterable<Block>{
 		genesis.setPreHashCode("genesis");
 		return genesis;
 	}
+	//仅限于从其他节点同步块时调用
 	public boolean addBlock(Block newB) {
 		if(getBlock(newB.getHashCode()) != null)	return false;
-		newB.setPreHashCode(tip);
+		if(newB.getPreHashCode() != tip)	return false;
 		tip = newB.getHashCode();
 		Global.blockDB.put(tip, newB);
 		height++;
