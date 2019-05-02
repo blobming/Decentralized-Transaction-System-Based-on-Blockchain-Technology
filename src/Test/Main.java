@@ -113,6 +113,7 @@ public class Main {
 	private static final int port = 8015;
 	private static int HEIGHT;
 	private static int bestHeight;
+	private static PeerThread bestThread;
 	
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		// TODO Auto-generated method stub
@@ -121,6 +122,14 @@ public class Main {
 		Global.blockDB.open("Block");
 		Global.blockDB.open("Config");  //Height of the current Block Chain
 		Global.utxoDB.open("UTXO");
+		
+		Blockchain blockChain = new Blockchain();
+		blockChain.newBlockchain();
+		//blockChain.addBlock(TestAddData.newBlock());
+		UTXOSet.blockchain = blockChain;
+		UTXOSet.Reindex();
+		
+		/*
 		//FIXME base58
 		System.out.println("initiating user's keyPairs");
 		KeyValuePairs keyValuePairs = new KeyValuePairs();
@@ -128,11 +137,6 @@ public class Main {
 		System.out.println("User's public key is :" + keyValuePairs.getPublicKey());
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		
-		Blockchain blockChain = new Blockchain();
-		blockChain.newBlockchain();
-		blockChain.addBlock(TestAddData.newBlock());
-		UTXOSet.blockchain = blockChain;
-		UTXOSet.Reindex();
 		String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAoF4taDUDGujMDbn6v4He/fQ/AQ5n5492oxf05gsmiTNgA67yW+w3BjnKtc/HM1+YfUC+aUGtwkLRia1hEzSBr7iX77hh2kjiw8jUzWXfQ1s0jvDmxg+Ok7Kmha4hlf6AU4NrKg3EJ8DPgWI7N7iMq+IK4lpzZ18SSOZ+33KgAwIDAQAB";
 		String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
 		String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrgxtZwKjrPGA9Vt0S7H579/CtCjQ0s5QzbVQSvW4Pia0kG+uggSH9CMSjtDzG1eaNlzf7ZBj/usAJAYpwEHwHq8hMv4eIywapoPhHsxMTzPi9wPNNAzpdhOgeKRBA1I3L9YJPZrxqbOpTaLrNxhD2XFJ28vKszuMSoROBsKpvIQIDAQAB";
@@ -179,14 +183,16 @@ public class Main {
 		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
 		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
 		
+		*/
+		
 // view two block
-//		for(Block block: blockChain) {
-//			System.out.println(block.getBlockBody().transactions.size());
-//			for(Transaction t : block.getBlockBody().transactions) {
-//				System.out.println(t.toString());
-//			}
-//			System.out.println("==========");
-//		}
+		for(Block block: blockChain) {
+			System.out.println(block.getBlockBody().transactions.size());
+			for(Transaction t : block.getBlockBody().transactions) {
+				System.out.println(t.toString());
+			}
+			System.out.println("==========");
+		}
 		
 		//取出链高度
 		HEIGHT = blockChain.getHeight();
@@ -284,7 +290,6 @@ public class Main {
 				}
 			}
 			peerNetwork.peers.clear();
-			
 			PeerThread pt = null;
 			// 处理通讯
 			//for (PeerThread pt : peerNetwork.peerThreads) {
@@ -299,7 +304,8 @@ public class Main {
 					System.exit(-5);
 					break;
 				}
-
+				
+				
 				for (String data:dataList) {
 					System.out.println("[p2p] COMMAND:: " + data);
 					int flag = data.indexOf(' ');
@@ -310,6 +316,9 @@ public class Main {
 							System.out.println("VERACK:"+payload);
 							// 对方确认知道了,并给我区块高度
 							bestHeight = Integer.parseInt(payload);
+							if(bestHeight > HEIGHT) {
+								bestThread = pt;
+							}
 						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
 							System.out.println("HEIGHT:"+payload);
 							// 对方发来握手信息
@@ -317,17 +326,29 @@ public class Main {
 							int height = Integer.parseInt(payload);
 							if(height >= HEIGHT) {
 								bestHeight = height;
+								bestThread = pt;
 							}
 							//我方回复：知道了
 							//pt.peerWriter.write("VERACK " + blockChain.size() + " " + blockChain.get(blockChain.size() - 1).getHash());
 							
 							pt.peerWriter.write("VERACK "+HEIGHT);
+						} else if("GET_BLOCKS".equalsIgnoreCase(cmd)) {
+							System.out.println("GET_BLOCKS:"+ payload);
+							
+							//this blank area leaves for getting inventory
+							
+							
+							pt.peerWriter.write("INVENTORY "+ payload);
+						} else if("INVENTORY".equalsIgnoreCase(cmd)) {
+							System.out.println("INVENTORY:"+ payload);
+							//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
+							
+							pt.peerWriter.write("GET_BLOCK "+ payload);
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
 							System.out.println("Block:"+payload);
 						//
 							peerNetwork.broadcast("BLOCK "+payload);
-							/*
 							Block newBlock = gson.fromJson(payload, Block.class);
 							if (!blockChain.contains(newBlock)) {
 								LOGGER.info("Attempting to add Block: " + payload);
@@ -338,19 +359,18 @@ public class Main {
 									FileUtils.writeStringToFile(dataFile,"\r\n"+gson.toJson(newBlock), StandardCharsets.UTF_8,true);
 									peerNetwork.broadcast("BLOCK " + payload);
 								}
-							}*/
+							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
 							System.out.println("Sending block " + payload + " to peer");
 							pt.peerWriter.write("BLOCK " + "aBlock");
 							//把对方请求的块给对方
-							/*
 							Block block = blockChain.get(Integer.parseInt(payload));wlan0
 							
 							if (block != null) {
 								LOGGER.info("Sending block " + payload + " to peer");
 								pt.peerWriter.write("BLOCK " + gson.toJson(block));
-							}*/
+							}
 						} else if ("ADDR".equalsIgnoreCase(cmd)) {
 							System.out.println("ADDR: "+payload);
 							// 对方发来地址，建立连接并保存
@@ -381,7 +401,7 @@ public class Main {
 			if(bestHeight > HEIGHT) {
 				System.out.println("Local chain height: " + HEIGHT+" peer Height: " + bestHeight);
 				TimeUnit.MILLISECONDS.sleep(300);
-				peerNetwork.broadcast("GET_BLOCK " + blockChain.tip + " " + bestHeight);
+				bestThread.peerWriter.write("GET_BLOCKS "+ blockChain.tip);
 			}
 
 			// ********************************
