@@ -1,12 +1,20 @@
 package Test;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Stack;
+
+import com.mongodb.internal.connection.tlschannel.util.Util;
 
 import Security.KeyValuePairs;
 import Utilities.Utilities;
 import obj.*;
 
-public class XjmTest {
+class Hello implements Serializable{
+	public int a;
+	public int b;
+}
+
+class XjmTest {
 	
 	public static boolean validateTransaction(Transaction tx1 ,Transaction tx2) {
 		int count = 0;
@@ -56,26 +64,12 @@ public class XjmTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		KeyValuePairs keyValuePairsA = new KeyValuePairs();
-		KeyValuePairs keyValuePairsB = new KeyValuePairs();
-		
-		//给A 十块钱
-		Transaction transaction =  Transaction.genesisCoinbaseTx(Utilities.hashKeyForDisk(keyValuePairsA.getPublicKey()));
-		
-		//生成A -> B的交易
-		Vin vin = new Vin(null, 0, keyValuePairsA.getPublicKey());
-		Vout vout0 = new Vout(10,0,Utilities.hashKeyForDisk(keyValuePairsB.getPublicKey()));
-		Vout vout1 = new Vout(90,0,Utilities.hashKeyForDisk(keyValuePairsA.getPublicKey()));
-		Vin[] vinList = {vin};
-		Vout[] voutList = {vout0,vout1};
-		Transaction aToBTransaction = new Transaction(vinList,voutList);
-		vin.setTxid(aToBTransaction.getTxid());
-		System.out.println(keyValuePairsA.getPublicKey());
-		System.out.println(KeyValuePairs.Sign(aToBTransaction.toString(),keyValuePairsA.getPrivateKey()));
-		
-		vin.setSignature(KeyValuePairs.Sign(aToBTransaction.toString(),keyValuePairsA.getPrivateKey()));
-		
-		System.out.println(validateTransaction(transaction,aToBTransaction));
+		Hello hello1 = new Hello();
+		hello1.a = 1;
+		hello1.b = 2;
+		String helloString = Utilities.toByteArray(hello1).toString();
+		Hello hello2 = (Hello) Utilities.toObject(helloString.getBytes());
+		System.err.println(hello2.a);
 		
 	}
 
