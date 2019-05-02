@@ -343,6 +343,7 @@ public class Main {
 								for(int j=0;j<hashList.size();j++) {
 									//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
 									pt.peerWriter.write("GET_BLOCK "+ hashList.get(j));
+									TimeUnit.MILLISECONDS.sleep(1000);
 								}
 							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
