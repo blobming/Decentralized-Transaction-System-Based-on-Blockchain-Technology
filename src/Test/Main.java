@@ -349,7 +349,7 @@ public class Main {
 							Block tempblock = blockChain.getBlock(payload);
 							if (tempblock != null) {
 								System.out.println("Sending block " + payload + " to peer");
-								pt.peerWriter.write("BLOCK " + Utilities.toByteArray(tempblock));
+								pt.peerWriter.write("BLOCK " + new String(Utilities.toByteArray(tempblock)));
 							}
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
