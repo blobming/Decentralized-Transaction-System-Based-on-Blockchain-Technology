@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Stack;
 
+import com.google.gson.Gson;
 import com.mongodb.internal.connection.tlschannel.util.Util;
 
 import Security.KeyValuePairs;
@@ -63,13 +64,7 @@ class XjmTest {
 		
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		Hello hello1 = new Hello();
-		hello1.a = 1;
-		hello1.b = 2;
-		String helloString = Utilities.toByteArray(hello1).toString();
-		Hello hello2 = (Hello) Utilities.toObject(helloString.getBytes());
-		System.err.println(hello2.a);
+		Gson gson = new Gson();
 		
 	}
 
