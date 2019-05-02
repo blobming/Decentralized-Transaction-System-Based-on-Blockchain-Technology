@@ -365,6 +365,8 @@ public class Main {
 							System.out.println("Sending block " + payload + " to peer");
 							pt.peerWriter.write("BLOCK " + "aBlock");
 							//把对方请求的块给对方
+							//下午要做的事情就是处理这个payload 如果当自己的区块链长度等于bestHeight
+							//的时候就处理这个Get_Block
 							Block block = blockChain.get(Integer.parseInt(payload));wlan0
 							
 							if (block != null) {
