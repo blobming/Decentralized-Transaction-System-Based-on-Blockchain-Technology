@@ -37,7 +37,6 @@ public class Blockchain implements Iterable<Block>{
 		return genesis;
 	}
 	public boolean addBlock(Block newB) {
-		if(tip == null)	return false;
 		if(getBlock(newB.getHashCode()) != null)	return false;
 		newB.setPreHashCode(tip);
 		tip = newB.getHashCode();
@@ -49,7 +48,7 @@ public class Blockchain implements Iterable<Block>{
 	
 	//not tested
 	public Block getBlock(String hashcode) {
-		Object result = (Block) Global.blockDB.get(Utilities.toByteArray(hashcode));
+		Object result = Global.blockDB.get(hashcode);
 		if(result == null)	return null;
 		else {
 			return (Block)result;
