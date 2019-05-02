@@ -111,7 +111,6 @@ public class Main {
 		 */
 	
 	private static final int port = 8015;
-	private static int HEIGHT;
 	private static int bestHeight;
 	private static PeerThread bestThread;
 	
@@ -122,20 +121,21 @@ public class Main {
 		Global.blockDB.open("Block");
 		Global.blockDB.open("Config");  //Height of the current Block Chain
 		Global.utxoDB.open("UTXO");
+
 		
-		Blockchain blockChain = new Blockchain();
-		blockChain.newBlockchain();
-		//blockChain.addBlock(TestAddData.newBlock());
-		UTXOSet.blockchain = blockChain;
-		UTXOSet.Reindex();
 		
-		/*
 		//FIXME base58
 		System.out.println("initiating user's keyPairs");
 		KeyValuePairs keyValuePairs = new KeyValuePairs();
 		Global.keyValuePairs = keyValuePairs;
 		System.out.println("User's public key is :" + keyValuePairs.getPublicKey());
 		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
+		
+		Blockchain blockChain = new Blockchain();
+		blockChain.newBlockchain();
+		blockChain.addBlock(TestAddData.newBlock());
+		UTXOSet.blockchain = blockChain;
+		UTXOSet.Reindex();
 		
 		String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAoF4taDUDGujMDbn6v4He/fQ/AQ5n5492oxf05gsmiTNgA67yW+w3BjnKtc/HM1+YfUC+aUGtwkLRia1hEzSBr7iX77hh2kjiw8jUzWXfQ1s0jvDmxg+Ok7Kmha4hlf6AU4NrKg3EJ8DPgWI7N7iMq+IK4lpzZ18SSOZ+33KgAwIDAQAB";
 		String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
@@ -183,20 +183,19 @@ public class Main {
 		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
 		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
 		
-		*/
+		
 		
 // view two block
-		for(Block block: blockChain) {
-			System.out.println(block.getBlockBody().transactions.size());
-			for(Transaction t : block.getBlockBody().transactions) {
-				System.out.println(t.toString());
-			}
-			System.out.println("==========");
-		}
+//		for(Block block: blockChain) {
+//			System.out.println(block.getBlockBody().transactions.size());
+//			for(Transaction t : block.getBlockBody().transactions) {
+//				System.out.println(t.toString());
+//			}
+//			System.out.println("==========");
+//		}
 		
 		//取出链高度
-		HEIGHT = blockChain.getHeight();
-		System.out.print(HEIGHT);
+		System.out.print(blockChain.getHeight());
 		//开启网络
 		System.out.println("Starting peer network");
 		PeerNetwork peerNetwork = new PeerNetwork(port);
@@ -271,7 +270,7 @@ public class Main {
 		
 		System.out.println("begin send broadcast");
 		//建立socket连接后，给大家广播握手
-		peerNetwork.broadcast("HEIGHT "+ HEIGHT);
+		peerNetwork.broadcast("HEIGHT "+ blockChain.getHeight());
 		
 		while (true) {
 			
@@ -316,7 +315,7 @@ public class Main {
 							System.out.println("VERACK:"+payload);
 							// 对方确认知道了,并给我区块高度
 							bestHeight = Integer.parseInt(payload);
-							if(bestHeight > HEIGHT) {
+							if(bestHeight > blockChain.getHeight()) {
 								bestThread = pt;
 							}
 						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
@@ -324,14 +323,14 @@ public class Main {
 							// 对方发来握手信息
 							// 获取区块高度和版本号信息
 							int height = Integer.parseInt(payload);
-							if(height >= HEIGHT) {
+							if(height >= blockChain.getHeight()) {
 								bestHeight = height;
 								bestThread = pt;
 							}
 							//我方回复：知道了
 							//pt.peerWriter.write("VERACK " + blockChain.size() + " " + blockChain.get(blockChain.size() - 1).getHash());
 							
-							pt.peerWriter.write("VERACK "+HEIGHT);
+							pt.peerWriter.write("VERACK "+blockChain.getHeight());
 						} else if("GET_BLOCKS".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCKS:"+ payload);
 							ArrayList<String> hashList = Blockchain.generateInv(blockChain, payload);
@@ -349,10 +348,10 @@ public class Main {
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
 							//把对方请求的块给对方
-							Block block = blockChain.getBlock(payload);
-							if (block != null) {
+							Block tempblock = blockChain.getBlock(payload);
+							if (tempblock != null) {
 								System.out.println("Sending block " + payload + " to peer");
-								pt.peerWriter.write("BLOCK " + Utilities.toByteArray(block));
+								pt.peerWriter.write("BLOCK " + Utilities.toByteArray(tempblock));
 							}
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
 							//把对方给的块存进链中
@@ -390,8 +389,9 @@ public class Main {
 			// ********************************
 			// 		比较区块高度,同步区块
 			// ********************************
-			if(bestHeight > HEIGHT) {
-				System.out.println("Local chain height: " + HEIGHT+" peer Height: " + bestHeight);
+			int height = blockChain.getHeight();
+			if(bestHeight > height) {
+				System.out.println("Local chain height: " + height+" peer Height: " + bestHeight);
 				TimeUnit.MILLISECONDS.sleep(300);
 				bestThread.peerWriter.write("GET_BLOCKS "+ blockChain.tip);
 			}
