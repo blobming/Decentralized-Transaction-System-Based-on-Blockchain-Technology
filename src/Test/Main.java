@@ -334,44 +334,33 @@ public class Main {
 							pt.peerWriter.write("VERACK "+HEIGHT);
 						} else if("GET_BLOCKS".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCKS:"+ payload);
-							
-							//this blank area leaves for getting inventory
-							
-							
-							pt.peerWriter.write("INVENTORY "+ payload);
+							ArrayList<String> hashList = Blockchain.generateInv(blockChain, payload);
+							pt.peerWriter.write("INVENTORY "+ Utilities.toByteArray(hashList).toString());
 						} else if("INVENTORY".equalsIgnoreCase(cmd)) {
 							System.out.println("INVENTORY:"+ payload);
-							//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
-							
-							pt.peerWriter.write("GET_BLOCK "+ payload);
-						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
-							//把对方给的块存进链中
-							System.out.println("Block:"+payload);
-						//
-							peerNetwork.broadcast("BLOCK "+payload);
-							Block newBlock = gson.fromJson(payload, Block.class);
-							if (!blockChain.contains(newBlock)) {
-								LOGGER.info("Attempting to add Block: " + payload);
-								// 校验区块，如果成功，将其写入本地区块链
-								if (BlockUtils.isBlockValid(newBlock, blockChain.get(blockChain.size() - 1))) {
-									blockChain.add(newBlock);
-									LOGGER.info("Added block " + newBlock.getIndex() + " with hash: ["+ newBlock.getHash() + "]");
-									FileUtils.writeStringToFile(dataFile,"\r\n"+gson.toJson(newBlock), StandardCharsets.UTF_8,true);
-									peerNetwork.broadcast("BLOCK " + payload);
+							if(Utilities.toObject(payload.getBytes()) instanceof ArrayList<?>) {
+								ArrayList<String> hashList = (ArrayList<String>) Utilities.toObject(payload.getBytes());
+								for(int j=0;j<hashList.size();j++) {
+									//在我们得到了INVENTORY以后，开始请求区块，发送GET_BLOCK命令
+									pt.peerWriter.write("GET_BLOCK "+ hashList.get(j));
 								}
 							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
-							System.out.println("Sending block " + payload + " to peer");
-							pt.peerWriter.write("BLOCK " + "aBlock");
 							//把对方请求的块给对方
-							//下午要做的事情就是处理这个payload 如果当自己的区块链长度等于bestHeight
-							//的时候就处理这个Get_Block
-							Block block = blockChain.get(Integer.parseInt(payload));wlan0
-							
+							Block block = blockChain.getBlock(payload);
 							if (block != null) {
-								LOGGER.info("Sending block " + payload + " to peer");
-								pt.peerWriter.write("BLOCK " + gson.toJson(block));
+								System.out.println("Sending block " + payload + " to peer");
+								pt.peerWriter.write("BLOCK " + Utilities.toByteArray(block));
+							}
+						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
+							//把对方给的块存进链中
+							System.out.println("Block:"+payload);
+							System.out.println("Attempting to add Block: " + payload);
+							Block newBlock = (Block) Utilities.toObject(payload.getBytes());
+							if(blockChain.addBlock(newBlock)) {
+								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
+								peerNetwork.broadcast("BLOCK " + payload);
 							}
 						} else if ("ADDR".equalsIgnoreCase(cmd)) {
 							System.out.println("ADDR: "+payload);
