@@ -65,7 +65,10 @@ class XjmTest {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Gson gson = new Gson();
-		
+		Hello helloA = new Hello();
+		helloA.a = 1;
+		helloA.b = 2;
+		System.out.print(gson.toJson(helloA));
 	}
 
 }

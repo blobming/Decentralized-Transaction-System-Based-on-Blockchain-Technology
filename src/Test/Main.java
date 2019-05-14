@@ -21,6 +21,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.CharSet;
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
+
 import Network.PeerNetwork;
 import Network.PeerThread;
 import Network.RpcServer;
@@ -382,7 +384,11 @@ public class Main {
 							Random random = new Random();
 							System.out.println(peers.size());
 							pt.peerWriter.write("ADDR " + peers.get(random.nextInt(peers.size())));
-						} 
+						} else if("TRANSACTION_INV".equalsIgnoreCase(cmd)) {
+							
+						} else if("TRANSACTION".equalsIgnoreCase(cmd)) {
+							
+						}
 					}
 				}
 			}
@@ -413,7 +419,11 @@ public class Main {
 					parts[0] = parts[0].toLowerCase();
 					if ("getinfo".equals(parts[0])) {
 						//String res = prettyGson.toJson(blockChain);
-						String response = "block's Information";
+						Gson gson = new Gson();
+						String response = "";
+						for(Block block1:blockChain) {
+							response = gson.toJson(block1);
+						}
 						rpcthread.response = response;
 					} else if ("send".equals(parts[0])) {
 						try {
