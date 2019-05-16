@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ import config.Global;
 import obj.Block;
 import obj.BlockBody;
 import obj.Blockchain;
+import obj.TXPool;
 import obj.Transaction;
 import obj.UTXOSet;
 import obj.Vin;
@@ -384,10 +387,27 @@ public class Main {
 							Random random = new Random();
 							System.out.println(peers.size());
 							pt.peerWriter.write("ADDR " + peers.get(random.nextInt(peers.size())));
+						} else if("SYNC_TRANSACTION".equalsIgnoreCase(cmd)) {
+							pt.peerWriter.write("TRANSACTION_INV " + Base64.getEncoder().encodeToString(Utilities.toByteArray(TXPool.getAllHash())));
 						} else if("TRANSACTION_INV".equalsIgnoreCase(cmd)) {
-							
+							ArrayList<String> transactionInv = (ArrayList<String>) Utilities.toObject(Base64.getDecoder().decode(payload));
+							for(String t : transactionInv) {
+								if(!TXPool.contains(t)) {
+									pt.peerWriter.write("GET_TRANSACTION " + t);
+								}
+							}
+						} else if("GET_TRANSACTION".equalsIgnoreCase(cmd)) {
+							if(TXPool.contains(payload)) {
+								pt.peerWriter.write("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(TXPool.get(payload))));
+							}
 						} else if("TRANSACTION".equalsIgnoreCase(cmd)) {
-							
+							Transaction transaction = (Transaction) Utilities.toObject(Base64.getDecoder().decode(payload));
+							if(transaction != null) {
+								if(!TXPool.contains(payload)) {
+									TXPool.putInPool(transaction);
+									peerNetwork.broadcast("TRANSACTION " + payload);
+								}
+							}
 						}
 					}
 				}
@@ -425,7 +445,9 @@ public class Main {
 							response = gson.toJson(block1);
 						}
 						rpcthread.response = response;
-					} else if ("send".equals(parts[0])) {
+					}else if("SYNC_TRANSACTION".equals(parts[0])) {
+						peerNetwork.broadcast("SYNC_TRANSACTION "+"1");
+					}else if ("send".equals(parts[0])) {
 						try {
 							int vac = Integer.parseInt(parts[1]);
 							peerNetwork.broadcast("BLOCK "+"aBlock");

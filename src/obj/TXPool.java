@@ -18,9 +18,14 @@ public class TXPool {
 		if(Global.txDB.get(t.getHash()) != null)	return true;
 		return false;
 	}
+	public static boolean contains(String t) {
+		if(Global.txDB.get(t) != null)	return true;
+		return false;
+	}
 	public static Transaction get(String hashcode) {
 		return (Transaction) Global.txDB.get(hashcode);
 	}
+	//FIXME
 	public static ArrayList<Transaction> getAll(){
 		ArrayList<Transaction> txs = new ArrayList<>();
 		return txs;
