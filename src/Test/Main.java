@@ -53,7 +53,6 @@ public class Main {
 			blockChain.newBlockchain();
 			blockChain.addBlock(TestAddData.newBlock());
 			UTXOSet.Reindex();
-			
 			String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAoF4taDUDGujMDbn6v4He/fQ/AQ5n5492oxf05gsmiTNgA67yW+w3BjnKtc/HM1+YfUC+aUGtwkLRia1hEzSBr7iX77hh2kjiw8jUzWXfQ1s0jvDmxg+Ok7Kmha4hlf6AU4NrKg3EJ8DPgWI7N7iMq+IK4lpzZ18SSOZ+33KgAwIDAQAB";
 			String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
 			String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrgxtZwKjrPGA9Vt0S7H579/CtCjQ0s5QzbVQSvW4Pia0kG+uggSH9CMSjtDzG1eaNlzf7ZBj/usAJAYpwEHwHq8hMv4eIywapoPhHsxMTzPi9wPNNAzpdhOgeKRBA1I3L9YJPZrxqbOpTaLrNxhD2XFJ28vKszuMSoROBsKpvIQIDAQAB";
@@ -319,7 +318,6 @@ public class Main {
 					String[] parts = request.split(" ");
 					parts[0] = parts[0].toLowerCase();
 					if ("getinfo".equals(parts[0])) {
-						//String res = prettyGson.toJson(blockChain);
 						Gson gson = new Gson();
 						String response = "";
 						for(Block block1:blockChain) {

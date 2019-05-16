@@ -1,19 +1,10 @@
 package Test;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Stack;
-
-import com.google.gson.Gson;
-import com.mongodb.internal.connection.tlschannel.util.Util;
 
 import Security.KeyValuePairs;
 import Utilities.Utilities;
 import obj.*;
-
-class Hello implements Serializable{
-	public int a;
-	public int b;
-}
 
 class XjmTest {
 	
@@ -64,11 +55,6 @@ class XjmTest {
 		
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Gson gson = new Gson();
-		Hello helloA = new Hello();
-		helloA.a = 1;
-		helloA.b = 2;
-		System.out.print(gson.toJson(helloA));
 	}
 
 }
