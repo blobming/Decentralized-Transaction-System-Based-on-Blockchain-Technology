@@ -1,4 +1,4 @@
-package berkeleyDb;
+package database;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

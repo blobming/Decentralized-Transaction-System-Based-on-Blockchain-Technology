@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="commons-lang3-3.8.1/commons-lang3-3.8.1-tests.jar"/>
 	<classpathentry kind="lib" path="commons-lang3-3.8.1/commons-lang3-3.8.1-test-sources.jar"/>
 	<classpathentry kind="lib" path="gson-2.0.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

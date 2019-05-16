@@ -126,7 +126,7 @@ public class Main {
 		Global.blockDB.open("Block");
 		Global.blockDB.open("Config");  //Height of the current Block Chain
 		Global.utxoDB.open("UTXO");
-
+		Global.txDB.open("TXPool");
 		
 		
 		//FIXME base58

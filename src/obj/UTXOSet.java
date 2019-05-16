@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import Utilities.Utilities;
-import berkeleyDb.MyBerkeleyDB;
+import database.MyBerkeleyDB;
 import config.Global;
 
 public class UTXOSet {
