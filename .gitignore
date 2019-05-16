@@ -3,4 +3,5 @@ bin/
 .DS_Store
 UTXO/
 Block/
+TXPool/
 *.list

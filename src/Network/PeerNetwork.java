@@ -49,7 +49,7 @@ public class PeerNetwork extends Thread {
     	try {
     		socket = new Socket();
     		System.out.println(host);
-    		socket.connect(new InetSocketAddress(host,port),10000);
+    		socket.connect(new InetSocketAddress(host,port),5000);
 			String remoteHost = socket.getInetAddress().getHostAddress();
 			int remotePort = socket.getPort();
 			System.out.println("socket " + remoteHost + ":" + remotePort + " connected.");
