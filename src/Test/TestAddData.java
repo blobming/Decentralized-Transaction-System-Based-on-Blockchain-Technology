@@ -85,6 +85,7 @@ public class TestAddData {
 		txs.add(t2);
 		txs.add(t3);
 		BlockBody body = new BlockBody(txs);
+		//body.browseWholeTree();
 		Block block = new Block(body, 123, UTXOSet.blockchain.tip, new Date());
 		return block;
 	}

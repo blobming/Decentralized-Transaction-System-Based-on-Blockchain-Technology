@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import com.google.gson.Gson;
+
 import config.Global;
 
 public class BlockBody  implements Serializable {
@@ -65,5 +67,8 @@ public class BlockBody  implements Serializable {
 
 	public void setRoot(TreeNode root) {
 		this.root = root;
-	}	
+	}
+	public void browseWholeTree(){
+		System.out.println(new Gson().toJson(this.nodes));
+	}
 }

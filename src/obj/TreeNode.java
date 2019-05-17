@@ -26,8 +26,8 @@ public class TreeNode implements Serializable {
 	
 	public TreeNode(Transaction tx) {
 		this.tx = tx;
-		this.tx1Hash = tx.getHash();
 		this.tx1Hash = null;
+		this.tx2Hash = null;
 	}
 
 	public String getTx1Hash() {
