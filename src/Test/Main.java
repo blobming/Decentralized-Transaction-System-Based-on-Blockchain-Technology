@@ -30,7 +30,6 @@ public class Main {
 	private static final int port = 8015;
 	private static int bestHeight;
 	private static PeerThread bestThread;
-	private static Boolean INIT_FLAG = true;
 	
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		System.out.println("Starting daemon");
@@ -44,7 +43,7 @@ public class Main {
 		UTXOSet.blockchain = blockChain;
 		TestAddData.InitUserInfo();
 		UTXOSet.blockchain.newBlockchain();
-		//TestAddData.InitBlock();
+		TestAddData.InitBlock();
 		
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
 		System.out.println("payee1's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey1));
@@ -240,7 +239,7 @@ public class Main {
 						} else if("TRANSACTION".equalsIgnoreCase(cmd)) {
 							Transaction transaction = (Transaction) Utilities.toObject(Base64.getDecoder().decode(payload));
 							if(transaction != null) {
-								if(!TXPool.contains(payload)) {
+								if(!TXPool.contains(transaction)) {
 									TXPool.putInPool(transaction);
 									peerNetwork.broadcast("TRANSACTION " + payload);
 								}
@@ -269,8 +268,8 @@ public class Main {
 				String request = rpcthread.request;
 				if (request != null) {
 					String[] parts = request.split(" ");
-					parts[0] = parts[0].toLowerCase();
-					if ("getinfo".equals(parts[0])) {
+					parts[0] = parts[0].toUpperCase();
+					if ("GET_INFO".equals(parts[0])) {
 						ArrayList<Block> blockList1 = new ArrayList<Block>();
 						for(Block block: UTXOSet.blockchain) {
 							System.err.println(block.getHashCode());
@@ -279,7 +278,7 @@ public class Main {
 						rpcthread.response = new Gson().toJson(blockList1);
 					}else if("SYNC_TRANSACTION".equals(parts[0])) {
 						peerNetwork.broadcast("SYNC_TRANSACTION "+"1");
-					}else if("discoverip".equals(parts[0])) {
+					}else if("DISCOVER_IP".equals(parts[0])) {
 						peerNetwork.broadcast("GET_ADDR");
 						rpcthread.response = "Request has been sent";
 					}else {

@@ -14,6 +14,7 @@ import config.Global;
 import obj.Block;
 import obj.BlockBody;
 import obj.Blockchain;
+import obj.TXPool;
 import obj.Transaction;
 import obj.UTXOSet;
 import obj.Vin;
@@ -134,12 +135,13 @@ public class TestAddData {
 		vouts[0] = vout1;
 		vouts[1] = vout2;
 		Transaction t = new Transaction(vinList, vouts, false, payeePrivate3, new Date());
-		ArrayList<Transaction> txs = new ArrayList<>();
-		txs.add(t);
-		BlockBody blockbody = new BlockBody(txs);
-		Block block = new Block(blockbody, 23, UTXOSet.blockchain.tip, new Date());
-		UTXOSet.blockchain.addBlock(block);
-		UTXOSet.Update(blockbody);
+		//ArrayList<Transaction> txs = new ArrayList<>();
+		TXPool.putInPool(t);
+		//txs.add(t);
+		//BlockBody blockbody = new BlockBody(txs);
+		//Block block = new Block(blockbody, 23, UTXOSet.blockchain.tip, new Date());
+		//UTXOSet.blockchain.addBlock(block);
+		//UTXOSet.Update(blockbody);
 		
 	}
 	
