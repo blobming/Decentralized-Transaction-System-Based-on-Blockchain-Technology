@@ -109,9 +109,7 @@ public class Main {
 				peers.add(peer);
 				//raw ipv4
 				//尝试连接
-				if(peerNetwork.connect(addr[0], Integer.parseInt(addr[1]))) {
-					System.out.println("Connecting to "+addr[0]+" Success!");
-				}
+				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
 			}
 			//如果peerlist的第一条不是自己的ip地址(当前自己的ip地址改变）
 			System.out.println("Replace local Address");
@@ -123,6 +121,12 @@ public class Main {
 			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,false);
 			for(int i=1;i<peers.size();i++) {
 				FileUtils.writeStringToFile(peerFile, "\r\n"+peers.get(i),StandardCharsets.UTF_8,true);
+			}
+		}
+		//临时补救
+		for(PeerThread pt:peerNetwork.peerThreads) {
+			while(!pt.isAlive()) {
+				
 			}
 		}
 		System.out.println("broadcast ip address");
