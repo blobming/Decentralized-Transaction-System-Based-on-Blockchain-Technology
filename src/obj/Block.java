@@ -52,10 +52,10 @@ public class Block implements Serializable {
 		return blockBody;
 	}
 	
-	public Block(BlockBody blockBody, int nonce) {
-		//this.preHashCode = preHashCode;
+	public Block(BlockBody blockBody, int nonce, String preHashCode, Date timeStamp) {
+		this.preHashCode = preHashCode;
 		this.merkleRootHash = blockBody.getRoot().getHash();
-		this.timeStamp = new Date();
+		this.timeStamp = timeStamp;
 		this.nBits = Global.nbits;
 		this.nonce = nonce;
 		this.hashCode = this.calculateHash();

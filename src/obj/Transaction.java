@@ -1,6 +1,8 @@
 package obj;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,10 +24,10 @@ public class Transaction implements Serializable {
 	private Date timestamp;
 	private boolean isCoinBase;
 	
-	public Transaction(Vin[] vin, Vout[] vout, Boolean isCoinBase, String payerPrivateKey) {
+	public Transaction(Vin[] vin, Vout[] vout, Boolean isCoinBase, String payerPrivateKey, Date timeStamp) {
 		this.vin = vin;
 		this.vout = vout;
-		setTimestamp(new Date());
+		setTimestamp(timeStamp);
 		String toHash = "";
 		for(Vin in : vin) {
 			toHash += in.toString();
@@ -138,7 +140,7 @@ public class Transaction implements Serializable {
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];
 		vouts[0] = vout;
-		Transaction t = new Transaction(vins, vouts, true, null);
+		Transaction t = new Transaction(vins, vouts, true, null, new Date());
 		//t.isCoinBase = true;
 		return t;
 	}
@@ -150,7 +152,14 @@ public class Transaction implements Serializable {
 		vins[0] = vin;
 		Vout vouts[] = new Vout[1];
 		vouts[0] = vout;
-		Transaction t = new Transaction(vins, vouts, true, null);
+		Date timeStamp = new Date();
+		try {
+			timeStamp = new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Transaction t = new Transaction(vins, vouts, true, null,timeStamp);
 		return t;
 	}
 	@Override

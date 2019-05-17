@@ -1,4 +1,6 @@
 package Test;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Stack;
 
@@ -53,8 +55,9 @@ class XjmTest {
 		return false;
 	}
 		
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		// TODO Auto-generated method stub
+		System.out.println(new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01"));
 	}
 
 }

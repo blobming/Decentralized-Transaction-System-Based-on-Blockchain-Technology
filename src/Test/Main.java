@@ -40,74 +40,25 @@ public class Main {
 		Global.utxoDB.open("UTXO");
 		Global.txDB.open("TXPool");
 		
-		
-		//FIXME base58
-		System.out.println("initiating user's keyPairs");
-		KeyValuePairs keyValuePairs = new KeyValuePairs();
-		Global.keyValuePairs = keyValuePairs;
-		System.out.println("User's public key is :" + keyValuePairs.getPublicKey());
-		System.out.println("User's private key is :" + keyValuePairs.getPrivateKey());
 		Blockchain blockChain = new Blockchain();
 		UTXOSet.blockchain = blockChain;
-		if(INIT_FLAG) {
-			blockChain.newBlockchain();
-			blockChain.addBlock(TestAddData.newBlock());
-			UTXOSet.Reindex();
-			String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAoF4taDUDGujMDbn6v4He/fQ/AQ5n5492oxf05gsmiTNgA67yW+w3BjnKtc/HM1+YfUC+aUGtwkLRia1hEzSBr7iX77hh2kjiw8jUzWXfQ1s0jvDmxg+Ok7Kmha4hlf6AU4NrKg3EJ8DPgWI7N7iMq+IK4lpzZ18SSOZ+33KgAwIDAQAB";
-			String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
-			String payeePubKey2 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrgxtZwKjrPGA9Vt0S7H579/CtCjQ0s5QzbVQSvW4Pia0kG+uggSH9CMSjtDzG1eaNlzf7ZBj/usAJAYpwEHwHq8hMv4eIywapoPhHsxMTzPi9wPNNAzpdhOgeKRBA1I3L9YJPZrxqbOpTaLrNxhD2XFJ28vKszuMSoROBsKpvIQIDAQAB";
-			String payeePubKey3 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzDFj+IaxyMddAR70wdGEwAj/yFsFNKk1nD9I8ApYqPt+Eh+PQJSVSoffRjsyxONR/L5tJoqYl25wKh/4iTcAvNdkLnpYTsGs3bZXyuFxsrY120ipXngIaxa1MmbzBYriiXQgaWjtSS6hZe7Jg0Grn1+I0B5U4G5nyJZJ2+Tg8DwIDAQAB";
-			String payeePrivate3 = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBALMMWP4hrHIx10BHvTB0YTACP/IWwU0qTWcP0jwClio+34SH49AlJVKh99GOzLE41H8vm0mipiXbnAqH/iJNwC812QuelhOwazdtlfK4XGytjXbSKleeAhrFrUyZvMFiuKJdCBpaO1JLqFl7smDQaufX4jQHlTgbmfIlknb5ODwPAgMBAAECgYBkf0zAL8RsQF9yXBHrzZbzbH/Z8T3Egzb43x+AwW7p/WpWKDQNk5v0WqcPv5hS7PQRA3alCR865p4aJyTUulFg/bd5gwMlVXJg/upRUYzmImUeCyWJ2h5hBcGfuDlB18KNheiUnkERMOcZf5cXt+NcheCxulTkWWMXgfKvFEY6kQJBAODHw1Kxhd4mr5044xJL6bJXG4NSsjykzz5apz9MmMAAeBQYj+ILth/JOxBvseD863+rSM+1s4x/2kuDc8uBERkCQQDL6ouHBZoAyTp+T30ezQdorKC/InAxPSYWGLaAj8gWnF/eZrA7a0bHvshpEjWSNyZrUQMfm8VLAiyx3fSpYZNnAkBX3l9BbToKfI774+gIF/rUB28u593bDQYitudYPEYeEFDgcjWUxMU+KbjYFQGxFM2ui7Ob1sjIbJZWHJ3geKTJAkEAlzIMTIwRuT17OoaTvk/Fi45cDfxp9YhiggXG5CI3+NPvnYbEavpK2/YQwR94SzbLLM0/pKMqMUimfSeWrjSkRwJALulj2nhX3DxhPusnJYFh6L9bLLMoxk2ZNY8F4FSZfDdXf2p1rwM36z8uIAairY3TaZFdQ5R82+nfJqIKhmFdQg==";
-			System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
-			System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
-			System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
-			System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
-			
-			
-			//payee3 --21---> user
-			//balance: user:71
-			//payee1:3
-			//payee2: 25
-			//payee3: 21
-			HashMap<String, HashSet<Vout>> spendable = UTXOSet.FindSpendableOutputs(payeePubKey3, 21);
-			ArrayList<Vin> vins = new ArrayList<>();
-			for(Entry<String, HashSet<Vout>> entry : spendable.entrySet()) {
-				String txID = entry.getKey();
-				for(Vout vout : entry.getValue()) {
-					vins.add(new Vin(txID, vout.getSeqNum(), payeePubKey3));
-				}	
-			}
-			Vin[] vinList = new Vin[vins.size()];
-			
-			for(int i=0;i<vinList.length;i++) {
-				vinList[i] = vins.get(i);
-			}
-			Vout vout1 = new Vout(21, 0, Utilities.hashKeyForDisk(userPubKey));
-			Vout vout2 = new Vout(1, 1, Utilities.hashKeyForDisk(payeePubKey3));
-			Vout[] vouts = new Vout[2];
-			vouts[0] = vout1;
-			vouts[1] = vout2;
-			Transaction t = new Transaction(vinList, vouts, false, payeePrivate3);
-			ArrayList<Transaction> txs = new ArrayList<>();
-			txs.add(t);
-			BlockBody blockbody = new BlockBody(txs);
-			Block block = new Block(blockbody, 23);
-			blockChain.addBlock(block);
-			UTXOSet.Update(blockbody);
-			System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
-			System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
-			System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
-			System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
-			
-		}
+		TestAddData.InitUserInfo();
+		UTXOSet.blockchain.newBlockchain();
+		//TestAddData.InitBlock();
+		
+		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
+		System.out.println("payee1's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey1));
+		System.out.println("payee2's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey2));
+		System.out.println("payee3's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey3));
+		System.out.println(UTXOSet.blockchain.getHeight());
 		//view two block
-		for(Block block: blockChain) {
-			System.out.println(block.getBlockBody().transactions.size());
-			for(Transaction t : block.getBlockBody().transactions) {
-				System.out.println(t.toString());
-			}
-			System.out.println("==========");
+		ArrayList<Block> blockList = new ArrayList<Block>();
+		for(Block block: UTXOSet.blockchain) {
+			System.err.println(block.getHashCode());
+			blockList.add(block);
 		}
+		System.out.println(new Gson().toJson(blockList));
+		
 		//取出链高度
 		System.out.print(blockChain.getHeight());
 		//开启网络
@@ -159,7 +110,9 @@ public class Main {
 				peers.add(peer);
 				//raw ipv4
 				//尝试连接
-				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
+				if(peerNetwork.connect(addr[0], Integer.parseInt(addr[1]))) {
+					System.out.println("Connecting to "+addr[0]+" Success!");
+				}
 			}
 			//如果peerlist的第一条不是自己的ip地址(当前自己的ip地址改变）
 			System.out.println("Replace local Address");
@@ -318,12 +271,12 @@ public class Main {
 					String[] parts = request.split(" ");
 					parts[0] = parts[0].toLowerCase();
 					if ("getinfo".equals(parts[0])) {
-						Gson gson = new Gson();
-						String response = "";
-						for(Block block1:blockChain) {
-							response = gson.toJson(block1);
+						ArrayList<Block> blockList1 = new ArrayList<Block>();
+						for(Block block: UTXOSet.blockchain) {
+							System.err.println(block.getHashCode());
+							blockList1.add(block);
 						}
-						rpcthread.response = response;
+						rpcthread.response = new Gson().toJson(blockList1);
 					}else if("SYNC_TRANSACTION".equals(parts[0])) {
 						peerNetwork.broadcast("SYNC_TRANSACTION "+"1");
 					}else if("discoverip".equals(parts[0])) {

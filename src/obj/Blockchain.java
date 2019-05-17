@@ -1,6 +1,9 @@
 package obj;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,16 +35,23 @@ public class Blockchain implements Iterable<Block>{
 		Transaction coinbase = Transaction.genesisCoinbaseTx(Global.keyValuePairs.getPublicKey());
 		Global.genesisTX = coinbase.getHash();
 		BlockBody blockBody = new BlockBody(coinbase);
-		Block genesis = new Block(blockBody, 123456);
-		genesis.setPreHashCode("genesis");
+		Date timeStamp = new Date();
+		try {
+			timeStamp = new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Block genesis = new Block(blockBody, 123456, "genesis",timeStamp);
 		return genesis;
 	}
 	//仅限于从其他节点同步块时调用
 	public boolean addBlock(Block newB) {
 		if(getBlock(newB.getHashCode()) != null)	return false;
-		if(newB.getPreHashCode() != tip)	return false;
+		if(!tip.equals(newB.getPreHashCode())) return false;
 		tip = newB.getHashCode();
 		Global.blockDB.put(tip, newB);
+		Global.blockDB.put("0", tip);
 		height++;
 		Global.blockDB.put("Height", height);
 		return true;
@@ -67,13 +77,14 @@ public class Blockchain implements Iterable<Block>{
 			System.out.println("hash:" + genesisHash);
 			Global.blockDB.put("0", genesisHash); 
 			tip = genesisHash;
+			height = 1;
+			Global.blockDB.put("Height", height);
 		}else {
 			System.out.println("has sth in blochchain!");
 			tip = (String)Global.blockDB.get("0");
 			System.out.println("first block:" + tip);
-		}	
-		height++;
-		Global.blockDB.put("Height", height);
+		}
+		
 	}
 	
 	@Override

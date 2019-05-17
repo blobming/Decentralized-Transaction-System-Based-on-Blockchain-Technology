@@ -44,7 +44,7 @@ public class PeerNetwork extends Thread {
      * @param 要连接的host
      * @param 要连接的host的端口
      */
-    public void connect(String host, int port){
+    public Boolean connect(String host, int port){
     	Socket socket =null;
     	try {
     		socket = new Socket();
@@ -57,9 +57,17 @@ public class PeerNetwork extends Thread {
 			PeerThread pt = new PeerThread(socket);
 			peerThreads.add(pt);
 			pt.start();
+			return true;
 		} catch (IOException e) {
 			System.err.println("socket " + host +":"+port+ " can't connect.");
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
+    	return false;
     }
 
     @Override

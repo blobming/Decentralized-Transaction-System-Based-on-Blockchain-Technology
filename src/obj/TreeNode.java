@@ -61,8 +61,9 @@ public class TreeNode implements Serializable {
 	public void setFather(TreeNode father) {
 		this.father = father;
 	}
-
-	public String toStirng() {
+	
+	@Override
+	public String toString() {
 		String res = "";
 		if(tx == null) {
 			res += tx1Hash;
