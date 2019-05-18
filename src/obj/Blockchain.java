@@ -47,11 +47,33 @@ public class Blockchain implements Iterable<Block>{
 	}
 	//仅限于从其他节点同步块时调用
 	public boolean addBlock(Block newB) {
-		if(getBlock(newB.getHashCode()) != null)	return false;
-		if(!tip.equals(newB.getPreHashCode())) return false;
+		if(getBlock(newB.getHashCode()) != null) {
+			System.err.println("Block with HASH["+newB.getHashCode()+"] already exists");
+			return false;
+		}
+		if(!tip.equals(newB.getPreHashCode())) {
+			System.err.println("Block with HASH["+newB.getHashCode()+"]'s preHash unsatisfied");
+			return false;
+		}
+		for(Transaction transaction:newB.getBlockBody().transactions) {
+			if(!Transaction.validateTransaction(transaction)) {
+				System.err.println("Transaction with HASH["+transaction.getHash()+"] validated fail");
+				return false;
+			}
+		}
+		if(!newB.getHashCode().equals(newB.calculateHash())) {
+			System.err.println("Block with HASH["+newB.getHashCode()+"]'s HashCode Wrong");
+			return false;
+		}
 		tip = newB.getHashCode();
 		Global.blockDB.put(tip, newB);
 		Global.blockDB.put("0", tip);
+		UTXOSet.Update(newB.getBlockBody());
+		for(Transaction t : newB.getBlockBody().transactions) {
+			if(TXPool.contains(t)) {
+				TXPool.removeTX(t);
+			}
+		}
 		height++;
 		Global.blockDB.put("Height", height);
 		return true;

@@ -64,7 +64,7 @@ public class Block implements Serializable {
 	
 	// use preHashCode, merkleRootHash, timeStamp, 
 	// nBits and nonce to calculate the hash of current block
-	private String calculateHash() {
+	public String calculateHash() {
 		String content = "" + 
 						this.preHashCode +
 						this.merkleRootHash +
