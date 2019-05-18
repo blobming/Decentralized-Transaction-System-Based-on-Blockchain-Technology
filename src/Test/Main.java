@@ -30,6 +30,7 @@ public class Main {
 	private static final int port = 8015;
 	private static int bestHeight;
 	private static PeerThread bestThread;
+	private static String networkCard = "en0";
 	
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		System.out.println("Starting daemon");
@@ -60,6 +61,7 @@ public class Main {
 		//view two block
 		blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
+			System.err.println(block.getHashCode());
 			blockList.add(block);
 		}
 		System.err.println(new Gson().toJson(blockList));
@@ -88,20 +90,21 @@ public class Main {
 			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
 		}
 		System.out.println("Please Choose one");
-		Scanner scanner = new Scanner(System.in);
-		host = hostList.get(scanner.nextLine());
-		scanner.close();
-		while(host == null) {
-			System.out.println("found that your computer has these following network Card");
-			hostList = Utilities.getInternetIp();
-			for(String key:hostList.keySet()) {
-				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-			}
-			System.out.println("Please Choose one");
-			scanner = new Scanner(System.in);
-			host = hostList.get(scanner.nextLine());
-			scanner.close();
-		}
+		host = hostList.get(networkCard);
+//		Scanner scanner = new Scanner(System.in);
+//		host = hostList.get(scanner.nextLine());
+//		scanner.close();
+//		while(host == null) {
+//			System.out.println("found that your computer has these following network Card");
+//			hostList = Utilities.getInternetIp();
+//			for(String key:hostList.keySet()) {
+//				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+//			}
+//			System.out.println("Please Choose one");
+//			scanner = new Scanner(System.in);
+//			host = hostList.get(scanner.nextLine());
+//			scanner.close();
+//		}
 		
 		//如果peer.txt未创建，则创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
@@ -272,6 +275,7 @@ public class Main {
 				rpcthread = rpcAgent.rpcThreads.get(i);
 				if(!rpcthread.isAlive()) {
 					rpcAgent.rpcThreads.remove(i);
+					System.out.println("An client has been disconnected");
 					continue;
 				}
 				String request = rpcthread.request;
@@ -289,17 +293,23 @@ public class Main {
 							System.err.println(block.getHashCode());
 							blockList1.add(block);
 						}
-						rpcthread.response = new Gson().toJson(blockList1);
+						String jsonString = new Gson().toJson(blockList1);
+						rpcthread.response = new Gson().toJson(new Status("1", jsonString));
 					}else if("SYNC_TRANSACTION".equals(cmd)) {
 						peerNetwork.broadcast("SYNC_TRANSACTION");
+						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"));
 					}else if("DISCOVER_IP".equals(cmd)) {
 						peerNetwork.broadcast("GET_ADDR");
-						rpcthread.response = "Request has been sent";
+						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"));
 					}else if("TRANSACTION".equals(cmd)) {
 						Transaction transaction = new Gson().fromJson(payload, Transaction.class);
 						peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"));
+					}else if("BALANCE".equals(cmd)) {
+						Double balance = UTXOSet.getBalance(payload);
+						rpcthread.response = new Gson().toJson(new Status("1", balance.toString()));
 					}else {
-						rpcthread.response = "Unknown command: \"" + cmd + "\" ";
+						rpcthread.response = new Gson().toJson(new Status("0", "Unknown command: \"" + cmd + "\" "));
 					}
 				}
 			}
