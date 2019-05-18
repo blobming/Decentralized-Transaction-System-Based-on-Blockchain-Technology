@@ -51,21 +51,21 @@ public class Main {
 		System.out.println(new Gson().toJson(blockList));
 		TestAddData.InitBlock();
 		
+		System.out.println("当前用户余额");
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
 		System.out.println("payee1's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey1));
 		System.out.println("payee2's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey2));
 		System.out.println("payee3's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey3));
-		System.out.println(UTXOSet.blockchain.getHeight());
+		
 		//view two block
 		blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
-			System.err.println(block.getHashCode());
 			blockList.add(block);
 		}
-		System.out.println(new Gson().toJson(blockList));
+		System.err.println(new Gson().toJson(blockList));
 		
 		//取出链高度
-		System.out.print(blockChain.getHeight());
+		System.out.println("当前区块链高度：" + UTXOSet.blockchain.getHeight());
 		//开启网络
 		System.out.println("Starting peer network");
 		PeerNetwork peerNetwork = new PeerNetwork(port);
@@ -130,11 +130,13 @@ public class Main {
 			}
 		}
 		//临时补救
-		for(PeerThread pt:peerNetwork.peerThreads) {
-			while(!pt.isAlive()) {
-				
+		for(PeerThread pt : peerNetwork.peerThreads) {
+			while(pt.peerReader == null || pt.peerWriter == null) {
+				System.out.println("waiting for connecting");
 			}
 		}
+		
+		
 		System.out.println("broadcast ip address");
 		peerNetwork.broadcast("ADDR " + host+":"+port);
 		
@@ -200,15 +202,12 @@ public class Main {
 							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
-							//把对方请求的块给对方
 							Block tempblock = blockChain.getBlock(payload);
 							if (tempblock != null) {
 								System.out.println("Sending block " + payload + " to peer");
 								pt.peerWriter.write("BLOCK " + Base64.getEncoder().encodeToString(Utilities.toByteArray(tempblock)));
 							}
 						} else if ("BLOCK".equalsIgnoreCase(cmd)) {
-							//把对方给的块存进链中
-							//FIXME 收到块以后去除交易池中的交易
 							System.out.println("Block:"+payload);
 							System.out.println("Attempting to add Block: " + payload);
 							Block newBlock = (Block) Utilities.toObject(Base64.getDecoder().decode(payload));
@@ -277,22 +276,30 @@ public class Main {
 				}
 				String request = rpcthread.request;
 				if (request != null) {
-					String[] parts = request.split(" ");
-					parts[0] = parts[0].toUpperCase();
-					if ("GET_INFO".equals(parts[0])) {
+					System.out.println("COMMAND: " + request);
+					int flag = request.indexOf(' ');
+					String cmd = flag >= 0 ? request.substring(0, flag) : request;
+					String payload = flag >= 0 ? request.substring(flag + 1) : "";
+					cmd = cmd.toUpperCase();
+					System.out.println(cmd);
+					System.out.println(payload);
+					if ("GET_INFO".equals(cmd)) {
 						ArrayList<Block> blockList1 = new ArrayList<Block>();
 						for(Block block: UTXOSet.blockchain) {
 							System.err.println(block.getHashCode());
 							blockList1.add(block);
 						}
 						rpcthread.response = new Gson().toJson(blockList1);
-					}else if("SYNC_TRANSACTION".equals(parts[0])) {
-						peerNetwork.broadcast("SYNC_TRANSACTION "+"1");
-					}else if("DISCOVER_IP".equals(parts[0])) {
+					}else if("SYNC_TRANSACTION".equals(cmd)) {
+						peerNetwork.broadcast("SYNC_TRANSACTION");
+					}else if("DISCOVER_IP".equals(cmd)) {
 						peerNetwork.broadcast("GET_ADDR");
 						rpcthread.response = "Request has been sent";
+					}else if("TRANSACTION".equals(cmd)) {
+						Transaction transaction = new Gson().fromJson(payload, Transaction.class);
+						peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
 					}else {
-						rpcthread.response = "Unknown command: \"" + parts[0] + "\" ";
+						rpcthread.response = "Unknown command: \"" + cmd + "\" ";
 					}
 				}
 			}

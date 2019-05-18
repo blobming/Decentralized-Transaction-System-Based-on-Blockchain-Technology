@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Stack;
 
+import com.google.gson.Gson;
+
 import Security.KeyValuePairs;
 import Utilities.Utilities;
 import config.Global;
@@ -93,7 +95,6 @@ public class Transaction implements Serializable {
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
 			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid());
-			System.err.println(vin.getTxid());
 			HashSet<Vout> voutList = Vout.FindVoutByTransactionId(vin.getTxid());
 			//得到相应的vout
 			Vout vout = null;

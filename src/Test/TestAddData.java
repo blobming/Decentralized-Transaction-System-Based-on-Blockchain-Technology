@@ -21,7 +21,6 @@ import obj.Vin;
 import obj.Vout;
 
 public class TestAddData {
-	public static String genesisTX = "1442cfe64c782b6077f8445b829be215a3bed269871f1fe3a7141ad81c0aa377";
 	public static String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCryH4NG0hMI0P0uDaapwqgPvsIcaRvMMNzz9q5olmD1MVlIf7wT7SDDZITHFxjh607sZ3XfSGseLtKfwz+vrH5T6q4LlcvYwC3roVxp8OINzNKLKmRtVCpp/1AKqffO8aQGJcRmXvNlEkFWdBf5+fnHOtkmvxKH9oUIkA/kVydnwIDAQAB";
 	public static String userPrivateKey = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKvIfg0bSEwjQ/S4NpqnCqA++whxpG8ww3PP2rmiWYPUxWUh/vBPtIMNkhMcXGOHrTuxndd9Iax4u0p/DP6+sflPqrguVy9jALeuhXGnw4g3M0osqZG1UKmn/UAqp987xpAYlxGZe82USQVZ0F/n5+cc62Sa/Eof2hQiQD+RXJ2fAgMBAAECgYBJpZYtBlJTmhbrVwLKAO10UCwNrbMCnJRfFXC/f1QDSfgq6I1E99b7DJlgqhsN7MAfRIHYPeRu7f/V62xl1tmzxA4MpIBrguZ8PPxm92hCkq0Wvfk0kGxHRKoYL9vFA6re92KypDgjDC8/a3SFzABD3E1I8zVMMHUY6STzXTEtgQJBAPYbINT8rhQqtbWPkzRG793he39hvIn1/s0w3oFbESFjlhxy3PyjyDyM1j6KMEswHwwJgmH9hWRMxJLyxVpHyt8CQQCysHMEbTXhum+IEM+89UY9DzWGSznvPUJLQ833uv02raDwG8SpuFj7QLYcfIqqaV74m8nIGqCQIlKXdWFXDEVBAkEAvwFvCd7SfHRpcvBrnzcvE1XdM4/3dFun1jkHd/3l3bQc3ReIy8uRrOzhmshFkxVWA1GeD89jp+Ss7B/fa6IsoQJBAKdkqLrS3BEUJ/tdVF59n0kAAHJH8oPt7Ta41DBomWEpkoScXsVnjuQAoRlaikRN5cwblRHB7/xWSuzb5042joECQQDePjtSGsqIHr3lZZhDAOyDqg256UNvKKZ/Teh3stJ5RKMHnQDdX45UZheQrzetMuK5bHKC5ek4Y/cd7uCJ6AQ5";
 	public static String payeePubKey1 = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAQv5OxRvWpB7qJjzWZmlI+9Ggc2kpwG/vPneOv+DU+eTGNCEl8MKvmZGy+GqGwhFxhQpHHB3a8Gw+IMl2EijVJ9Q0wa3dbDiQ8p/LaUsLUi2BvMUUV8TC9e+YzPQI9uMm9j/Y9u6Y5VVEdv2GUdW9mFXxStn6OJBHJdYDX5+yMwIDAQAB";
@@ -135,6 +134,8 @@ public class TestAddData {
 		vouts[0] = vout1;
 		vouts[1] = vout2;
 		Transaction t = new Transaction(vinList, vouts, false, payeePrivate3, new Date());
+		System.err.println("自定义的交易");
+		System.err.println(new Gson().toJson(t));
 		//ArrayList<Transaction> txs = new ArrayList<>();
 		TXPool.putInPool(t);
 		//txs.add(t);

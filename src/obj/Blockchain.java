@@ -34,6 +34,7 @@ public class Blockchain implements Iterable<Block>{
 	private Block newGenesisBlock() {
 		Transaction coinbase = Transaction.genesisCoinbaseTx(Global.keyValuePairs.getPublicKey());
 		Global.genesisTX = coinbase.getHash();
+		System.out.println("Global.GenesisTX+ "+coinbase.getHash());
 		BlockBody blockBody = new BlockBody(coinbase);
 		Date timeStamp = new Date();
 		try {
