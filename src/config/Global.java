@@ -2,6 +2,7 @@ package config;
 
 import Security.KeyValuePairs;
 import database.MyBerkeleyDB;
+import obj.User;
 
 public class Global {
 	private static Global global = new Global();
@@ -15,4 +16,5 @@ public class Global {
 	public static MyBerkeleyDB txDB = new MyBerkeleyDB("./DataFile/TXPool");
 	public static KeyValuePairs keyValuePairs;
 	public static String genesisTX;
+	public static User user;
 }

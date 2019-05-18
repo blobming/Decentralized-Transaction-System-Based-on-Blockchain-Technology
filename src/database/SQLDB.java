@@ -2,15 +2,21 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-
+import obj.User;
 
 public class SQLDB {
 	private static String driver = "com.mysql.jdbc.Driver";
-	private static String url = "jdbs:mysql://59.110.140.54/xxx";
+	private static String url = "jdbc:mysql://59.110.140.54/4PJT";
 	private static String user = "4pjt";
 	private static String pwd = "supinfo4pjtaccess";
 	private static Connection conn = null;
+	
+	private static final int a = 1;
 	
 	public static void connSqlDB() {
 		try {
@@ -23,16 +29,49 @@ public class SQLDB {
 	}
 	
 	//用户名查重
-	public static boolean checkUsername() {
+	public static boolean checkUsername(String username) {
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String sql = "select count(*) count from user where username=\"" + username + "\"";
+			ResultSet rs = statement.executeQuery(sql);
+			int count = 0;
+			while(rs.next()) {
+				count = rs.getInt("count");
+			}
+			return count == 0;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
-	public static boolean createUser() {
+	public static boolean createUser(User user) {
+		PreparedStatement psql;
+		try {
+			psql = conn.prepareStatement("insert into user (username,password,publickey,privatekey) "
+			        + "values(?,?,?,?)");
+			psql.setString(1, user.getUsername());
+			psql.setString(2, user.getPwd());
+			psql.setString(3, user.getPubkey());
+			psql.setString(4, user.getPrivateKey());
+			psql.executeUpdate(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+	public static void changePwd(User user) {
+		//没有检查用户是不是存在...默认存在
+		PreparedStatement psql;
+		try {
+			psql = conn.prepareStatement("update user set password=? where username = ?");
+			psql.setString(1, user.getPwd());
+			psql.setString(2, user.getUsername());
+			psql.executeUpdate(); 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
 }
