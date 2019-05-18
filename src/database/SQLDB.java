@@ -21,6 +21,15 @@ public class SQLDB {
 	    	e.printStackTrace();
 	    }
 	}
+	
+	//用户名查重
+	public static boolean checkUsername() {
+		return false;
+	}
+	public static boolean createUser() {
+		return false;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
