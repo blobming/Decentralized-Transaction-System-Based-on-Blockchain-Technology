@@ -15,9 +15,7 @@ public class SQLDB {
 	private static String user = "4pjt";
 	private static String pwd = "supinfo4pjtaccess";
 	private static Connection conn = null;
-	
-	private static final int a = 1;
-	
+
 	public static void connSqlDB() {
 		try {
 	        Class.forName(driver).newInstance();
