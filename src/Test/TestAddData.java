@@ -104,7 +104,6 @@ public class TestAddData {
 		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
 	}
 	public static void InitBlock() {
-		UTXOSet.Reindex();
 		UTXOSet.blockchain.addBlock(TestAddData.newBlock());
 		System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
 		System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));

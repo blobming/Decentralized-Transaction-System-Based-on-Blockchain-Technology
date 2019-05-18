@@ -43,6 +43,7 @@ public class Main {
 		UTXOSet.blockchain = blockChain;
 		TestAddData.InitUserInfo();
 		UTXOSet.blockchain.newBlockchain();
+		UTXOSet.Reindex();
 		ArrayList<Block> blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
 			blockList.add(block);
