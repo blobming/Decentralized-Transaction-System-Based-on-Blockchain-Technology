@@ -88,18 +88,32 @@ public class Transaction implements Serializable {
 	 * 7. 验证剩下两个元素是否正确
 	*/
 	
-	public static boolean validateTransaction(Transaction tx) {
+	public static boolean validateTransaction(Transaction tx, Block block) {
 		int count = 0;
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
-			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid()); 
-			HashSet<Vout> voutList = Vout.FindVoutByTransactionId(tx.getTxid());
+			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid());
+			System.err.println(vin.getTxid());
+			HashSet<Vout> voutList = Vout.FindVoutByTransactionId(vin.getTxid());
 			//得到相应的vout
 			Vout vout = null;
-			for(Vout tempVout : voutList) {
-				if(tempVout.getSeqNum() == vin.getVoutNum()) {
-					vout = tempVout;
-					break;
+			if(voutList != null) {
+				for(Vout tempVout : voutList) {
+					if(tempVout.getSeqNum() == vin.getVoutNum()) {
+						vout = tempVout;
+						break;
+					}
+				}
+			}else {
+				for(Transaction transaction:block.getBlockBody().transactions) {
+					if(transaction.getTxid().equals(vin.getTxid())) {
+						for(Vout tempVout : transaction.vout) {
+							if(tempVout.getSeqNum() == vin.getVoutNum()) {
+								vout = tempVout;
+								break;
+							}
+						}
+					}
 				}
 			}
 			if(vout == null) {
@@ -128,7 +142,10 @@ public class Transaction implements Serializable {
 				if(KeyValuePairs.Verify(tx.toString(), temp1, temp)) count++;
 			}
 		}
-		if(count == tx.vin.length) return true;
+		if(count == tx.vin.length) {
+			System.out.println("交易验证通过");
+			return true;
+		}
 		return false;
 	}
 	

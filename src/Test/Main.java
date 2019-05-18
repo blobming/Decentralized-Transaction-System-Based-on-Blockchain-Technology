@@ -43,6 +43,11 @@ public class Main {
 		UTXOSet.blockchain = blockChain;
 		TestAddData.InitUserInfo();
 		UTXOSet.blockchain.newBlockchain();
+		ArrayList<Block> blockList = new ArrayList<Block>();
+		for(Block block: UTXOSet.blockchain) {
+			blockList.add(block);
+		}
+		System.out.println(new Gson().toJson(blockList));
 		TestAddData.InitBlock();
 		
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
@@ -51,7 +56,7 @@ public class Main {
 		System.out.println("payee3's balance:" + UTXOSet.getBalance(TestAddData.payeePubKey3));
 		System.out.println(UTXOSet.blockchain.getHeight());
 		//view two block
-		ArrayList<Block> blockList = new ArrayList<Block>();
+		blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
 			System.err.println(block.getHashCode());
 			blockList.add(block);
