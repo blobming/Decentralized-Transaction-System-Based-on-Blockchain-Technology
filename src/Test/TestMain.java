@@ -27,7 +27,7 @@ import Utilities.Utilities;
 import config.Global;
 import obj.*;
 
-public class Main {
+public class TestMain {
 	private static final int port = 8015;
 	private static int bestHeight;
 	private static PeerThread bestThread;
