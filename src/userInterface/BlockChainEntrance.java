@@ -1,4 +1,4 @@
-package Test;
+package userInterface;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,18 +21,33 @@ import Network.PeerThread;
 import Network.RpcServer;
 import Network.RpcThread;
 import Security.KeyValuePairs;
+import Test.TestAddData;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
 import config.Global;
 import obj.*;
 
-public class Main {
-	private static final int port = 8015;
-	private static int bestHeight;
-	private static PeerThread bestThread;
-	private static String networkCard = "en0";
+public class BlockChainEntrance extends Thread {
+	private final int port = 8015;
+	private int bestHeight;
+	private PeerThread bestThread;
+	private String networkCard;
 	
-	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
+	public BlockChainEntrance(String networkCard) {
+		this.networkCard = networkCard;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			this.MainThread();
+		} catch (NumberFormatException | IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void MainThread() throws NumberFormatException, IOException, InterruptedException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		Global.blockDB.open("Block");
