@@ -1,7 +1,5 @@
 package userInterface;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -12,40 +10,24 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import Utilities.Utilities;
+import config.Global;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class WelcomePage extends JFrame {
 
+	private static final long serialVersionUID = -4603485177943160649L;
 	private JPanel contentPane;
 	private JTable table;
 	private Map<String, String> hostList;
 	private Object[][] obj;
 	private String[] columnNames =  { "Network Card","IP Address"};
 	private TableModel tableModel;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					WelcomePage frame = new WelcomePage();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -69,11 +51,6 @@ public class WelcomePage extends JFrame {
 		scrollPane.setBounds(61, 138, 549, 219);
 		contentPane.add(scrollPane);
 		
-		 
-		
-        /* 
-         * 初始化JTable里面各项的值，设置两个一模一样的实体"赵匡义"学生。 
-         */
 		hostList = Utilities.getInternetIp();
 		obj = new Object[hostList.size()][2];
 		int count = 0;
@@ -84,15 +61,11 @@ public class WelcomePage extends JFrame {
 		}
 		tableModel = new DefaultTableModel(obj, columnNames);
         table = new JTable(tableModel);
-        /* 
-         * 设置JTable的列默认的宽度和高度 
-         */  
         TableColumn column = null;
         int colunms = table.getColumnCount();  
         for(int i = 0; i < colunms; i++)  
         {
             column = table.getColumnModel().getColumn(i);  
-            /*将每一列的默认宽度设置为100*/  
             column.setPreferredWidth(100);
         }
         
@@ -102,10 +75,10 @@ public class WelcomePage extends JFrame {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
-				BlockChainEntrance blockChainEntrance = new BlockChainEntrance(table.getValueAt(selectedRow, 0).toString());
+				Global.blockChainEntrance = new BlockChainEntrance(table.getValueAt(selectedRow, 0).toString());
 				try {
-					blockChainEntrance.start();
-				} catch (NumberFormatException e1) {
+					Global.blockChainEntrance.start();
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -132,6 +105,5 @@ public class WelcomePage extends JFrame {
 		});
 		btnResacan.setBounds(336, 388, 117, 29);
 		contentPane.add(btnResacan);
-        
 	}
 }

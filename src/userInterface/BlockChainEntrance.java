@@ -65,7 +65,7 @@ public class BlockChainEntrance extends Thread {
 			blockList.add(block);
 		}
 		System.out.println(new Gson().toJson(blockList));
-		TestAddData.InitBlock();
+		//TestAddData.InitBlock();
 		
 		System.out.println("当前用户余额");
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
@@ -97,29 +97,8 @@ public class BlockChainEntrance extends Thread {
 		ArrayList<String> peers = new ArrayList<String>();
 		File peerFile = new File("peers.list");
 		
-		String host = NetworkUtils.getInternetIp();
-		
-		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
-		for(String key:hostList.keySet()) {
-			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-		}
-		System.out.println("Please Choose one");
-		host = hostList.get(networkCard);
-//		Scanner scanner = new Scanner(System.in);
-//		host = hostList.get(scanner.nextLine());
-//		scanner.close();
-//		while(host == null) {
-//			System.out.println("found that your computer has these following network Card");
-//			hostList = Utilities.getInternetIp();
-//			for(String key:hostList.keySet()) {
-//				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-//			}
-//			System.out.println("Please Choose one");
-//			scanner = new Scanner(System.in);
-//			host = hostList.get(scanner.nextLine());
-//			scanner.close();
-//		}
+		String host = hostList.get(networkCard);
 		
 		//如果peer.txt未创建，则创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
