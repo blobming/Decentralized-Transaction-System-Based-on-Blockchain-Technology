@@ -208,6 +208,24 @@ public class Transaction implements Serializable {
 		return t;
 	}
 	
+	public static Boolean checkTransaction(String payerPubKey, String payerPrivateKey, String payeePubKeyHash, Double amount) {
+		double total = 0.0;
+		HashMap<String, HashSet<Vout>> spendable = UTXOSet.FindSpendableOutputs(payerPubKey, amount);
+		ArrayList<Vin> vins = new ArrayList<>();
+		for(Entry<String, HashSet<Vout>> entry : spendable.entrySet()) {
+			String txID = entry.getKey();
+			for(Vout vout : entry.getValue()) {
+				total += vout.getValue();
+				vins.add(new Vin(txID, vout.getSeqNum(), payerPubKey));
+			}
+		}
+		if(total < amount) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "Transaction [txid=" + txid + ", hash=" + hash + ", vin=" + Arrays.toString(vin) + ", vout="

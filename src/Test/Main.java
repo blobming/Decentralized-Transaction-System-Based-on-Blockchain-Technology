@@ -303,9 +303,14 @@ public class Main {
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("TRANSACTION".equals(cmd)) {
 						TransGson transGson = new Gson().fromJson(payload, TransGson.class);
-						Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
-						TXPool.putInPool(transaction);
-						peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+						if(Transaction.checkTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount())){
+							Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
+							TXPool.putInPool(transaction);
+							peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+							rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
+						}else {
+							rpcthread.response = new Gson().toJson(new Status("0", "Insufficient account balance"))+"_FIN";
+						}
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("BALANCE".equals(cmd)) {
 						Double balance = UTXOSet.getBalance(payload);
