@@ -43,7 +43,7 @@ public class Blockchain implements Iterable<Block>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Block genesis = new Block(blockBody, 123456, "genesis",timeStamp);
+		Block genesis = Blockchain.MiningBlock(new Block(blockBody, 0, "genesis",timeStamp));
 		return genesis;
 	}
 	//仅限于从其他节点同步块时调用
@@ -149,7 +149,18 @@ public class Blockchain implements Iterable<Block>{
 		sb.deleteCharAt(sb.length() - 1);
 		return sb.toString();
 	}
-
+	public static Block MiningBlock(Block block) {
+		String zeroNum = "";
+		for(int i=0;i<block.getnBits();i++) {
+			zeroNum += "0";
+		}
+		while(!block.calculateHash().startsWith(zeroNum)) {
+			block.setNonce(block.getNonce()+1);
+		}
+		block.setHashCode(block.calculateHash());
+		return block;
+	}
+	
 	//for test
 	public static void main(String[] args) {
 //		Blockchain chain = new Blockchain();

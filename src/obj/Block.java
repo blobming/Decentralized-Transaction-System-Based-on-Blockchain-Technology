@@ -48,6 +48,14 @@ public class Block implements Serializable {
 		return nonce;
 	}
 
+	public void setNonce(int nonce) {
+		this.nonce = nonce;
+	}
+	
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
+	}
+
 	public BlockBody getBlockBody() {
 		return blockBody;
 	}

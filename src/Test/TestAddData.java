@@ -85,7 +85,7 @@ public class TestAddData {
 		txs.add(t3);
 		BlockBody body = new BlockBody(txs);
 		//body.browseWholeTree();
-		Block block = new Block(body, 123, UTXOSet.blockchain.tip, new Date());
+		Block block = Blockchain.MiningBlock(new Block(body, 123, UTXOSet.blockchain.tip, new Date()));
 		return block;
 	}
 	public static void InitUserInfo() {
