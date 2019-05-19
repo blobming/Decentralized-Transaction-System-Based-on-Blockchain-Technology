@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -293,8 +294,7 @@ public class Main {
 							System.err.println(block.getHashCode());
 							blockList1.add(block);
 						}
-						String jsonString = new Gson().toJson(blockList1);
-						rpcthread.response = new Gson().toJson(new Status("1", jsonString))+"_FIN";
+						rpcthread.response = new Gson().toJson(new Status("1", blockList1))+"_FIN";
 					}else if("SYNC_TRANSACTION".equals(cmd)) {
 						peerNetwork.broadcast("SYNC_TRANSACTION");
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
@@ -302,12 +302,21 @@ public class Main {
 						peerNetwork.broadcast("GET_ADDR");
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("TRANSACTION".equals(cmd)) {
-						Transaction transaction = new Gson().fromJson(payload, Transaction.class);
+						TransGson transGson = new Gson().fromJson(payload, TransGson.class);
+						Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
+						TXPool.putInPool(transaction);
 						peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("BALANCE".equals(cmd)) {
 						Double balance = UTXOSet.getBalance(payload);
 						rpcthread.response = new Gson().toJson(new Status("1", balance.toString()))+"_FIN";
+					}else if("GET_ALL_TRANSACTION".equals(cmd)) {
+						ArrayList<String> tranHashArray = TXPool.getAllHash();
+						ArrayList<Transaction> tranArray = new ArrayList<Transaction>();
+						for(String t:tranHashArray) {
+							tranArray.add(TXPool.get(t));
+						}
+						rpcthread.response = new Gson().toJson(new Status("1", tranArray))+"_FIN";
 					}else {
 						rpcthread.response = new Gson().toJson(new Status("0", "Unknown command: \"" + cmd + "\" "))+"_FIN";
 					}

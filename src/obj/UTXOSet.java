@@ -32,6 +32,7 @@ public class UTXOSet {
 		}
 		return balance;
 	}
+	/* previous Version
 	public static HashMap<String, HashSet<Vout>> FindSpendableOutputs(String address, double amount) {
 		HashMap<String, HashSet<Vout>> unspentOutputs = new HashMap<>();
 		double accumulated = 0;
@@ -47,6 +48,25 @@ public class UTXOSet {
 				}
 			}
 		}
+		return unspentOutputs;
+	}
+	*/
+	public static HashMap<String, HashSet<Vout>> FindSpendableOutputs(String address, double amount) {
+		HashMap<String, HashSet<Vout>> unspentOutputs = new HashMap<>();
+		double accumulated = 0;
+		for(Entry<String, Object> entry : Global.utxoDB.getAllKey().entrySet()) {
+			HashSet<Vout> vouts = (HashSet<Vout>) entry.getValue();
+			for(Vout vout : vouts) {
+				if(vout.IsLockedWithKey(Utilities.hashKeyForDisk(address)) && accumulated < amount) {
+					accumulated += vout.getValue();
+					if(!unspentOutputs.containsKey(entry.getKey())) {
+						unspentOutputs.put(entry.getKey(), new HashSet<Vout>());
+					}
+					unspentOutputs.get(entry.getKey()).add(vout);
+				}
+			}
+		}
+		System.out.println("accumulated: "+accumulated+"\t"+"amount: "+amount);
 		return unspentOutputs;
 	}
 	public static void Reindex() {

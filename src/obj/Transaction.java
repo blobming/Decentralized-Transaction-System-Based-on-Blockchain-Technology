@@ -3,10 +3,13 @@ package obj;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
+import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 
@@ -180,6 +183,31 @@ public class Transaction implements Serializable {
 		Transaction t = new Transaction(vins, vouts, true, null,timeStamp);
 		return t;
 	}
+	public static Transaction createTransaction(String payerPubKey, String payerPrivateKey, String payeePubKeyHash, Double amount, Date transactionDate) {
+		double total = 0.0;
+		HashMap<String, HashSet<Vout>> spendable = UTXOSet.FindSpendableOutputs(payerPubKey, amount);
+		ArrayList<Vin> vins = new ArrayList<>();
+		for(Entry<String, HashSet<Vout>> entry : spendable.entrySet()) {
+			String txID = entry.getKey();
+			for(Vout vout : entry.getValue()) {
+				total += vout.getValue();
+				vins.add(new Vin(txID, vout.getSeqNum(), payerPubKey));
+			}
+		}
+		Vin[] vinList = new Vin[vins.size()];
+		System.out.println("ToalAmount111!!!"+total);
+		for(int i=0;i<vinList.length;i++) {
+			vinList[i] = vins.get(i);
+		}
+		Vout vout1 = new Vout(amount, 0, payeePubKeyHash);
+		Vout vout2 = new Vout(total-amount, 1, Utilities.hashKeyForDisk(payerPubKey));
+		Vout[] vouts = new Vout[2];
+		vouts[0] = vout1;
+		vouts[1] = vout2;
+		Transaction t = new Transaction(vinList, vouts, false, payerPrivateKey, transactionDate);
+		return t;
+	}
+	
 	@Override
 	public String toString() {
 		return "Transaction [txid=" + txid + ", hash=" + hash + ", vin=" + Arrays.toString(vin) + ", vout="

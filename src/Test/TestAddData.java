@@ -115,35 +115,21 @@ public class TestAddData {
 		//payee1:3
 		//payee2: 25
 		//payee3: 21
-		HashMap<String, HashSet<Vout>> spendable = UTXOSet.FindSpendableOutputs(payeePubKey3, 21);
-		ArrayList<Vin> vins = new ArrayList<>();
-		for(Entry<String, HashSet<Vout>> entry : spendable.entrySet()) {
-			String txID = entry.getKey();
-			for(Vout vout : entry.getValue()) {
-				vins.add(new Vin(txID, vout.getSeqNum(), payeePubKey3));
-			}	
-		}
-		Vin[] vinList = new Vin[vins.size()];
 		
-		for(int i=0;i<vinList.length;i++) {
-			vinList[i] = vins.get(i);
-		}
-		Vout vout1 = new Vout(21, 0, Utilities.hashKeyForDisk(userPubKey));
-		Vout vout2 = new Vout(1, 1, Utilities.hashKeyForDisk(payeePubKey3));
-		Vout[] vouts = new Vout[2];
-		vouts[0] = vout1;
-		vouts[1] = vout2;
-		Transaction t = new Transaction(vinList, vouts, false, payeePrivate3, new Date());
-		System.err.println("自定义的交易");
-		System.err.println(new Gson().toJson(t));
+		
+		//Date date = new Date();
+		//Transaction t = Transaction.createTransaction(payeePubKey3, payeePrivate3, Utilities.hashKeyForDisk(userPubKey), 21.0, date);
 		//ArrayList<Transaction> txs = new ArrayList<>();
-		TXPool.putInPool(t);
-		//txs.add(t);
-		//BlockBody blockbody = new BlockBody(txs);
-		//Block block = new Block(blockbody, 23, UTXOSet.blockchain.tip, new Date());
-		//UTXOSet.blockchain.addBlock(block);
-		//UTXOSet.Update(blockbody);
-		
+		//TXPool.putInPool(t);
+		//System.out.println("ADDING TRANSACTION TO TXPOOL");
+//		txs.add(t);
+//		BlockBody blockbody = new BlockBody(txs);
+//		Block block = new Block(blockbody, 0, UTXOSet.blockchain.tip, new Date());
+//		UTXOSet.blockchain.addBlock(Blockchain.MiningBlock(block));
+//		UTXOSet.Update(blockbody);
+//		System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
+//		System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
+//		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
+//		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
 	}
-	
 }

@@ -2,9 +2,9 @@ package obj;
 
 public class Status {
 	private String statusCode;
-	private String content;
+	private Object content;
 	
-	public Status(String statusCode,String jsonString) {
+	public Status(String statusCode,Object jsonString) {
 		this.setStatusCode(statusCode);
 		this.setContent(jsonString);
 	}
@@ -17,11 +17,11 @@ public class Status {
 		this.statusCode = statusCode;
 	}
 
-	public String getContent() {
+	public Object getContent() {
 		return content;
 	}
 
-	public void setContent(String content) {
+	public void setContent(Object content) {
 		this.content = content;
 	}
 	
