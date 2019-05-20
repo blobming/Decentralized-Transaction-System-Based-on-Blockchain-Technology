@@ -36,6 +36,11 @@ public class BlockChainEntrance extends Thread {
 	public BlockChainEntrance(String networkCard) throws IOException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
+		String strPath = "./DataFile";  
+		File file = new File(strPath);  
+		if(!file.exists()){  
+		    file.mkdirs();  
+		}
 		Global.blockDB.open("Block");
 		Global.blockDB.open("Config");  //Height of the current Block Chain
 		Global.utxoDB.open("UTXO");
