@@ -107,20 +107,6 @@ public class BlockChainEntrance extends Thread {
 		}
 		System.out.println("Please Choose one");
 		host = hostList.get(networkCard);
-//		Scanner scanner = new Scanner(System.in);
-//		host = hostList.get(scanner.nextLine());
-//		scanner.close();
-//		while(host == null) {
-//			System.out.println("found that your computer has these following network Card");
-//			hostList = Utilities.getInternetIp();
-//			for(String key:hostList.keySet()) {
-//				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-//			}
-//			System.out.println("Please Choose one");
-//			scanner = new Scanner(System.in);
-//			host = hostList.get(scanner.nextLine());
-//			scanner.close();
-//		}
 		
 		//如果peer.txt未创建，则创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {

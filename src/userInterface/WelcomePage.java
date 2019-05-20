@@ -1,5 +1,6 @@
 package userInterface;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -105,5 +106,15 @@ public class WelcomePage extends JFrame {
 		});
 		btnResacan.setBounds(336, 388, 117, 29);
 		contentPane.add(btnResacan);
+		
+		JButton btnViewBlock = new JButton("View Block");
+		btnViewBlock.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BlockPage blockPage = new BlockPage();
+				blockPage.setVisible(true);
+			}
+		});
+		btnViewBlock.setBounds(493, 388, 117, 29);
+		contentPane.add(btnViewBlock);
 	}
 }
