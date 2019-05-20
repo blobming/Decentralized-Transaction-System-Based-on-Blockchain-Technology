@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -97,8 +98,29 @@ public class BlockChainEntrance extends Thread {
 		ArrayList<String> peers = new ArrayList<String>();
 		File peerFile = new File("peers.list");
 		
+		String host = NetworkUtils.getInternetIp();
+		
+		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
-		String host = hostList.get(networkCard);
+		for(String key:hostList.keySet()) {
+			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+		}
+		System.out.println("Please Choose one");
+		host = hostList.get(networkCard);
+//		Scanner scanner = new Scanner(System.in);
+//		host = hostList.get(scanner.nextLine());
+//		scanner.close();
+//		while(host == null) {
+//			System.out.println("found that your computer has these following network Card");
+//			hostList = Utilities.getInternetIp();
+//			for(String key:hostList.keySet()) {
+//				System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+//			}
+//			System.out.println("Please Choose one");
+//			scanner = new Scanner(System.in);
+//			host = hostList.get(scanner.nextLine());
+//			scanner.close();
+//		}
 		
 		//如果peer.txt未创建，则创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
@@ -287,8 +309,7 @@ public class BlockChainEntrance extends Thread {
 							System.err.println(block.getHashCode());
 							blockList1.add(block);
 						}
-						String jsonString = new Gson().toJson(blockList1);
-						rpcthread.response = new Gson().toJson(new Status("1", jsonString))+"_FIN";
+						rpcthread.response = new Gson().toJson(new Status("1", blockList1))+"_FIN";
 					}else if("SYNC_TRANSACTION".equals(cmd)) {
 						peerNetwork.broadcast("SYNC_TRANSACTION");
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
@@ -296,12 +317,26 @@ public class BlockChainEntrance extends Thread {
 						peerNetwork.broadcast("GET_ADDR");
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("TRANSACTION".equals(cmd)) {
-						Transaction transaction = new Gson().fromJson(payload, Transaction.class);
-						peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+						TransGson transGson = new Gson().fromJson(payload, TransGson.class);
+						if(Transaction.checkTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount())){
+							Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
+							TXPool.putInPool(transaction);
+							peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+							rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
+						}else {
+							rpcthread.response = new Gson().toJson(new Status("0", "Insufficient account balance"))+"_FIN";
+						}
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("BALANCE".equals(cmd)) {
 						Double balance = UTXOSet.getBalance(payload);
 						rpcthread.response = new Gson().toJson(new Status("1", balance.toString()))+"_FIN";
+					}else if("GET_ALL_TRANSACTION".equals(cmd)) {
+						ArrayList<String> tranHashArray = TXPool.getAllHash();
+						ArrayList<Transaction> tranArray = new ArrayList<Transaction>();
+						for(String t:tranHashArray) {
+							tranArray.add(TXPool.get(t));
+						}
+						rpcthread.response = new Gson().toJson(new Status("1", tranArray))+"_FIN";
 					}else {
 						rpcthread.response = new Gson().toJson(new Status("0", "Unknown command: \"" + cmd + "\" "))+"_FIN";
 					}
@@ -309,7 +344,6 @@ public class BlockChainEntrance extends Thread {
 			}
 			TimeUnit.MILLISECONDS.sleep(100);
 		}
-		
 	}
 
 }
