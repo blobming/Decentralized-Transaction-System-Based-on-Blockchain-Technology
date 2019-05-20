@@ -6,13 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +17,6 @@ import Network.PeerNetwork;
 import Network.PeerThread;
 import Network.RpcServer;
 import Network.RpcThread;
-import Security.KeyValuePairs;
 import Test.TestAddData;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
@@ -32,23 +27,13 @@ public class BlockChainEntrance extends Thread {
 	private final int port = 8015;
 	private int bestHeight;
 	private PeerThread bestThread;
-	private String networkCard;
+	public PeerNetwork peerNetwork;
+	public RpcServer rpcAgent;
+	private ArrayList<String> peers = new ArrayList<String>();
+	private File peerFile = new File("peers.list");
+	private String host;
 	
-	public BlockChainEntrance(String networkCard) {
-		this.networkCard = networkCard;
-	}
-	
-	@Override
-	public void run() {
-		try {
-			this.MainThread();
-		} catch (NumberFormatException | IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void MainThread() throws NumberFormatException, IOException, InterruptedException {
+	public BlockChainEntrance(String networkCard) throws IOException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		Global.blockDB.open("Block");
@@ -86,19 +71,14 @@ public class BlockChainEntrance extends Thread {
 		System.out.println("当前区块链高度：" + UTXOSet.blockchain.getHeight());
 		//开启网络
 		System.out.println("Starting peer network");
-		PeerNetwork peerNetwork = new PeerNetwork(port);
+		peerNetwork = new PeerNetwork(port);
 		peerNetwork.start();
 		System.out.println("Node Starts in port:"+port);
 		
 		System.out.println("Starting RPC daemon");
-		RpcServer rpcAgent = new RpcServer(port+1);
+		rpcAgent = new RpcServer(port+1);
 		rpcAgent.start();
 		System.out.println("RPC agent is Started in port:"+(port+1));
-		
-		ArrayList<String> peers = new ArrayList<String>();
-		File peerFile = new File("peers.list");
-		
-		String host = NetworkUtils.getInternetIp();
 		
 		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
@@ -140,15 +120,18 @@ public class BlockChainEntrance extends Thread {
 				System.out.println("waiting for connecting");
 			}
 		}
-		
-		
-		System.out.println("broadcast ip address");
-		peerNetwork.broadcast("ADDR " + host+":"+port);
-		
-		System.out.println("begin send broadcast");
-		//建立socket连接后，给大家广播握手
-		peerNetwork.broadcast("HEIGHT "+ blockChain.getHeight());
-		
+	}
+	
+	@Override
+	public void run() {
+		try {
+			this.MainThread();
+		} catch (NumberFormatException | IOException | InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void MainThread() throws NumberFormatException, IOException, InterruptedException {
 		while (true) {
 			//对新连接的peer写入文件
 			for (String peer : peerNetwork.peers) {
@@ -182,20 +165,20 @@ public class BlockChainEntrance extends Thread {
 							System.out.println("VERACK:"+payload);
 							// 对方确认知道了,并给我区块高度
 							bestHeight = Integer.parseInt(payload);
-							if(bestHeight > blockChain.getHeight()) {
+							if(bestHeight > UTXOSet.blockchain.getHeight()) {
 								bestThread = pt;
 							}
 						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
 							System.out.println("HEIGHT:"+payload);
 							int height = Integer.parseInt(payload);
-							if(height >= blockChain.getHeight()) {
+							if(height >= UTXOSet.blockchain.getHeight()) {
 								bestHeight = height;
 								bestThread = pt;
 							}
-							pt.peerWriter.write("VERACK "+blockChain.getHeight());
+							pt.peerWriter.write("VERACK "+UTXOSet.blockchain.getHeight());
 						} else if("GET_BLOCKS".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCKS:"+ payload);
-							String hashList = Blockchain.generateInv(blockChain, payload);
+							String hashList = Blockchain.generateInv(UTXOSet.blockchain, payload);
 							pt.peerWriter.write("BLOCK_INV "+ hashList);
 						} else if("BLOCK_INV".equalsIgnoreCase(cmd)) {
 							System.out.println("BLOCK_INV:"+ payload);
@@ -207,7 +190,7 @@ public class BlockChainEntrance extends Thread {
 							}
 						} else if ("GET_BLOCK".equalsIgnoreCase(cmd)) {
 							System.out.println("GET_BLOCK:"+payload);
-							Block tempblock = blockChain.getBlock(payload);
+							Block tempblock = UTXOSet.blockchain.getBlock(payload);
 							if (tempblock != null) {
 								System.out.println("Sending block " + payload + " to peer");
 								pt.peerWriter.write("BLOCK " + Base64.getEncoder().encodeToString(Utilities.toByteArray(tempblock)));
@@ -216,7 +199,7 @@ public class BlockChainEntrance extends Thread {
 							System.out.println("Block:"+payload);
 							System.out.println("Attempting to add Block: " + payload);
 							Block newBlock = (Block) Utilities.toObject(Base64.getDecoder().decode(payload));
-							if(blockChain.addBlock(newBlock)) {
+							if(UTXOSet.blockchain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
 								peerNetwork.broadcast("BLOCK " + payload);
 							}
@@ -264,11 +247,11 @@ public class BlockChainEntrance extends Thread {
 			}
 
 			
-			int height = blockChain.getHeight();
+			int height = UTXOSet.blockchain.getHeight();
 			if(bestHeight > height) {
 				System.out.println("Local chain height: " + height+" peer Height: " + bestHeight);
 				TimeUnit.MILLISECONDS.sleep(300);
-				bestThread.peerWriter.write("GET_BLOCKS "+ blockChain.tip);
+				bestThread.peerWriter.write("GET_BLOCKS "+ UTXOSet.blockchain.tip);
 			}
 
 			

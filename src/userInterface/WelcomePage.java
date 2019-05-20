@@ -76,8 +76,8 @@ public class WelcomePage extends JFrame {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
-				Global.blockChainEntrance = new BlockChainEntrance(table.getValueAt(selectedRow, 0).toString());
 				try {
+					Global.blockChainEntrance = new BlockChainEntrance(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainEntrance.start();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
