@@ -109,6 +109,9 @@ public class Transaction implements Serializable {
 					}
 				}
 			}else {
+				if(block == null) {
+					return false;
+				}
 				for(Transaction transaction:block.getBlockBody().transactions) {
 					if(transaction.getTxid().equals(vin.getTxid())) {
 						for(Vout tempVout : transaction.vout) {

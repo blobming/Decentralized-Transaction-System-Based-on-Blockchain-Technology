@@ -32,6 +32,7 @@ public class BlockPage extends JFrame {
 	private Object[][] obj;
 	private String[] columnNames =  { "preHashCode","hashCode","merkleRootHash","timeStamp","nBits","nonce"};
 	private TableModel tableModel;
+	private ArrayList<Block> blockList;
 	/**
 	 * Create the frame.
 	 */
@@ -56,7 +57,7 @@ public class BlockPage extends JFrame {
 		scrollPane.setBounds(48, 97, 773, 260);
 		contentPane.add(scrollPane);
 		
-		ArrayList<Block> blockList = new ArrayList<Block>();
+		blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
 			blockList.add(block);
 		}
@@ -88,15 +89,15 @@ public class BlockPage extends JFrame {
 		btnDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
-				
-				
+				TransactionPage transactionPage = new TransactionPage(blockList.get(selectedRow));
+				transactionPage.setVisible(true);
 			}
 		});
 		btnDetails.setBounds(75, 381, 117, 29);
 		contentPane.add(btnDetails);
 	}
 	public void UpdateBlockChainValue() {
-		ArrayList<Block> blockList = new ArrayList<Block>();
+		blockList = new ArrayList<Block>();
 		for(Block block: UTXOSet.blockchain) {
 			blockList.add(block);
 		}

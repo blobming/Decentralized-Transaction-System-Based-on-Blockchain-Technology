@@ -295,9 +295,14 @@ public class BlockChainMainThread extends Thread {
 							TransGson transGson = new Gson().fromJson(payload, TransGson.class);
 							if(Transaction.checkTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount())){
 								Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
-								TXPool.putInPool(transaction);
-								peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
-								rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
+								if(Transaction.validateTransaction(transaction, null)) {
+									TXPool.putInPool(transaction);
+									peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+									rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
+								}else {
+									rpcthread.response = new Gson().toJson(new Status("0", "Transaction signauture wrong"))+"_FIN";
+								}
+								
 							}else {
 								rpcthread.response = new Gson().toJson(new Status("0", "Insufficient account balance"))+"_FIN";
 							}
