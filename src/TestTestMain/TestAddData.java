@@ -1,4 +1,4 @@
-package Test;
+package TestTestMain;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,19 +117,19 @@ public class TestAddData {
 		//payee3: 21
 		
 		
-		//Date date = new Date();
-		//Transaction t = Transaction.createTransaction(payeePubKey3, payeePrivate3, Utilities.hashKeyForDisk(userPubKey), 21.0, date);
-		//ArrayList<Transaction> txs = new ArrayList<>();
-		//TXPool.putInPool(t);
-		//System.out.println("ADDING TRANSACTION TO TXPOOL");
-//		txs.add(t);
-//		BlockBody blockbody = new BlockBody(txs);
-//		Block block = new Block(blockbody, 0, UTXOSet.blockchain.tip, new Date());
-//		UTXOSet.blockchain.addBlock(Blockchain.MiningBlock(block));
-//		UTXOSet.Update(blockbody);
-//		System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
-//		System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
-//		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
-//		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
+		Date date = new Date();
+		Transaction t = Transaction.createTransaction(payeePubKey3, payeePrivate3, Utilities.hashKeyForDisk(userPubKey), 21.0, date);
+		ArrayList<Transaction> txs = new ArrayList<>();
+		TXPool.putInPool(t);
+		System.out.println("ADDING TRANSACTION TO TXPOOL");
+		txs.add(t);
+		BlockBody blockbody = new BlockBody(txs);
+		Block block = new Block(blockbody, 0, UTXOSet.blockchain.tip, new Date());
+		UTXOSet.blockchain.addBlock(Blockchain.MiningBlock(block));
+		UTXOSet.Update(blockbody);
+		System.out.println("user's balance:" + UTXOSet.getBalance(userPubKey));
+		System.out.println("payee1's balance:" + UTXOSet.getBalance(payeePubKey1));
+		System.out.println("payee2's balance:" + UTXOSet.getBalance(payeePubKey2));
+		System.out.println("payee3's balance:" + UTXOSet.getBalance(payeePubKey3));
 	}
 }

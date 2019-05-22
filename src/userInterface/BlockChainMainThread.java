@@ -17,7 +17,7 @@ import Network.PeerNetwork;
 import Network.PeerThread;
 import Network.RpcServer;
 import Network.RpcThread;
-import Test.TestAddData;
+import TestTestMain.TestAddData;
 import Utilities.NetworkUtils;
 import Utilities.Utilities;
 import config.Global;
