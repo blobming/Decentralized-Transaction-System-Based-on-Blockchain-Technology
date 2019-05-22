@@ -1,6 +1,5 @@
 package userInterface;
 
-import java.util.Date;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -77,8 +76,8 @@ public class WelcomePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				try {
-					Global.blockChainEntrance = new BlockChainEntrance(table.getValueAt(selectedRow, 0).toString());
-					Global.blockChainEntrance.start();
+					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
+					Global.blockChainMainThread.start();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

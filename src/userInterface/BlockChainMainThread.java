@@ -23,7 +23,7 @@ import Utilities.Utilities;
 import config.Global;
 import obj.*;
 
-public class BlockChainEntrance extends Thread {
+public class BlockChainMainThread extends Thread {
 	private final int port = 8015;
 	private int bestHeight;
 	private PeerThread bestThread;
@@ -33,7 +33,7 @@ public class BlockChainEntrance extends Thread {
 	private File peerFile = new File("peers.list");
 	private String host;
 	
-	public BlockChainEntrance(String networkCard) throws IOException {
+	public BlockChainMainThread(String networkCard) throws IOException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		String strPath = "./DataFile";  
