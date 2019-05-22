@@ -37,7 +37,7 @@ public class BlockChainMainThread extends Thread {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		String strPath = "./DataFile";  
-		File file = new File(strPath);  
+		File file = new File(strPath);
 		if(!file.exists()){  
 		    file.mkdirs();  
 		}
@@ -291,16 +291,19 @@ public class BlockChainMainThread extends Thread {
 						peerNetwork.broadcast("GET_ADDR");
 						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("TRANSACTION".equals(cmd)) {
-						TransGson transGson = new Gson().fromJson(payload, TransGson.class);
-						if(Transaction.checkTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount())){
-							Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
-							TXPool.putInPool(transaction);
-							peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
-							rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
-						}else {
-							rpcthread.response = new Gson().toJson(new Status("0", "Insufficient account balance"))+"_FIN";
+						try {
+							TransGson transGson = new Gson().fromJson(payload, TransGson.class);
+							if(Transaction.checkTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount())){
+								Transaction transaction = Transaction.createTransaction(transGson.getPayerPk(), transGson.getPayerPRK(), transGson.getPayeePkHash(), transGson.getAmount(), new Date());
+								TXPool.putInPool(transaction);
+								peerNetwork.broadcast("TRANSACTION " + Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+								rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
+							}else {
+								rpcthread.response = new Gson().toJson(new Status("0", "Insufficient account balance"))+"_FIN";
+							}
+						}catch(Exception e) {
+							rpcthread.response = new Gson().toJson(new Status("0", "Wrong data format"))+"_FIN";
 						}
-						rpcthread.response = new Gson().toJson(new Status("1", "Request has been sent"))+"_FIN";
 					}else if("BALANCE".equals(cmd)) {
 						Double balance = UTXOSet.getBalance(payload);
 						rpcthread.response = new Gson().toJson(new Status("1", balance.toString()))+"_FIN";
