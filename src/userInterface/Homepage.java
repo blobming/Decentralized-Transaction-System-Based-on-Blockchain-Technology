@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.commons.io.FileUtils;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -11,6 +14,13 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.awt.event.ActionEvent;
 
 public class Homepage extends JFrame {
 
@@ -92,6 +102,23 @@ public class Homepage extends JFrame {
 		accountPanel.add(showPublabel);
 		
 		JButton btnCopyPublicKey = new JButton("copy Public key");
+		btnCopyPublicKey.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//弹出文件选择框
+				JFileChooser chooser = new JFileChooser();
+				//下面的方法将阻塞，直到【用户按下保存按钮且“文件名”文本框不为空】或【用户按下取消按钮】
+				int option = chooser.showSaveDialog(null);
+				if(option==JFileChooser.APPROVE_OPTION){	//假如用户选择了保存
+					File file = chooser.getSelectedFile();
+					try {
+						FileUtils.writeStringToFile(file, showPublabel.getText(),StandardCharsets.UTF_8,false);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
 		

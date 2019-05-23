@@ -7,5 +7,4 @@ public class Main {
 		WelcomePage welcomePage = new WelcomePage();
 		welcomePage.setVisible(true);
 	}
-
 }

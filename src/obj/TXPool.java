@@ -26,10 +26,11 @@ public class TXPool {
 		return (Transaction) Global.txDB.get(hashcode);
 	}
 	//FIXME
+	/*
 	public static ArrayList<Transaction> getAll(){
 		ArrayList<Transaction> txs = new ArrayList<>();
 		return txs;
-	}
+	}*/
 	public static ArrayList<String> getAllHash(){
 		ArrayList<String> res = new ArrayList<>();
 		for(String s: Global.txDB.getAllKey().keySet())	res.add(s);
