@@ -41,5 +41,22 @@ public class TXPool {
 			removeTX(s);
 		}
 	}
-	
+	//这个函数用于矿工节点随机从交易池中取出交易
+	public static ArrayList<Transaction> gatherTransaction(){
+		ArrayList<String> hashList = TXPool.getAllHash();
+		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+		int i = 0;
+		for(String s : hashList) {
+			transactionList.add(TXPool.get(s));
+			i += 1;
+			if(i == Global.maxBlockTxNum) {
+				break;
+			}
+		}
+		if(transactionList.size() == 0) return transactionList;
+		if(transactionList.size() % 2 == 1) {
+			transactionList.remove(transactionList.size()-1);
+		}		
+		return transactionList;
+	}
 }
