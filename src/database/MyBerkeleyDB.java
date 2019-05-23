@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import com.sleepycat.je.*;
 
-import Utilities.Utilities;
+import utilities.Utilities;
 
 public class MyBerkeleyDB {
 	private Environment environment;

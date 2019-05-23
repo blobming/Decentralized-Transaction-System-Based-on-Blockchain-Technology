@@ -18,10 +18,10 @@ import Network.PeerThread;
 import Network.RpcServer;
 import Network.RpcThread;
 import TestTestMain.TestAddData;
-import Utilities.NetworkUtils;
-import Utilities.Utilities;
 import config.Global;
 import obj.*;
+import utilities.NetworkUtils;
+import utilities.Utilities;
 
 public class BlockChainMainThread extends Thread {
 	private final int port = 8015;

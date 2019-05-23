@@ -9,8 +9,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
-import Utilities.Utilities;
 import config.Global;
+import utilities.Utilities;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;

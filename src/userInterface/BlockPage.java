@@ -20,10 +20,10 @@ import javax.swing.table.TableModel;
 
 import com.google.gson.Gson;
 
-import Utilities.Utilities;
 import config.Global;
 import obj.Block;
 import obj.UTXOSet;
+import utilities.Utilities;
 
 public class BlockPage extends JFrame {
 

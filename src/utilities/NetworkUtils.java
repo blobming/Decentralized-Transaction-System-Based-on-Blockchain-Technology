@@ -1,4 +1,4 @@
-package Utilities;
+package utilities;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -115,11 +115,5 @@ public class NetworkUtils {
 			ip = ipstr;
 		}
 		return ip;
-	}
-
-	public static void main(String[] args) {
-//		System.out.println(isLocal("10.16.3.77"));
-		System.out.println(getV4IP());
-//		System.out.println(getIntranetIp());
 	}
 }

@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import com.google.gson.Gson;
 
 import Security.KeyValuePairs;
-import Utilities.Utilities;
 import config.Global;
 import obj.Block;
 import obj.BlockBody;
@@ -19,6 +18,7 @@ import obj.Transaction;
 import obj.UTXOSet;
 import obj.Vin;
 import obj.Vout;
+import utilities.Utilities;
 
 public class TestAddData {
 	public static String userPubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCryH4NG0hMI0P0uDaapwqgPvsIcaRvMMNzz9q5olmD1MVlIf7wT7SDDZITHFxjh607sZ3XfSGseLtKfwz+vrH5T6q4LlcvYwC3roVxp8OINzNKLKmRtVCpp/1AKqffO8aQGJcRmXvNlEkFWdBf5+fnHOtkmvxKH9oUIkA/kVydnwIDAQAB";

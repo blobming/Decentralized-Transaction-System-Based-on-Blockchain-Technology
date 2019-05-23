@@ -1,11 +1,10 @@
 package obj;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
-import Utilities.Utilities;
 import config.Global;
+import utilities.Utilities;
 
 public class Block implements Serializable {
 	/**

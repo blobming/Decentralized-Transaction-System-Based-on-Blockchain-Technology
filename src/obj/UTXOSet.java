@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import Utilities.Utilities;
 import database.MyBerkeleyDB;
+import utilities.Utilities;
 import config.Global;
 
 public class UTXOSet {
