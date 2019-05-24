@@ -110,4 +110,12 @@ public class Utilities {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static boolean checkUsername(String username) {
+		return false;
+	}
+	
+	public static boolean checkPwd(String pwd) {
+		return false;
+	}
 }

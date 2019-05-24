@@ -1,0 +1,119 @@
+package userInterface;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.awt.event.ActionEvent;
+
+@SuppressWarnings("serial")
+public class LoginWithKey extends JFrame {
+/*
+ * 
+ * JButton btnLogIn = new JButton("Log in");
+		btnLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//show main page?
+			}
+		});
+ * 
+ */
+	private JPanel contentPane;
+	private JTextField publicKeyPath;
+	private JTextField privateKeyPath;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LoginWithKey frame = new LoginWithKey();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public LoginWithKey() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 737, 430);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblPublicKeyPath = new JLabel("Public key path:");
+		lblPublicKeyPath.setBounds(15, 71, 145, 20);
+		contentPane.add(lblPublicKeyPath);
+		
+		publicKeyPath = new JTextField();
+		publicKeyPath.setBounds(209, 68, 313, 26);
+		publicKeyPath.setEditable(false);
+		contentPane.add(publicKeyPath);
+		publicKeyPath.setColumns(10);
+		
+		JButton btnChoose = new JButton("choose");
+		btnChoose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc=new JFileChooser();
+			    jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			    int value = jfc.showSaveDialog(jfc);
+			    if(value == JFileChooser.APPROVE_OPTION) {
+			    	File file = jfc.getSelectedFile();
+			    	publicKeyPath.setText(file.getAbsolutePath());
+			    }
+			}
+		});
+		btnChoose.setBounds(585, 67, 115, 29);
+		contentPane.add(btnChoose);
+		
+		JLabel lblPrivateKeyPath = new JLabel("Private key path:");
+		lblPrivateKeyPath.setBounds(15, 160, 133, 20);
+		contentPane.add(lblPrivateKeyPath);
+		
+		privateKeyPath = new JTextField();
+		privateKeyPath.setBounds(209, 157, 313, 26);
+		privateKeyPath.setEditable(false);
+		contentPane.add(privateKeyPath);
+		privateKeyPath.setColumns(10);
+		
+		JButton btnChoose_1 = new JButton("choose");
+		btnChoose_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser jfc=new JFileChooser();
+			    jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			    int value = jfc.showSaveDialog(jfc);
+			    if(value == JFileChooser.APPROVE_OPTION) {
+			    	File file = jfc.getSelectedFile();
+				    privateKeyPath.setText(file.getAbsolutePath());
+			    }
+			    
+			}
+		});
+		btnChoose_1.setBounds(585, 156, 115, 29);
+		contentPane.add(btnChoose_1);
+		
+		JButton btnLogIn = new JButton("Log in");
+		btnLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//show main page?
+			}
+		});
+		btnLogIn.setBounds(254, 278, 115, 29);
+		contentPane.add(btnLogIn);
+	}
+}

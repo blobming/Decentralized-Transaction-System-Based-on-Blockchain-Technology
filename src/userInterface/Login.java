@@ -8,6 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
 
@@ -45,6 +50,13 @@ public class Login extends JFrame {
 		contentPane.add(lblSupbank);
 		
 		JButton btnRegister = new JButton("Register");
+		btnRegister.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Register register = new Register();
+				register.setVisible(true);
+				setVisible(false);
+			}
+		});
 		btnRegister.setBounds(26, 116, 115, 29);
 		contentPane.add(btnRegister);
 		
@@ -53,6 +65,13 @@ public class Login extends JFrame {
 		contentPane.add(btnLogInWith_1);
 		
 		JButton btnLogWithUsernamepassword = new JButton("log with username&password");
+		btnLogWithUsernamepassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				LoginWithKey loginWithKey = new LoginWithKey();
+				loginWithKey.setVisible(true);
+				setVisible(false);
+			}
+		});
 		btnLogWithUsernamepassword.setBounds(26, 229, 274, 29);
 		contentPane.add(btnLogWithUsernamepassword);
 	}
