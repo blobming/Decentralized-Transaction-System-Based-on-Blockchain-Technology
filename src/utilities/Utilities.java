@@ -112,10 +112,10 @@ public class Utilities {
 	}
 	
 	public static boolean checkUsername(String username) {
-		return false;
+		return true;
 	}
 	
 	public static boolean checkPwd(String pwd) {
-		return false;
+		return true;
 	}
 }

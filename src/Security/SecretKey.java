@@ -2,10 +2,13 @@ package Security;
  
  
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -17,9 +20,11 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
- 
- 
+
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import java.util.Base64;
  
@@ -126,53 +131,86 @@ public class SecretKey {
     }  
     
   //************************加密解密**************************  
-    public static byte[] encrypt(byte[] plainText,String publicKeyStr)throws Exception{  
-        PublicKey publicKey = getPublicKey(publicKeyStr);  
-        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);  
-        cipher.init(Cipher.ENCRYPT_MODE, publicKey);  
-        int inputLen = plainText.length;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int offSet = 0;
-        int i = 0;
-        byte[] cache;
-        while (inputLen - offSet > 0) {
-            if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
-                cache = cipher.doFinal(plainText, offSet, MAX_ENCRYPT_BLOCK);
-            } else {
-                cache = cipher.doFinal(plainText, offSet, inputLen - offSet);
-            }
-            out.write(cache, 0, cache.length);
-            i++;
-            offSet = i * MAX_ENCRYPT_BLOCK;
-        }
-        byte[] encryptText = out.toByteArray();
-        out.close();  
-        return encryptText;  
+    public static byte[] encrypt(byte[] plainText,String publicKeyStr){  
+        PublicKey publicKey;
+		try {
+			publicKey = getPublicKey(publicKeyStr);
+			Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);  
+	        cipher.init(Cipher.ENCRYPT_MODE, publicKey);  
+	        int inputLen = plainText.length;
+	        ByteArrayOutputStream out = new ByteArrayOutputStream();
+	        int offSet = 0;
+	        int i = 0;
+	        byte[] cache;
+	        while (inputLen - offSet > 0) {
+	            if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
+	                cache = cipher.doFinal(plainText, offSet, MAX_ENCRYPT_BLOCK);
+	            } else {
+	                cache = cipher.doFinal(plainText, offSet, inputLen - offSet);
+	            }
+	            out.write(cache, 0, cache.length);
+	            i++;
+	            offSet = i * MAX_ENCRYPT_BLOCK;
+	        }
+	        byte[] encryptText = out.toByteArray();
+	        out.close();  
+	        return encryptText;  
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        return null;
     }  
       
-    public static byte[] decrypt(byte[] encryptText,String privateKeyStr)throws Exception{  
-        PrivateKey privateKey = getPrivateKey(privateKeyStr);  
-        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);  
-        cipher.init(Cipher.DECRYPT_MODE, privateKey);  
-        int inputLen = encryptText.length;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        int offSet = 0;
-        byte[] cache;
-        int i = 0;
-        // 对数据分段解密
-        while (inputLen - offSet > 0) {
-            if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
-                cache = cipher.doFinal(encryptText, offSet, MAX_DECRYPT_BLOCK);
-            } else {
-                cache = cipher.doFinal(encryptText, offSet, inputLen - offSet);
-            }
-            out.write(cache, 0, cache.length);
-            i++;
-            offSet = i * MAX_DECRYPT_BLOCK;
-        }
-        byte[] plainText = out.toByteArray();
-        out.close();  
-        return plainText;  
+    public static byte[] decrypt(byte[] encryptText,String privateKeyStr){  
+        
+		try {
+			PrivateKey privateKey = getPrivateKey(privateKeyStr);  
+	        Cipher cipher;
+			cipher = Cipher.getInstance(KEY_ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, privateKey);  
+	        int inputLen = encryptText.length;
+	        ByteArrayOutputStream out = new ByteArrayOutputStream();
+	        int offSet = 0;
+	        byte[] cache;
+	        int i = 0;
+	        // 对数据分段解密
+	        while (inputLen - offSet > 0) {
+	            if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
+	                cache = cipher.doFinal(encryptText, offSet, MAX_DECRYPT_BLOCK);
+	            } else {
+	                cache = cipher.doFinal(encryptText, offSet, inputLen - offSet);
+	            }
+	            out.write(cache, 0, cache.length);
+	            i++;
+	            offSet = i * MAX_DECRYPT_BLOCK;
+	        }
+	        byte[] plainText = out.toByteArray();
+	        out.close();  
+	        return plainText; 
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+         return null;
     }  
  
     // only for testing

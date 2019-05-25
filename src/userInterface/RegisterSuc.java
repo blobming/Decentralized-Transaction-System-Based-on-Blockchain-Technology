@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Security.KeyValuePairs;
+import database.SQLDB;
+import obj.User;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -33,7 +35,7 @@ public class RegisterSuc extends JFrame {
 			public void run() {
 				try {
 					//for test
-					RegisterSuc frame = new RegisterSuc(new KeyValuePairs(), "aa");
+					RegisterSuc frame = new RegisterSuc(new KeyValuePairs(), "aa","password");
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,7 +47,10 @@ public class RegisterSuc extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RegisterSuc(KeyValuePairs pair, String username) {
+	public RegisterSuc(KeyValuePairs pair, String username, String pwd) {
+		//save into SQLDB
+		SQLDB.createUser(new User(username, pwd, pair.getPublicKey(), pair.getPrivateKey()));
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 833, 513);
 		contentPane = new JPanel();

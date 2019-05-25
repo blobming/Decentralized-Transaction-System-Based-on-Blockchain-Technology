@@ -19,7 +19,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class WelcomePage extends JFrame {
+public class networkCardPage extends JFrame {
 
 	private static final long serialVersionUID = -4603485177943160649L;
 	private JPanel contentPane;
@@ -31,7 +31,7 @@ public class WelcomePage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public WelcomePage() {
+	public networkCardPage() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 864, 468);
 		contentPane = new JPanel();

@@ -44,6 +44,7 @@ public class Register extends JFrame {
 	 */
 	public Register() {
 		KeyValuePairs pair = new KeyValuePairs();
+		SQLDB.connSqlDB();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 911, 558);
@@ -58,7 +59,7 @@ public class Register extends JFrame {
 				if(Utilities.checkUsername(usernameText.getText()) && Utilities.checkPwd(pwdText.getText())) {
 					if(SQLDB.checkUsername(usernameText.getText())) {
 						//generate user & save into db
-						RegisterSuc suc = new RegisterSuc(pair, usernameText.getText());
+						RegisterSuc suc = new RegisterSuc(pair, usernameText.getText(), pwdText.getText());
 						suc.setVisible(true);
 						setVisible(false);
 					}else {

@@ -4,27 +4,29 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Security.SecretKey;
+import config.Global;
+import database.SQLDB;
+import obj.User;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Base64;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
 public class LoginWithKey extends JFrame {
-/*
- * 
- * JButton btnLogIn = new JButton("Log in");
-		btnLogIn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//show main page?
-			}
-		});
- * 
- */
+	
 	private JPanel contentPane;
 	private JTextField publicKeyPath;
 	private JTextField privateKeyPath;
@@ -110,10 +112,66 @@ public class LoginWithKey extends JFrame {
 		JButton btnLogIn = new JButton("Log in");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//show main page?
+				User user =	checkKey(); 
+				if(user != null) {
+					Global.user = user;
+					networkCardPage welcomePage = new networkCardPage();
+					welcomePage.setVisible(true);
+					setVisible(false);
+				}else {
+					//show something
+				}	
 			}
 		});
 		btnLogIn.setBounds(254, 278, 115, 29);
 		contentPane.add(btnLogIn);
+	}
+	
+	public User checkKey() {
+		//read public key & pivate key from file
+        File publickeyFile = new File(publicKeyPath.getText());   
+        InputStreamReader publickeyreader;
+        StringBuilder publickeyBuilder = new StringBuilder();
+		try {
+			publickeyreader = new InputStreamReader(new FileInputStream(publickeyFile));
+			BufferedReader publickeybr = new BufferedReader(publickeyreader);  
+			String line = "";    
+            while ((line = publickeybr.readLine()) != null) {  
+            	publickeyBuilder.append(line); 
+            }  
+            publickeybr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
+		String publicKeyString = publickeyBuilder.toString();
+		System.out.println("publickey:" + publicKeyString);
+		File privatekeyFile = new File(privateKeyPath.getText());   
+        InputStreamReader privatekeyreader;
+        StringBuilder privateKeyBuilder = new StringBuilder();
+		try {
+			privatekeyreader = new InputStreamReader(new FileInputStream(privatekeyFile));
+			BufferedReader privatekeybr = new BufferedReader(privatekeyreader);  
+			String line = "";    
+            while ((line = privatekeybr.readLine()) != null) {  
+            	privateKeyBuilder.append(line); 
+            }  
+            privatekeybr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}  
+		String privateKeyfromFile = privateKeyBuilder.toString();
+		System.out.println("privatekey:" + privateKeyfromFile);
+		
+		///////////////
+		User user = SQLDB.getUserByKey(publicKeyString);
+		if(user == null || !user.getPrivateKey().equals(privateKeyfromFile))	return null;
+		
+		byte[] cipherText = SecretKey.encrypt(user.getUsername().getBytes(), publicKeyString); 
+        String tempStr = Base64.getEncoder().encodeToString(cipherText);
+        byte[] plainText = SecretKey.decrypt(Base64.getDecoder().decode(tempStr),privateKeyfromFile);
+        
+        if(!user.getUsername().equals(new String(plainText)))	return null;
+        
+        return user;    
 	}
 }

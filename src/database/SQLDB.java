@@ -44,7 +44,7 @@ public class SQLDB {
 		}
 		return false;
 	}
-	public static boolean createUser(User user) {
+	public static void createUser(User user) {
 		PreparedStatement psql;
 		try {
 			psql = conn.prepareStatement("insert into user (username,password,publickey,privatekey) "
@@ -57,7 +57,6 @@ public class SQLDB {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return false;
 	}
 	
 	public static void changePwd(User user) {
@@ -71,5 +70,38 @@ public class SQLDB {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static User getUserByUsername(String username) {
+		User user = null;
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String sql = "select * from user where username=\"" + username + "\"";
+			ResultSet rs = statement.executeQuery(sql);
+			while(rs.next()) {
+				user = new User(rs.getString("username"), rs.getString("password"),rs.getString("publickey"),rs.getString("privatekey"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user;
+	}
+	public static User getUserByKey(String pubkey) {
+		User user = null;
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String sql = "select * from user where publickey=\"" + pubkey + "\"";
+			ResultSet rs = statement.executeQuery(sql);
+			while(rs.next()) {
+				user = new User(rs.getString("username"), rs.getString("password"),rs.getString("publickey"),rs.getString("privatekey"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return user;
 	}
 }
