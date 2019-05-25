@@ -12,6 +12,7 @@ import database.SQLDB;
 import utilities.Utilities;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
@@ -53,18 +54,19 @@ public class Register extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnSave = new JButton("Save");
+		JButton btnSave = new JButton("Register");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(Utilities.checkUsername(usernameText.getText()) && Utilities.checkPwd(pwdText.getText())) {
-					if(SQLDB.checkUsername(usernameText.getText())) {
-						//generate user & save into db
-						RegisterSuc suc = new RegisterSuc(pair, usernameText.getText(), pwdText.getText());
-						suc.setVisible(true);
-						setVisible(false);
-					}else {
-						//message
-					}
+				if(!Utilities.checkUsername(usernameText.getText())){
+					JOptionPane.showMessageDialog(Register.getFrames()[0], "Invalid username", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}else if(!Utilities.checkPwd(pwdText.getText())) {
+					JOptionPane.showMessageDialog(Register.getFrames()[0], "Invalid password", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}else if(!SQLDB.checkUsername(usernameText.getText())) {
+					JOptionPane.showMessageDialog(Register.getFrames()[0], "Username has been taken", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}else {
+					RegisterSuc suc = new RegisterSuc(pair, usernameText.getText(), pwdText.getText());
+					suc.setVisible(true);
+					setVisible(false);
 				}
 			}
 		});
