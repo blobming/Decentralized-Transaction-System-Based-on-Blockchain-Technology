@@ -13,8 +13,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class Utilities {
+	public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+	public static final String REGEX_PASSWORD = "^[a-zA-Z0-9]{6,20}$";
 	/**
      * A hashing method that changes a string (like a URL) into a hash suitable for using as a
      * disk filename.
@@ -112,10 +115,10 @@ public class Utilities {
 	}
 	
 	public static boolean checkUsername(String username) {
-		return false;
+		return Pattern.matches(REGEX_EMAIL, username);
 	}
 	
 	public static boolean checkPwd(String pwd) {
-		return false;
+		return Pattern.matches(REGEX_PASSWORD, pwd);
 	}
 }
