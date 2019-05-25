@@ -1,6 +1,8 @@
 package userInterface;
 
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Label;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,6 +15,9 @@ import utilities.Utilities;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
+
+import java.awt.Button;
+import java.awt.Dialog;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -23,6 +28,8 @@ public class Register extends JFrame {
 	private JPanel contentPane;
 	private JTextField usernameText;
 	private JTextField pwdText;
+	private Dialog errorMessage;
+	private Label errorLabel;
 	/**
 	 * Launch the application.
 	 */
@@ -46,6 +53,20 @@ public class Register extends JFrame {
 		KeyValuePairs pair = new KeyValuePairs();
 		SQLDB.connSqlDB();
 		
+		errorMessage = new Dialog(this, "Error", true);
+		errorMessage.setBounds(400, 200, 350, 150);
+		errorMessage.setLayout(new FlowLayout());
+		errorLabel = new Label();
+        Button okBut = new Button("OK");
+        okBut.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                errorMessage.setVisible(false);
+            }
+        });
+        errorMessage.add(errorLabel);
+        errorMessage.add(okBut);
+        
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 911, 558);
 		contentPane = new JPanel();
@@ -64,7 +85,13 @@ public class Register extends JFrame {
 						setVisible(false);
 					}else {
 						//message
+						errorLabel.setText("Duplicate Username");
+						errorMessage.setVisible(true);
 					}
+				}else {
+					System.out.println("123");
+					errorLabel.setText("Username must be email Address\nAnd Password must be longer than 6 and shorter than 20");
+					errorMessage.setVisible(true);
 				}
 			}
 		});
