@@ -7,6 +7,9 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
 
+import config.Global;
+import obj.UTXOSet;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -121,6 +124,15 @@ public class Homepage extends JFrame {
 		});
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
+		
+		JButton btnSyncBlocks = new JButton("Sync Blocks");
+		btnSyncBlocks.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+			}
+		});
+		btnSyncBlocks.setBounds(38, 312, 117, 29);
+		accountPanel.add(btnSyncBlocks);
 		
 		JPanel payPanel = new JPanel();
 		payPanel.setBounds(25, 68, 701, 404);
