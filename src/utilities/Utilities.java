@@ -18,6 +18,10 @@ import java.util.regex.Pattern;
 public class Utilities {
 	public static final String REGEX_EMAIL = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
 	public static final String REGEX_PASSWORD = "^[a-zA-Z0-9]{6,20}$";
+	public static final String POSITIVE_DOUBLE = "^[0-9]+.?[0-9]*$";
+	public static final String POSITIVE_INTEGER = "^[1-9]\\d*$";
+	 //   /^[0-9]+.?[0-9]*$/;   正小数
+    //     /^(0|\+?[1-9][0-9]*)$/  0 和正整数
 	/**
      * A hashing method that changes a string (like a URL) into a hash suitable for using as a
      * disk filename.
@@ -120,5 +124,11 @@ public class Utilities {
 	
 	public static boolean checkPwd(String pwd) {
 		return Pattern.matches(REGEX_PASSWORD, pwd);
+	}
+	public static boolean checkAmount(String amount) {
+		return Pattern.matches(POSITIVE_DOUBLE, amount)||Pattern.matches(POSITIVE_INTEGER, amount);
+	}
+	public static void main(String[] args) {
+		System.out.println(Utilities.checkAmount("12.00"));
 	}
 }
