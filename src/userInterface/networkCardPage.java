@@ -78,6 +78,9 @@ public class networkCardPage extends JFrame {
 				try {
 					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainMainThread.start();
+					setVisible(false);
+					Homepage homepage = new Homepage();
+					homepage.setVisible(true);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

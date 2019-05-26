@@ -56,7 +56,7 @@ public class TXPool {
 		if(transactionList.size() == 0) return transactionList;
 		if(transactionList.size() % 2 == 1) {
 			transactionList.remove(transactionList.size()-1);
-		}		
+		}
 		return transactionList;
 	}
 }
