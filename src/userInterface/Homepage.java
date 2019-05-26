@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
 
 public class Homepage extends JFrame {
 
@@ -39,6 +40,7 @@ public class Homepage extends JFrame {
 	private JPanel accountPanel;
 	private JPanel payPanel;
 	private JTextArea pubKeyText;
+	private JTextField amountText;
 
 	/**
 	 * Launch the application.
@@ -92,35 +94,6 @@ public class Homepage extends JFrame {
 		accountPanel = new JPanel();
 		accountPanel.setBounds(25, 68, 701, 480);
 		accountPanel.setVisible(true);
-		
-		payPanel = new JPanel();
-		payPanel.setBounds(25, 68, 701, 404);
-		contentPane.add(payPanel);
-		payPanel.setLayout(null);
-		payPanel.setVisible(false);
-		
-		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
-		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
-		payPanel.add(lblReceiverPublicKey);
-		
-		JLabel AmountLabel = new JLabel("Amount:");
-		AmountLabel.setBounds(15, 217, 69, 20);
-		payPanel.add(AmountLabel);
-		
-		JButton btnPayNow = new JButton("Pay Now");
-		btnPayNow.setBounds(43, 325, 115, 29);
-		payPanel.add(btnPayNow);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(183, 59, 479, 119);
-		scrollPane.setVerticalScrollBarPolicy( 
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-		payPanel.add(scrollPane);
-		
-		
-		JTextArea ReceivePubtextArea = new JTextArea();
-		scrollPane.setViewportView(ReceivePubtextArea);
-		ReceivePubtextArea.setLineWrap(true);
 		contentPane.add(accountPanel);
 		accountPanel.setLayout(null);
 		
@@ -143,7 +116,8 @@ public class Homepage extends JFrame {
 		lblBalance.setBounds(38, 165, 69, 20);
 		accountPanel.add(lblBalance);
 		
-		JLabel showBalanceLabel = new JLabel(""+UTXOSet.getBalance(Global.user.getPubkey()));
+		Global.tempBalance = UTXOSet.getBalance(Global.user.getPubkey());
+		JLabel showBalanceLabel = new JLabel(""+ Global.tempBalance);
 		showBalanceLabel.setBounds(146, 165, 69, 20);
 		accountPanel.add(showBalanceLabel);
 		
@@ -168,6 +142,7 @@ public class Homepage extends JFrame {
 		btnSyncBlocks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+				//更新balance & tempBalance
 			}
 		});
 		btnSyncBlocks.setBounds(0, 435, 117, 29);
@@ -186,6 +161,45 @@ public class Homepage extends JFrame {
 		JLabel label = new JLabel("");
 		label.setBounds(167, 165, 69, 20);
 		accountPanel.add(label);
+		
+		payPanel = new JPanel();
+		payPanel.setBounds(25, 68, 701, 404);
+		contentPane.add(payPanel);
+		payPanel.setLayout(null);
+		payPanel.setVisible(false);
+		
+		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
+		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
+		payPanel.add(lblReceiverPublicKey);
+		
+		JLabel AmountLabel = new JLabel("Amount:");
+		AmountLabel.setBounds(15, 217, 69, 20);
+		payPanel.add(AmountLabel);
+		
+		JButton btnPayNow = new JButton("Pay Now");
+		btnPayNow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//check check
+			}
+		});
+		btnPayNow.setBounds(43, 325, 115, 29);
+		payPanel.add(btnPayNow);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(183, 59, 479, 119);
+		scrollPane.setVerticalScrollBarPolicy( 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		payPanel.add(scrollPane);
+		
+		
+		JTextArea ReceivePubtextArea = new JTextArea();
+		scrollPane.setViewportView(ReceivePubtextArea);
+		ReceivePubtextArea.setLineWrap(true);
+		
+		amountText = new JTextField();
+		amountText.setBounds(148, 214, 146, 26);
+		payPanel.add(amountText);
+		amountText.setColumns(10);
 		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);
@@ -209,6 +223,11 @@ public class Homepage extends JFrame {
 		    	accountPanel.setVisible(true);
 		    }
 		  }
+	}
+	private boolean checkPay() {
+		//check if tempBalance > transfer amount
+		// if true: tempBalance - transfer amount
+		//else alert
 	}
 }
 
