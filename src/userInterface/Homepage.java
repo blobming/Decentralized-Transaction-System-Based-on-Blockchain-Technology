@@ -9,7 +9,11 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.io.FileUtils;
 
 import config.Global;
+import database.SQLDB;
+import obj.Transaction;
 import obj.UTXOSet;
+import obj.User;
+import utilities.Utilities;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -30,6 +34,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 
@@ -41,6 +47,7 @@ public class Homepage extends JFrame {
 	private JPanel payPanel;
 	private JTextArea pubKeyText;
 	private JTextField amountText;
+	private JLabel showBalanceLabel;
 
 	/**
 	 * Launch the application.
@@ -115,9 +122,7 @@ public class Homepage extends JFrame {
 		JLabel lblBalance = new JLabel("Balance:");
 		lblBalance.setBounds(38, 165, 69, 20);
 		accountPanel.add(lblBalance);
-		
-		Global.tempBalance = UTXOSet.getBalance(Global.user.getPubkey());
-		JLabel showBalanceLabel = new JLabel(""+ Global.tempBalance);
+		showBalanceLabel = new JLabel(""+ Global.tempBalance);
 		showBalanceLabel.setBounds(146, 165, 69, 20);
 		accountPanel.add(showBalanceLabel);
 		
@@ -131,7 +136,7 @@ public class Homepage extends JFrame {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
 				Transferable trans = new StringSelection(pubKeyText.getText()); 
 				clipboard.setContents(trans, null);
-				JOptionPane.showMessageDialog(Register.getFrames()[0], "copy successfully", "", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(Homepage.getFrames()[0], "copy successfully", "", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
@@ -179,7 +184,7 @@ public class Homepage extends JFrame {
 		JButton btnPayNow = new JButton("Pay Now");
 		btnPayNow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//check check
+				Pay();
 			}
 		});
 		btnPayNow.setBounds(43, 325, 115, 29);
@@ -201,6 +206,8 @@ public class Homepage extends JFrame {
 		payPanel.add(amountText);
 		amountText.setColumns(10);
 		
+		Global.tempBalance = UTXOSet.getBalance(Global.user.getPubkey());
+		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);
 		historyPanel.setBounds(25, 68, 701, 404);
@@ -221,13 +228,33 @@ public class Homepage extends JFrame {
 		    	payPanel.setVisible(false);
 		    	historyPanel.setVisible(false);
 		    	accountPanel.setVisible(true);
+		    }else if(e.getActionCommand().equals("logout")) {
+				System.exit(0);
 		    }
 		  }
 	}
-	private boolean checkPay() {
-		//check if tempBalance > transfer amount
-		// if true: tempBalance - transfer amount
-		//else alert
+	private void Pay() {
+		if(!Utilities.checkAmount(amountText.getText())) {
+			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Invalid amount", "Wrong!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		double amount = Double.parseDouble(amountText.getText());
+		if(amount > Global.tempBalance) {
+			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Insufficient account balance", "Wrong!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		String payeePubkey = pubKeyText.getText();
+		User payee = SQLDB.getUserByKey(payeePubkey);
+		if(payee == null) {
+			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		Global.tempBalance -= amount;
+		Transaction transaction = Transaction.createTransaction(Global.user.getPubkey(), Global.user.getPrivateKey(), Utilities.hashKeyForDisk(payeePubkey), amount, new Date());
+		
+		Global.blockChainMainThread.peerNetwork.broadcast("TRANSACTION "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
+		JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Pay successfully!", "", JOptionPane.INFORMATION_MESSAGE);
+		showBalanceLabel.setText(""+ Global.tempBalance);
 	}
 }
 

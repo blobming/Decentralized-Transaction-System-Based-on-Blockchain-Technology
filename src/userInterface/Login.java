@@ -75,7 +75,9 @@ public class Login extends JFrame {
 		JButton btnLogWithUsernamepassword = new JButton("log with username&password");
 		btnLogWithUsernamepassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				LoginWithPwd loginwithpwd = new LoginWithPwd();
+				loginwithpwd.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnLogWithUsernamepassword.setBounds(26, 229, 274, 29);
