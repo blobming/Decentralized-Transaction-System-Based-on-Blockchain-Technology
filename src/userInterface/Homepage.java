@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
@@ -13,6 +14,7 @@ import obj.UTXOSet;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -59,7 +61,7 @@ public class Homepage extends JFrame {
 	 */
 	public Homepage() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 866, 567);
+		setBounds(100, 100, 869, 656);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,8 +90,37 @@ public class Homepage extends JFrame {
 		this.setJMenuBar(menuBar);
 		
 		accountPanel = new JPanel();
-		accountPanel.setBounds(25, 68, 701, 404);
+		accountPanel.setBounds(25, 68, 701, 480);
 		accountPanel.setVisible(true);
+		
+		payPanel = new JPanel();
+		payPanel.setBounds(25, 68, 701, 404);
+		contentPane.add(payPanel);
+		payPanel.setLayout(null);
+		payPanel.setVisible(false);
+		
+		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
+		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
+		payPanel.add(lblReceiverPublicKey);
+		
+		JLabel AmountLabel = new JLabel("Amount:");
+		AmountLabel.setBounds(15, 217, 69, 20);
+		payPanel.add(AmountLabel);
+		
+		JButton btnPayNow = new JButton("Pay Now");
+		btnPayNow.setBounds(43, 325, 115, 29);
+		payPanel.add(btnPayNow);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(183, 59, 479, 119);
+		scrollPane.setVerticalScrollBarPolicy( 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		payPanel.add(scrollPane);
+		
+		
+		JTextArea ReceivePubtextArea = new JTextArea();
+		scrollPane.setViewportView(ReceivePubtextArea);
+		ReceivePubtextArea.setLineWrap(true);
 		contentPane.add(accountPanel);
 		accountPanel.setLayout(null);
 		
@@ -98,6 +129,13 @@ public class Homepage extends JFrame {
 		accountPanel.add(lblUsername);
 		
 		JButton btnChangePassword = new JButton("Change password");
+		btnChangePassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ChangePwd change = new ChangePwd();
+				change.setVisible(true);
+				setVisible(false);
+			}
+		});
 		btnChangePassword.setBounds(369, 61, 167, 29);
 		accountPanel.add(btnChangePassword);
 		
@@ -105,7 +143,7 @@ public class Homepage extends JFrame {
 		lblBalance.setBounds(38, 165, 69, 20);
 		accountPanel.add(lblBalance);
 		
-		JLabel showBalanceLabel = new JLabel("");
+		JLabel showBalanceLabel = new JLabel(""+UTXOSet.getBalance(Global.user.getPubkey()));
 		showBalanceLabel.setBounds(146, 165, 69, 20);
 		accountPanel.add(showBalanceLabel);
 		
@@ -119,69 +157,35 @@ public class Homepage extends JFrame {
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
 				Transferable trans = new StringSelection(pubKeyText.getText()); 
 				clipboard.setContents(trans, null);
-				
+				JOptionPane.showMessageDialog(Register.getFrames()[0], "copy successfully", "", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
 		
-<<<<<<< HEAD
-		JButton btnSync = new JButton("Sync");
-		btnSync.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		btnSync.setBounds(30, 359, 115, 29);
-		accountPanel.add(btnSync);
-		
-		JLabel usernameLabel = new JLabel(Global.user.getUsername());
-		usernameLabel.setBounds(160, 65, 146, 20);
-		accountPanel.add(usernameLabel);
-		
-		pubKeyText = new JTextArea();
-		pubKeyText.setEditable(false);
-		pubKeyText.setText(Global.user.getPubkey());
-		pubKeyText.setBounds(146, 240, 369, 96);
-		accountPanel.add(pubKeyText);
-		
-		payPanel = new JPanel();
-=======
+
 		JButton btnSyncBlocks = new JButton("Sync Blocks");
 		btnSyncBlocks.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
 			}
 		});
-		btnSyncBlocks.setBounds(38, 312, 117, 29);
+		btnSyncBlocks.setBounds(0, 435, 117, 29);
 		accountPanel.add(btnSyncBlocks);
 		
-		JPanel payPanel = new JPanel();
->>>>>>> e2ae7cdddcad69afcf8c9112bc6b94b7d5a9ae67
-		payPanel.setBounds(25, 68, 701, 404);
-		contentPane.add(payPanel);
-		payPanel.setLayout(null);
-		payPanel.setVisible(false);
+		pubKeyText = new JTextArea(Global.user.getPubkey());
+		pubKeyText.setLineWrap(true);
+		pubKeyText.setEditable(false);
+		pubKeyText.setBounds(151, 240, 361, 148);
+		accountPanel.add(pubKeyText);
 		
-		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
-		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
-		payPanel.add(lblReceiverPublicKey);
+		JLabel usernameLabel = new JLabel(Global.user.getUsername());
+		usernameLabel.setBounds(176, 65, 159, 20);
+		accountPanel.add(usernameLabel);
 		
-		JTextArea ReceivePubtextArea = new JTextArea();
-		ReceivePubtextArea.setBounds(206, 82, 397, 100);
-		payPanel.add(ReceivePubtextArea);
-		
-		JLabel AmountLabel = new JLabel("Amount:");
-		AmountLabel.setBounds(15, 217, 69, 20);
-		payPanel.add(AmountLabel);
-		
-		JButton btnPayNow = new JButton("Pay Now");
-		btnPayNow.setBounds(43, 325, 115, 29);
-		payPanel.add(btnPayNow);
-		
-		JLabel lblUser = new JLabel("User:");
-		lblUser.setBounds(680, 16, 57, 20);
-		contentPane.add(lblUser);
+		JLabel label = new JLabel("");
+		label.setBounds(167, 165, 69, 20);
+		accountPanel.add(label);
 		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);

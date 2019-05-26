@@ -84,6 +84,7 @@ public class RegisterSuc extends JFrame {
 		JTextArea pubicKeyText = new JTextArea(pair.getPublicKey());
 		pubicKeyText.setBounds(185, 204, 557, 78);
 		pubicKeyText.setEditable(false);
+		pubicKeyText.setLineWrap(true);
 		contentPane.add(pubicKeyText);
 		
 		JLabel lblPrivateKey = new JLabel("private key:");
@@ -92,6 +93,7 @@ public class RegisterSuc extends JFrame {
 		
 		JTextArea privateKeyText = new JTextArea(pair.getPublicKey());
 		privateKeyText.setBounds(185, 325, 557, 71);
+		privateKeyText.setLineWrap(true);
 		privateKeyText.setEditable(false);
 		contentPane.add(privateKeyText);
 		
