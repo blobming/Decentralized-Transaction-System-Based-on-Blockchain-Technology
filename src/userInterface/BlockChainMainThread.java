@@ -56,7 +56,7 @@ public class BlockChainMainThread extends Thread {
 			blockList.add(block);
 		}
 		System.out.println(new Gson().toJson(blockList));
-		TestAddData.InitBlock();
+		//TestAddData.InitBlock();
 		
 		System.out.println("当前用户余额");
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
@@ -204,6 +204,9 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("Block:"+payload);
 							System.out.println("Attempting to add Block: " + payload);
 							Block newBlock = (Block) Utilities.toObject(Base64.getDecoder().decode(payload));
+							System.out.println("===========================");
+							System.out.println(new Gson().toJson(newBlock));
+							System.out.println("===========================");
 							if(UTXOSet.blockchain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
 								peerNetwork.broadcast("BLOCK " + payload);
@@ -242,6 +245,8 @@ public class BlockChainMainThread extends Thread {
 							Transaction transaction = (Transaction) Utilities.toObject(Base64.getDecoder().decode(payload));
 							if(transaction != null) {
 								if(!TXPool.contains(transaction)) {
+									System.out.println("Add Transaction to TXPOOL");
+									System.out.println(new Gson().toJson(transaction));
 									TXPool.putInPool(transaction);
 									peerNetwork.broadcast("TRANSACTION " + payload);
 								}

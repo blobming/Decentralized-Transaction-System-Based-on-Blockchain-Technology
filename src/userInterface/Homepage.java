@@ -8,8 +8,14 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
 
+import com.google.gson.Gson;
+
 import config.Global;
 import database.SQLDB;
+import obj.Block;
+import obj.BlockBody;
+import obj.Blockchain;
+import obj.TXPool;
 import obj.Transaction;
 import obj.UTXOSet;
 import obj.User;
@@ -166,6 +172,27 @@ public class Homepage extends JFrame {
 		JLabel label = new JLabel("");
 		label.setBounds(167, 165, 69, 20);
 		accountPanel.add(label);
+		
+		JButton btnMining = new JButton("Mining");
+		btnMining.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BlockBody body = new BlockBody(TXPool.gatherTransaction());
+				Block block = Blockchain.MiningBlock(new Block(body, 0, UTXOSet.blockchain.tip, new Date()));
+				System.out.println(new Gson().toJson(block));
+				Global.blockChainMainThread.peerNetwork.broadcast("BLOCK "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(block)));
+			}
+		});
+		btnMining.setBounds(304, 435, 117, 29);
+		accountPanel.add(btnMining);
+		
+		JButton btnSyncTransactions = new JButton("Sync Transactions");
+		btnSyncTransactions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Global.blockChainMainThread.peerNetwork.broadcast("SYNC_TRANSACTION");
+			}
+		});
+		btnSyncTransactions.setBounds(146, 435, 146, 29);
+		accountPanel.add(btnSyncTransactions);
 		
 		payPanel = new JPanel();
 		payPanel.setBounds(25, 68, 701, 404);
