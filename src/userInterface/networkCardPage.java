@@ -13,6 +13,7 @@ import config.Global;
 import utilities.Utilities;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
@@ -75,19 +76,23 @@ public class networkCardPage extends JFrame {
 		btnConnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
+				if(selectedRow == -1) {
+					JOptionPane.showMessageDialog(Register.getFrames()[0], "Please choose one network card", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}
 				try {
 					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainMainThread.start();
 					setVisible(false);
 					Homepage homepage = new Homepage();
 					homepage.setVisible(true);
+					setVisible(false);
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
-		btnConnect.setBounds(140, 388, 117, 29);
+		btnConnect.setBounds(40, 452, 117, 29);
 		contentPane.add(btnConnect);
 		
 		JButton btnResacan = new JButton("Resacan");
@@ -106,7 +111,7 @@ public class networkCardPage extends JFrame {
 				table.setModel(tableModel);
 			}
 		});
-		btnResacan.setBounds(336, 388, 117, 29);
+		btnResacan.setBounds(231, 452, 117, 29);
 		contentPane.add(btnResacan);
 		
 		JButton btnViewBlock = new JButton("View Block");
@@ -116,7 +121,7 @@ public class networkCardPage extends JFrame {
 				blockPage.setVisible(true);
 			}
 		});
-		btnViewBlock.setBounds(493, 388, 117, 29);
+		btnViewBlock.setBounds(424, 452, 117, 29);
 		contentPane.add(btnViewBlock);
 	}
 }

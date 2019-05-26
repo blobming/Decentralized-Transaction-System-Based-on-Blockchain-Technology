@@ -125,6 +125,7 @@ public class Homepage extends JFrame {
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
 		
+<<<<<<< HEAD
 		JButton btnSync = new JButton("Sync");
 		btnSync.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -145,6 +146,18 @@ public class Homepage extends JFrame {
 		accountPanel.add(pubKeyText);
 		
 		payPanel = new JPanel();
+=======
+		JButton btnSyncBlocks = new JButton("Sync Blocks");
+		btnSyncBlocks.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+			}
+		});
+		btnSyncBlocks.setBounds(38, 312, 117, 29);
+		accountPanel.add(btnSyncBlocks);
+		
+		JPanel payPanel = new JPanel();
+>>>>>>> e2ae7cdddcad69afcf8c9112bc6b94b7d5a9ae67
 		payPanel.setBounds(25, 68, 701, 404);
 		contentPane.add(payPanel);
 		payPanel.setLayout(null);

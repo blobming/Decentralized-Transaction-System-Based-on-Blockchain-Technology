@@ -175,6 +175,7 @@ public class LoginWithKey extends JFrame {
 		System.out.println("privatekey:" + privateKeyfromFile);
 		
 		///////////////
+		//SQLDB.connSqlDB();
 		User user = SQLDB.getUserByKey(publicKeyString);
 		if(user == null || !user.getPrivateKey().equals(privateKeyfromFile))	return null;
 		
