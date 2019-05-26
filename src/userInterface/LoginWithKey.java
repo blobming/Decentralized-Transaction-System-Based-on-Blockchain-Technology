@@ -11,6 +11,7 @@ import database.SQLDB;
 import obj.User;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -119,12 +120,23 @@ public class LoginWithKey extends JFrame {
 					welcomePage.setVisible(true);
 					setVisible(false);
 				}else {
-					//show something
+					JOptionPane.showMessageDialog(LoginWithKey.getFrames()[0], "wrong private& public key", "Wrong!", JOptionPane.WARNING_MESSAGE);
 				}	
 			}
 		});
 		btnLogIn.setBounds(254, 278, 115, 29);
 		contentPane.add(btnLogIn);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login login = new Login();
+				login.setVisible(true);
+				setVisible(false);
+			}
+		});
+		btnBack.setBounds(455, 278, 115, 29);
+		contentPane.add(btnBack);
 	}
 	
 	public User checkKey() {

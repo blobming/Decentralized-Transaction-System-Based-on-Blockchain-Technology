@@ -1,19 +1,19 @@
 package userInterface;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import database.SQLDB;
+
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class Login extends JFrame {
 
 	private JPanel contentPane;
@@ -38,8 +38,9 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		SQLDB.connSqlDB();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 841, 493);
+		setBounds(100, 100, 841, 467);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -61,15 +62,20 @@ public class Login extends JFrame {
 		contentPane.add(btnRegister);
 		
 		JButton btnLogInWith_1 = new JButton("log in with pub&private key");
-		btnLogInWith_1.setBounds(26, 348, 274, 29);
+		btnLogInWith_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				LoginWithKey loginWithKey = new LoginWithKey();
+				loginWithKey.setVisible(true);
+				setVisible(false);
+			}
+		});
+		btnLogInWith_1.setBounds(433, 229, 274, 29);
 		contentPane.add(btnLogInWith_1);
 		
 		JButton btnLogWithUsernamepassword = new JButton("log with username&password");
 		btnLogWithUsernamepassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				LoginWithKey loginWithKey = new LoginWithKey();
-				loginWithKey.setVisible(true);
-				setVisible(false);
+				
 			}
 		});
 		btnLogWithUsernamepassword.setBounds(26, 229, 274, 29);

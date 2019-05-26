@@ -72,12 +72,12 @@ public class SQLDB {
 		}
 	}
 	
-	public static User getUserByUsername(String username) {
+	public static User getUserByUsername(String username, String password) {
 		User user = null;
 		Statement statement;
 		try {
 			statement = conn.createStatement();
-			String sql = "select * from user where username=\"" + username + "\"";
+			String sql = String.format("select * from user where username=\"%s\" and password = \"%s\"", username, password);
 			ResultSet rs = statement.executeQuery(sql);
 			while(rs.next()) {
 				user = new User(rs.getString("username"), rs.getString("password"),rs.getString("publickey"),rs.getString("privatekey"));

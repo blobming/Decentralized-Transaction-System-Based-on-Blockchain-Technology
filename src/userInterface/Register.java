@@ -24,8 +24,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class Register extends JFrame {
-
-	//Todo: 在Utilities中限制用户名和密码长度
 	private JPanel contentPane;
 	private JTextField usernameText;
 	private JTextField pwdText;

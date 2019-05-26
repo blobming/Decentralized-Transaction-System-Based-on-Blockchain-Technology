@@ -6,7 +6,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
+
+import config.Global;
+import database.SQLDB;
+import obj.User;
+
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -69,11 +75,31 @@ public class LoginWithPwd extends JFrame {
 		JButton btnLogIn = new JButton("Log in");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				String username = usernameText.getText();
+				String password = new String(passwordText.getPassword());
+				User user = SQLDB.getUserByUsername(username, password);
+				if(user == null) {
+					JOptionPane.showMessageDialog(LoginWithPwd.getFrames()[0], "wrong username or password", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}else {
+					Global.user = user;
+					networkCardPage welcomePage = new networkCardPage();
+					welcomePage.setVisible(true);
+					setVisible(false);
+				}
 			}
 		});
 		btnLogIn.setBounds(103, 245, 115, 29);
 		contentPane.add(btnLogIn);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Login login = new Login();
+				login.setVisible(true);
+				setVisible(false);
+			}
+		});
+		btnBack.setBounds(294, 245, 115, 29);
+		contentPane.add(btnBack);
 	}
-
 }

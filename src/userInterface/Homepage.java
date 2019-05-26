@@ -7,11 +7,19 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.commons.io.FileUtils;
 
+import config.Global;
+import obj.UTXOSet;
+
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+
 import javax.swing.JTextArea;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,6 +33,10 @@ import java.awt.event.ActionEvent;
 public class Homepage extends JFrame {
 
 	private JPanel contentPane;
+	private JPanel historyPanel;
+	private JPanel accountPanel;
+	private JPanel payPanel;
+	private JTextArea pubKeyText;
 
 	/**
 	 * Launch the application.
@@ -59,19 +71,23 @@ public class Homepage extends JFrame {
 		JMenu accountMenu = new JMenu("Account");
 		accountMenu.setFont(new Font("Segoe UI Historic", Font.PLAIN, 25));
 		JMenuItem mani_payItem = new JMenuItem("pay");
+		mani_payItem.addActionListener(new MenuActionListener());
 		manipulationMenu.add(mani_payItem);
 		JMenuItem myAccountItem = new JMenuItem("my account");
+		myAccountItem.addActionListener(new MenuActionListener());
 		JMenuItem historyItem = new JMenuItem("history");
-		JMenuItem logout = new JMenuItem("logout");
+		historyItem.addActionListener(new MenuActionListener());
+		JMenuItem logoutItem = new JMenuItem("logout");
+		logoutItem.addActionListener(new MenuActionListener());
 		accountMenu.add(myAccountItem);
 		accountMenu.add(historyItem);
-		accountMenu.add(logout);
+		accountMenu.add(logoutItem);
 		menuBar.add(manipulationMenu);
 		menuBar.add(accountMenu);
 		
 		this.setJMenuBar(menuBar);
 		
-		JPanel accountPanel = new JPanel();
+		accountPanel = new JPanel();
 		accountPanel.setBounds(25, 68, 701, 404);
 		accountPanel.setVisible(true);
 		contentPane.add(accountPanel);
@@ -97,32 +113,38 @@ public class Homepage extends JFrame {
 		lblPublicKey.setBounds(38, 240, 95, 20);
 		accountPanel.add(lblPublicKey);
 		
-		JLabel showPublabel = new JLabel("");
-		showPublabel.setBounds(201, 240, 311, 148);
-		accountPanel.add(showPublabel);
-		
 		JButton btnCopyPublicKey = new JButton("copy Public key");
 		btnCopyPublicKey.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//弹出文件选择框
-				JFileChooser chooser = new JFileChooser();
-				//下面的方法将阻塞，直到【用户按下保存按钮且“文件名”文本框不为空】或【用户按下取消按钮】
-				int option = chooser.showSaveDialog(null);
-				if(option==JFileChooser.APPROVE_OPTION){	//假如用户选择了保存
-					File file = chooser.getSelectedFile();
-					try {
-						FileUtils.writeStringToFile(file, showPublabel.getText(),StandardCharsets.UTF_8,false);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard(); 
+				Transferable trans = new StringSelection(pubKeyText.getText()); 
+				clipboard.setContents(trans, null);
+				
 			}
 		});
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
 		
-		JPanel payPanel = new JPanel();
+		JButton btnSync = new JButton("Sync");
+		btnSync.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		btnSync.setBounds(30, 359, 115, 29);
+		accountPanel.add(btnSync);
+		
+		JLabel usernameLabel = new JLabel(Global.user.getUsername());
+		usernameLabel.setBounds(160, 65, 146, 20);
+		accountPanel.add(usernameLabel);
+		
+		pubKeyText = new JTextArea();
+		pubKeyText.setEditable(false);
+		pubKeyText.setText(Global.user.getPubkey());
+		pubKeyText.setBounds(146, 240, 369, 96);
+		accountPanel.add(pubKeyText);
+		
+		payPanel = new JPanel();
 		payPanel.setBounds(25, 68, 701, 404);
 		contentPane.add(payPanel);
 		payPanel.setLayout(null);
@@ -148,10 +170,28 @@ public class Homepage extends JFrame {
 		lblUser.setBounds(680, 16, 57, 20);
 		contentPane.add(lblUser);
 		
-		JPanel historyPanel = new JPanel();
+		historyPanel = new JPanel();
 		historyPanel.setVisible(false);
 		historyPanel.setBounds(25, 68, 701, 404);
 		contentPane.add(historyPanel);
+		
+	}
+	class MenuActionListener implements ActionListener {
+		  public void actionPerformed(ActionEvent e) {
+		    if(e.getActionCommand().equals("pay")) {
+		    	payPanel.setVisible(true);
+		    	historyPanel.setVisible(false);
+		    	accountPanel.setVisible(false);
+		    }else if(e.getActionCommand().equals("history")) {
+		    	payPanel.setVisible(false);
+		    	historyPanel.setVisible(true);
+		    	accountPanel.setVisible(false);
+		    }else if(e.getActionCommand().equals("my account")) {
+		    	payPanel.setVisible(false);
+		    	historyPanel.setVisible(false);
+		    	accountPanel.setVisible(true);
+		    }
+		  }
 	}
 }
 
