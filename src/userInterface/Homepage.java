@@ -249,9 +249,14 @@ public class Homepage extends JFrame {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
+		if(amountText.getText().equals(Global.user.getPubkey())) {
+			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Invalid transfer", "Wrong!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
 		Global.tempBalance -= amount;
 		Transaction transaction = Transaction.createTransaction(Global.user.getPubkey(), Global.user.getPrivateKey(), Utilities.hashKeyForDisk(payeePubkey), amount, new Date());
-		
+		UTXOSet.addTempTX(transaction);
+		Global.txDB.put(transaction.getTxid(), transaction);
 		Global.blockChainMainThread.peerNetwork.broadcast("TRANSACTION "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
 		JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Pay successfully!", "", JOptionPane.INFORMATION_MESSAGE);
 		showBalanceLabel.setText(""+ Global.tempBalance);
