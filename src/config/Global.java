@@ -18,5 +18,4 @@ public class Global {
 	public static String genesisTX = "ffd9cc40d8f7b19eae035fd17f9e79e2d38e4395e019118ffdee02c5136f0e72";
 	public static User user;
 	public static BlockChainMainThread blockChainMainThread;
-	public static double tempBalance;
 }

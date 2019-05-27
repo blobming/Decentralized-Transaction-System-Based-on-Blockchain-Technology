@@ -128,7 +128,7 @@ public class Homepage extends JFrame {
 		JLabel lblBalance = new JLabel("Balance:");
 		lblBalance.setBounds(38, 165, 69, 20);
 		accountPanel.add(lblBalance);
-		showBalanceLabel = new JLabel(""+ Global.tempBalance);
+		showBalanceLabel = new JLabel(""+ UTXOSet.getBalance(Global.user.getPubkey()));
 		showBalanceLabel.setBounds(146, 165, 69, 20);
 		accountPanel.add(showBalanceLabel);
 		
@@ -233,8 +233,6 @@ public class Homepage extends JFrame {
 		payPanel.add(amountText);
 		amountText.setColumns(10);
 		
-		Global.tempBalance = UTXOSet.getBalance(Global.user.getPubkey());
-		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);
 		historyPanel.setBounds(25, 68, 701, 404);
@@ -266,7 +264,7 @@ public class Homepage extends JFrame {
 			return;
 		}
 		double amount = Double.parseDouble(amountText.getText());
-		if(amount > Global.tempBalance) {
+		if(amount > Double.parseDouble(showBalanceLabel.getText())) {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Insufficient account balance", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
@@ -276,12 +274,17 @@ public class Homepage extends JFrame {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		Global.tempBalance -= amount;
+		if(amountText.getText().equals(Global.user.getPubkey())) {
+			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Invalid transfer", "Wrong!", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		double balance = Double.parseDouble(showBalanceLabel.getText()) - amount;
+		showBalanceLabel.setText("" + balance);
 		Transaction transaction = Transaction.createTransaction(Global.user.getPubkey(), Global.user.getPrivateKey(), Utilities.hashKeyForDisk(payeePubkey), amount, new Date());
-		
+		UTXOSet.addTempTX(transaction);
+		Global.txDB.put(transaction.getTxid(), transaction);
 		Global.blockChainMainThread.peerNetwork.broadcast("TRANSACTION "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
 		JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Pay successfully!", "", JOptionPane.INFORMATION_MESSAGE);
-		showBalanceLabel.setText(""+ Global.tempBalance);
 	}
 }
 
