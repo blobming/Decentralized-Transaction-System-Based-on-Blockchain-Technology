@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.mysql.fabric.xmlrpc.base.Array;
+
 import database.MyBerkeleyDB;
 import utilities.Utilities;
 import config.Global;
@@ -87,7 +89,11 @@ public class UTXOSet {
 	 *        add into UTXO
 	 */
 	public static void Update(BlockBody blockbody) {
-		ArrayList<Transaction> txs = blockbody.transactions;
+		ArrayList<Transaction> txs = UTXOSet.sortTransaction(blockbody.transactions);
+		//ArrayList<Transaction> txs = blockbody.transactions;
+		for(int i=0;i<txs.size();i++) {
+			System.out.println(txs.get(i).getTimestamp());
+		}
 		for(Transaction tx : txs) {
 			if(!tx.isCoinBase()) {
 				System.out.println("not coinbase");
@@ -177,6 +183,19 @@ public class UTXOSet {
 			}	
 		}
 		return UTXO;
+	}
+	
+	public static ArrayList<Transaction> sortTransaction(ArrayList<Transaction> transactionArray) {
+		for(int i = 0 ; i < transactionArray.size(); i++) {
+			for(int j = i; j<transactionArray.size(); j++) {
+				if(transactionArray.get(i).getTimestamp().after(transactionArray.get(j).getTimestamp())) {
+					Transaction tempTransaction = transactionArray.get(j);
+					transactionArray.set(j, transactionArray.get(i));
+					transactionArray.set(i, tempTransaction);
+				}
+			}
+		}
+		return transactionArray;
 	}
 
 }
