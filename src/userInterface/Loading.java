@@ -77,11 +77,11 @@ public class Loading extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 //				currentProgress+= 20; 
-				if (currentProgress > 100) { 
+				if (progressBar.getValue() == 100) {
 					btnNext.setVisible(true); 
 				}
 				System.out.println(currentProgress + "\t"+ maxHeight);
-				progressBar.setValue(currentProgress / (maxHeight - originalHeight)); 
+				progressBar.setValue((int) ((currentProgress*1.00 / (maxHeight - originalHeight))*100));
 			} 
 		}).start();
 		
