@@ -25,7 +25,7 @@ public class PeerThread extends Thread
     @Override
     public void run()
     {
-    	System.out.println("Got connection from " + socket.getInetAddress() + ".");
+    	System.out.println("Got connection from " + socket.getInetAddress() + ":" +socket.getPort() + ".");
         peerReader = new PeerReader(socket);
         peerReader.start();
         peerWriter = new PeerWriter(socket);

@@ -57,7 +57,10 @@ public class PeerNetwork extends Thread {
 			PeerThread pt = new PeerThread(socket);
 			peerThreads.add(pt);
 			pt.start();
-		} catch (IOException e) {
+			System.out.println("调用join");
+			pt.join();
+			System.out.println("join调用结束");
+		} catch (IOException | InterruptedException e) {
 			System.err.println("socket " + host +":"+port+ " can't connect.");
 		}
     }

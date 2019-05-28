@@ -12,8 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class PeerWriter extends Thread {
 
 	private Socket socket;
-	private ArrayList<String> outputBuffer;
-	private boolean runFlag = true;
+	private ArrayList<String> outputBuffer = new ArrayList<String>();
 
 	public PeerWriter(Socket socket) {
 		this.socket = socket;
@@ -22,9 +21,8 @@ public class PeerWriter extends Thread {
 	@Override
 	public void run() {
 		try {
-			outputBuffer = new ArrayList<String>();
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-			while (runFlag) {
+			while (true) {
 				if (!outputBuffer.isEmpty() && outputBuffer.get(0) != null) {
                     for (String line : outputBuffer) {
                     	System.out.println("Sending " +line + " to " + socket.getInetAddress());
@@ -54,12 +52,5 @@ public class PeerWriter extends Thread {
 			}
 		}
 		outputBuffer.add(data);
-	}
-
-	/**
-	 * maybe
-	 */
-	public void shutdown() {
-		runFlag = false;
 	}
 }
