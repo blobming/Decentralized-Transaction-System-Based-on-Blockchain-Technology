@@ -85,8 +85,8 @@ public class networkCardPage extends JFrame {
 					Global.blockChainMainThread.start();
 					Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
 					setVisible(false);
-//					Global.homepage = new Homepage();
-//					Global.homepage.setVisible(true);
+					Global.homepage = new Homepage();
+					Global.homepage.setVisible(false);
 					Global.loadingPage = new Loading();
 					Global.loadingPage.setVisible(true);
 				} catch (Exception e1) {
