@@ -54,7 +54,7 @@ public class BlockChainMainThread extends Thread {
 			blockList.add(block);
 		}
 		System.out.println(new Gson().toJson(blockList));
-		//TestAddData.InitBlock();
+		TestAddData.InitBlock();
 		
 		System.out.println("当前用户余额");
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
