@@ -2,15 +2,28 @@ package userInterface;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 
+import config.Global;
+import obj.UTXOSet;
+
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.Timer;
+import javax.swing.JButton;
+
+@SuppressWarnings("serial")
 public class Loading extends JFrame {
 
 	private JPanel contentPane;
+	public int currentProgress = 0;
+	public int maxHeight;
+	public Timer timer;
 
 	/**
 	 * Launch the application.
@@ -32,6 +45,7 @@ public class Loading extends JFrame {
 	 * Create the frame.
 	 */
 	public Loading() {
+		int originalHeight = UTXOSet.blockchain.getHeight();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 862, 487);
 		contentPane = new JPanel();
@@ -42,6 +56,33 @@ public class Loading extends JFrame {
 		JLabel lblDownloadingAllThe = new JLabel("Downloading all the blocks, please wait....");
 		lblDownloadingAllThe.setBounds(156, 47, 434, 20);
 		contentPane.add(lblDownloadingAllThe);
-	}
+		
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setMinimum(0);
+        progressBar.setMaximum(100);
+        progressBar.setValue(currentProgress);
+        progressBar.setStringPainted(true);
 
+		progressBar.setBounds(48, 176, 706, 30);
+		
+		contentPane.add(progressBar);
+		
+		JButton btnNext = new JButton("Next");
+		btnNext.setVisible(false);
+		btnNext.setBounds(309, 338, 115, 29);
+		contentPane.add(btnNext);
+		
+		new Timer(1000, new ActionListener() { 
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+//				currentProgress+= 20; 
+				if (currentProgress > 100) { 
+					btnNext.setVisible(true); 
+				} 
+				progressBar.setValue(currentProgress / (maxHeight - originalHeight)); 
+			} 
+		}).start();
+		
+	}
 }
