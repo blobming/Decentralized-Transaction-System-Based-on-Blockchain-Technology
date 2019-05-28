@@ -252,6 +252,8 @@ public class Homepage extends JFrame {
 	class MenuActionListener implements ActionListener {
 		  public void actionPerformed(ActionEvent e) {
 		    if(e.getActionCommand().equals("pay")) {
+		    	ReceivePubtextArea.setText("");
+		    	amountText.setText("");
 		    	payPanel.setVisible(true);
 		    	historyPanel.setVisible(false);
 		    	accountPanel.setVisible(false);
@@ -264,7 +266,11 @@ public class Homepage extends JFrame {
 		    	historyPanel.setVisible(false);
 		    	accountPanel.setVisible(true);
 		    }else if(e.getActionCommand().equals("logout")) {
-				System.exit(0);
+		    	int n = JOptionPane.showOptionDialog(Homepage.getFrames()[0], "Are you sure to leave?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+	    		        new Object[] { "Yes", "No" }, JOptionPane.YES_OPTION);
+	    	    if (n == JOptionPane.YES_OPTION) {
+	    	    	System.exit(0);
+	    	    } 
 		    }
 		  }
 	}
@@ -291,5 +297,7 @@ public class Homepage extends JFrame {
 		Global.txDB.put(transaction.getTxid(), transaction);
 		Global.blockChainMainThread.peerNetwork.broadcast("TRANSACTION "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
 		JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Pay successfully!", "", JOptionPane.INFORMATION_MESSAGE);
+		ReceivePubtextArea.setText("");
+    	amountText.setText("");
 	}
 }
