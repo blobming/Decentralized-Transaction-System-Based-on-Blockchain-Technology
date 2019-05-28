@@ -88,7 +88,8 @@ public class Loading extends JFrame {
 					timer.stop();
 				}
 				System.out.println(currentProgress + "\t"+ maxHeight);
-				progressBar.setValue((int) ((currentProgress*1.00 / (maxHeight - originalHeight))*100));
+				int value = maxHeight == 0 ? 100 : (int)(currentProgress*1.00 / (maxHeight - originalHeight)*100); 
+				progressBar.setValue(value);
 			} 
 		});
 		timer.start();
