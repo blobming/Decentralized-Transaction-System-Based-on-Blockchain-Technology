@@ -130,13 +130,14 @@ public class BlockChainMainThread extends Thread {
 			for(int i = 0;i<peerNetwork.peerThreads.size();i++) {
 				pt = peerNetwork.peerThreads.get(i);
 				if (pt == null || pt.peerReader == null) {
-					break;
+					peerNetwork.peerThreads.remove(i);
+					continue;
 				}
 				List<String> dataList = pt.peerReader.readData();
 				if (dataList == null) {
 					System.out.println("Null return, retry.");
-					System.exit(-5);
-					break;
+					peerNetwork.peerThreads.remove(i);
+					continue;
 				}
 				for (String data:dataList) {
 					System.out.println("COMMAND: " + data);
