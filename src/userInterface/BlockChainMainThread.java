@@ -25,7 +25,7 @@ import utilities.Utilities;
 
 public class BlockChainMainThread extends Thread {
 	private final int port = 8015;
-	private int bestHeight;
+	public int bestHeight;
 	private PeerThread bestThread;
 	public PeerNetwork peerNetwork;
 	public RpcServer rpcAgent;
