@@ -40,6 +40,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.awt.event.ActionEvent;
@@ -189,15 +190,15 @@ public class Homepage extends JFrame {
 		accountPanel.add(btnCopyPublicKey);
 		
 
-		JButton btnSyncBlocks = new JButton("Sync Blocks");
-		btnSyncBlocks.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
-				//更新balance & tempBalance
-			}
-		});
-		btnSyncBlocks.setBounds(0, 435, 117, 29);
-		accountPanel.add(btnSyncBlocks);
+//		JButton btnSyncBlocks = new JButton("Sync Blocks");
+//		btnSyncBlocks.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+//				//更新balance & tempBalance
+//			}
+//		});
+//		btnSyncBlocks.setBounds(0, 435, 117, 29);
+//		accountPanel.add(btnSyncBlocks);
 		
 		pubKeyText = new JTextArea(Global.user.getPubkey());
 		pubKeyText.setLineWrap(true);
@@ -216,10 +217,19 @@ public class Homepage extends JFrame {
 		JButton btnMining = new JButton("Mining");
 		btnMining.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BlockBody body = new BlockBody(TXPool.gatherTransaction());
-				Block block = Blockchain.MiningBlock(new Block(body, 0, UTXOSet.blockchain.tip, new Date()));
-				System.out.println(new Gson().toJson(block));
-				Global.blockChainMainThread.peerNetwork.broadcast("BLOCK "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(block)));
+				ArrayList<Transaction> txList = TXPool.gatherTransaction();
+				txList.add(Transaction.newCoinbaseTx(Global.user.getPubkey()));
+				if(txList.size()<=Global.minBlockTxNum) {
+					JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Currently We donot have enough transaction", "Wrong!", JOptionPane.WARNING_MESSAGE);
+				}else {
+					BlockBody body = new BlockBody(TXPool.gatherTransaction());
+					Block block = Blockchain.MiningBlock(new Block(body, 0, UTXOSet.blockchain.tip, new Date()));
+					System.out.println("==================Successfully Generate new Block! "+new Date()+"===============================");
+					System.out.println(new Gson().toJson(block));
+					System.out.println("==================================================================================");
+					Global.blockChainMainThread.peerNetwork.broadcast("BLOCK "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(block)));
+					JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Successfully Generate new Block!", "", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 		});
 		btnMining.setBounds(304, 435, 117, 29);
