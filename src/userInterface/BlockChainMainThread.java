@@ -186,7 +186,6 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("GET_BLOCKS:"+ payload);
 							String hashList = Blockchain.generateInv(UTXOSet.blockchain, payload);
 							pt.peerWriter.write("BLOCK_INV "+ hashList);
-							Global.loadingPage.currentProgress +=1;
 						} else if("BLOCK_INV".equalsIgnoreCase(cmd)) {
 							System.out.println("BLOCK_INV:"+ payload);
 							String[] hashList = payload.split(",");
@@ -211,7 +210,8 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("===========================");
 							if(UTXOSet.blockchain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
-								Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
+								//Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
+								Global.loadingPage.currentProgress +=1;
 								peerNetwork.broadcast("BLOCK " + payload);
 							}
 						} else if ("ADDR".equalsIgnoreCase(cmd)) {

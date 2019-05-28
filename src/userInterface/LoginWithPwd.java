@@ -31,16 +31,9 @@ public class LoginWithPwd extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginWithPwd frame = new LoginWithPwd();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		SQLDB.connSqlDB();
+		LoginWithPwd frame = new LoginWithPwd();
+		frame.setVisible(true);
 	}
 
 	/**

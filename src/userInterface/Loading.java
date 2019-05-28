@@ -79,7 +79,8 @@ public class Loading extends JFrame {
 //				currentProgress+= 20; 
 				if (currentProgress > 100) { 
 					btnNext.setVisible(true); 
-				} 
+				}
+				System.out.println(currentProgress + "\t"+ maxHeight);
 				progressBar.setValue(currentProgress / (maxHeight - originalHeight)); 
 			} 
 		}).start();

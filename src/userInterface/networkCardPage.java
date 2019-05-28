@@ -10,6 +10,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 import config.Global;
+import obj.UTXOSet;
 import utilities.Utilities;
 
 import javax.swing.JLabel;
@@ -82,6 +83,7 @@ public class networkCardPage extends JFrame {
 				try {
 					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainMainThread.start();
+					Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
 					setVisible(false);
 //					Global.homepage = new Homepage();
 //					Global.homepage.setVisible(true);

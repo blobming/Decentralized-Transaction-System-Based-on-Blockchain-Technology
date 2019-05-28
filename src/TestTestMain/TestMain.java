@@ -13,6 +13,7 @@ public class TestMain {
 		System.err.println("begin send broadcast");
 		//建立socket连接后，给大家广播握手
 		blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+		
 	}
 
 }
