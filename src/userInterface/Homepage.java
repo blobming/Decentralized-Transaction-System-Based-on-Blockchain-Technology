@@ -189,8 +189,6 @@ public class Homepage extends JFrame {
 		btnCopyPublicKey.setBounds(527, 236, 159, 35);
 		accountPanel.add(btnCopyPublicKey);
 		
-
-<<<<<<< HEAD
 //		JButton btnSyncBlocks = new JButton("Sync Blocks");
 //		btnSyncBlocks.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
