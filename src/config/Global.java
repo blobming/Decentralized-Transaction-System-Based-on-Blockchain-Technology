@@ -5,6 +5,7 @@ import database.MyBerkeleyDB;
 import obj.User;
 import userInterface.BlockChainMainThread;
 import userInterface.Homepage;
+import userInterface.Loading;
 
 public class Global {
 	public static final int maxBlockTxNum = 16;
@@ -20,4 +21,5 @@ public class Global {
 	public static User user;
 	public static BlockChainMainThread blockChainMainThread;
 	public static Homepage homepage;
+	public static Loading loadingPage;
 }

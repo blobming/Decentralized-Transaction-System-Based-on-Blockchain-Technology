@@ -172,6 +172,7 @@ public class BlockChainMainThread extends Thread {
 							bestHeight = Integer.parseInt(payload);
 							if(bestHeight > UTXOSet.blockchain.getHeight()) {
 								bestThread = pt;
+								Global.loadingPage.maxHeight = bestHeight;
 							}
 						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
 							System.out.println("HEIGHT:"+payload);
@@ -185,6 +186,7 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("GET_BLOCKS:"+ payload);
 							String hashList = Blockchain.generateInv(UTXOSet.blockchain, payload);
 							pt.peerWriter.write("BLOCK_INV "+ hashList);
+							Global.loadingPage.currentProgress +=1;
 						} else if("BLOCK_INV".equalsIgnoreCase(cmd)) {
 							System.out.println("BLOCK_INV:"+ payload);
 							String[] hashList = payload.split(",");

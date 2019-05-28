@@ -116,7 +116,7 @@ public class Homepage extends JFrame {
 		payPanel.setLayout(null);
 		payPanel.setVisible(false);
 		
-		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
+		JLabel lblReceiverPublicKey = new JLabel("Receiver public key HASH");
 		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
 		payPanel.add(lblReceiverPublicKey);
 		
@@ -190,6 +190,7 @@ public class Homepage extends JFrame {
 		accountPanel.add(btnCopyPublicKey);
 		
 
+<<<<<<< HEAD
 //		JButton btnSyncBlocks = new JButton("Sync Blocks");
 //		btnSyncBlocks.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
@@ -279,19 +280,15 @@ public class Homepage extends JFrame {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Insufficient account balance", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		String payeePubkey = ReceivePubtextArea.getText();
-		User payee = SQLDB.getUserByKey(payeePubkey);
-		if(payee == null) {
-			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-		if(payeePubkey.equals(Global.user.getPubkey())) {
+		String payeePubkeyHash = ReceivePubtextArea.getText();
+		
+		if(payeePubkeyHash.equals(Utilities.hashKeyForDisk(Global.user.getPubkey()))) {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Invalid transfer", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		double balance = Double.parseDouble(showBalanceLabel.getText()) - amount;
 		showBalanceLabel.setText("" + balance);
-		Transaction transaction = Transaction.createTransaction(Global.user.getPubkey(), Global.user.getPrivateKey(), Utilities.hashKeyForDisk(payeePubkey), amount, new Date());
+		Transaction transaction = Transaction.createTransaction(Global.user.getPubkey(), Global.user.getPrivateKey(), payeePubkeyHash, amount, new Date());
 		UTXOSet.addTempTX(transaction);
 		Global.txDB.put(transaction.getTxid(), transaction);
 		Global.blockChainMainThread.peerNetwork.broadcast("TRANSACTION "+ Base64.getEncoder().encodeToString(Utilities.toByteArray(transaction)));
