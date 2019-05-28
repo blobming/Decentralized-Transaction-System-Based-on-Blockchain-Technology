@@ -54,6 +54,7 @@ public class Homepage extends JFrame {
 	private JTextArea pubKeyText;
 	private JTextField amountText;
 	public JLabel showBalanceLabel;
+	private JTextArea ReceivePubtextArea;
 
 	/**
 	 * Launch the application.
@@ -107,6 +108,45 @@ public class Homepage extends JFrame {
 		accountPanel = new JPanel();
 		accountPanel.setBounds(25, 68, 701, 480);
 		accountPanel.setVisible(true);
+		
+		payPanel = new JPanel();
+		payPanel.setBounds(25, 68, 701, 404);
+		contentPane.add(payPanel);
+		payPanel.setLayout(null);
+		payPanel.setVisible(false);
+		
+		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
+		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
+		payPanel.add(lblReceiverPublicKey);
+		
+		JLabel AmountLabel = new JLabel("Amount:");
+		AmountLabel.setBounds(15, 217, 69, 20);
+		payPanel.add(AmountLabel);
+		
+		JButton btnPayNow = new JButton("Pay Now");
+		btnPayNow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Pay();
+			}
+		});
+		btnPayNow.setBounds(43, 325, 115, 29);
+		payPanel.add(btnPayNow);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(183, 59, 479, 119);
+		scrollPane.setVerticalScrollBarPolicy( 
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
+		payPanel.add(scrollPane);
+		
+		
+		ReceivePubtextArea = new JTextArea();
+		scrollPane.setViewportView(ReceivePubtextArea);
+		ReceivePubtextArea.setLineWrap(true);
+		
+		amountText = new JTextField();
+		amountText.setBounds(148, 214, 146, 26);
+		payPanel.add(amountText);
+		amountText.setColumns(10);
 		contentPane.add(accountPanel);
 		accountPanel.setLayout(null);
 		
@@ -194,45 +234,6 @@ public class Homepage extends JFrame {
 		btnSyncTransactions.setBounds(146, 435, 146, 29);
 		accountPanel.add(btnSyncTransactions);
 		
-		payPanel = new JPanel();
-		payPanel.setBounds(25, 68, 701, 404);
-		contentPane.add(payPanel);
-		payPanel.setLayout(null);
-		payPanel.setVisible(false);
-		
-		JLabel lblReceiverPublicKey = new JLabel("Receiver public key");
-		lblReceiverPublicKey.setBounds(15, 82, 164, 20);
-		payPanel.add(lblReceiverPublicKey);
-		
-		JLabel AmountLabel = new JLabel("Amount:");
-		AmountLabel.setBounds(15, 217, 69, 20);
-		payPanel.add(AmountLabel);
-		
-		JButton btnPayNow = new JButton("Pay Now");
-		btnPayNow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Pay();
-			}
-		});
-		btnPayNow.setBounds(43, 325, 115, 29);
-		payPanel.add(btnPayNow);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(183, 59, 479, 119);
-		scrollPane.setVerticalScrollBarPolicy( 
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
-		payPanel.add(scrollPane);
-		
-		
-		JTextArea ReceivePubtextArea = new JTextArea();
-		scrollPane.setViewportView(ReceivePubtextArea);
-		ReceivePubtextArea.setLineWrap(true);
-		
-		amountText = new JTextField();
-		amountText.setBounds(148, 214, 146, 26);
-		payPanel.add(amountText);
-		amountText.setColumns(10);
-		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);
 		historyPanel.setBounds(25, 68, 701, 404);
@@ -268,7 +269,7 @@ public class Homepage extends JFrame {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Insufficient account balance", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		String payeePubkey = pubKeyText.getText();
+		String payeePubkey = ReceivePubtextArea.getText();
 		User payee = SQLDB.getUserByKey(payeePubkey);
 		if(payee == null) {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
