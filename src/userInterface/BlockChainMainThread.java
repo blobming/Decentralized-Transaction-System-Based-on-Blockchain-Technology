@@ -188,7 +188,7 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("===========================");
 							if(UTXOSet.blockchain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
-								//Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
+								Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
 								Global.loadingPage.currentProgress +=1;
 								peerNetwork.broadcast("BLOCK " + payload);
 							}
