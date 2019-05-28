@@ -1,4 +1,4 @@
-package userInterface;
+package serverProcess;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,7 +20,6 @@ import Network.RpcThread;
 import config.Global;
 import obj.*;
 import serverProcess.TestAddData;
-import utilities.NetworkUtils;
 import utilities.Utilities;
 
 public class BlockChainMainThread extends Thread {
@@ -55,7 +54,7 @@ public class BlockChainMainThread extends Thread {
 			blockList.add(block);
 		}
 		System.out.println(new Gson().toJson(blockList));
-		TestAddData.InitBlock();
+		//TestAddData.InitBlock();
 		
 		System.out.println("当前用户余额");
 		System.out.println("user's balance:" + UTXOSet.getBalance(TestAddData.userPubKey));
@@ -148,7 +147,7 @@ public class BlockChainMainThread extends Thread {
 							bestHeight = Integer.parseInt(payload);
 							if(bestHeight > UTXOSet.blockchain.getHeight()) {
 								bestThread = pt;
-								Global.loadingPage.maxHeight = bestHeight;
+								//Global.loadingPage.maxHeight = bestHeight;
 							}
 						} else if ("HEIGHT".equalsIgnoreCase(cmd)) {
 							System.out.println("HEIGHT:"+payload);
@@ -186,8 +185,8 @@ public class BlockChainMainThread extends Thread {
 							System.out.println("===========================");
 							if(UTXOSet.blockchain.addBlock(newBlock)) {
 								System.out.println("Added block " + payload + " with hash: ["+ newBlock.getHashCode() + "]");
-								Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
-								Global.loadingPage.currentProgress +=1;
+								//Global.homepage.showBalanceLabel.setText(""+UTXOSet.getBalance(Global.user.getPubkey()));
+								//Global.loadingPage.currentProgress +=1;
 								peerNetwork.broadcast("BLOCK " + payload);
 							}
 						} else if ("ADDR".equalsIgnoreCase(cmd)) {

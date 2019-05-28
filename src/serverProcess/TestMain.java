@@ -1,8 +1,8 @@
-package TestTestMain;
+package serverProcess;
 import java.io.IOException;
 
 import obj.UTXOSet;
-import userInterface.BlockChainMainThread;
+import serverProcess.BlockChainMainThread;
 
 public class TestMain {
 	private static String networkCard = "eth0";
