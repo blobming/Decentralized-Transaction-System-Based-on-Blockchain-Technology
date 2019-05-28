@@ -274,7 +274,7 @@ public class Homepage extends JFrame {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Payee does not exist!", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
-		if(amountText.getText().equals(Global.user.getPubkey())) {
+		if(payeePubkey.equals(Global.user.getPubkey())) {
 			JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Invalid transfer", "Wrong!", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
