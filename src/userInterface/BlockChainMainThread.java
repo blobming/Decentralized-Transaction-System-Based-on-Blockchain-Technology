@@ -119,12 +119,12 @@ public class BlockChainMainThread extends Thread {
 				FileUtils.writeStringToFile(peerFile, "\r\n"+peers.get(i),StandardCharsets.UTF_8,true);
 			}
 		}
-		//临时补救
-		for(PeerThread pt : peerNetwork.peerThreads) {
-			while(pt.peerReader == null || pt.peerWriter == null) {
-				System.out.println("waiting for connecting");
-			}
-		}
+//		//临时补救
+//		for(PeerThread pt : peerNetwork.peerThreads) {
+//			while(pt.peerReader == null || pt.peerWriter == null) {
+//				System.out.println("waiting for connecting");
+//			}
+//		}
 	}
 	
 	@Override
