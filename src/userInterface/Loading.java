@@ -78,18 +78,20 @@ public class Loading extends JFrame {
 		btnNext.setBounds(309, 338, 115, 29);
 		contentPane.add(btnNext);
 		
-		new Timer(1000, new ActionListener() { 
+		timer = new Timer(1000, new ActionListener() { 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 //				currentProgress+= 20; 
 				if (progressBar.getValue() == 100) {
 					btnNext.setVisible(true);
+					timer.stop();
 				}
 				System.out.println(currentProgress + "\t"+ maxHeight);
 				progressBar.setValue((int) ((currentProgress*1.00 / (maxHeight - originalHeight))*100));
 			} 
-		}).start();
+		});
+		timer.start();
 		
 	}
 }

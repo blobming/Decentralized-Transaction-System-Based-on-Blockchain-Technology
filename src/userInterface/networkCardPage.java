@@ -83,6 +83,7 @@ public class networkCardPage extends JFrame {
 				try {
 					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainMainThread.start();
+					Thread.sleep(5000);
 					Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
 					setVisible(false);
 					Global.homepage = new Homepage();
