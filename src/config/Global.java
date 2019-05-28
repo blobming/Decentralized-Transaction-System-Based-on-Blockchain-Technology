@@ -22,4 +22,5 @@ public class Global {
 	public static BlockChainMainThread blockChainMainThread;
 	public static Homepage homepage;
 	public static Loading loadingPage;
+	public static String ipAddress;
 }

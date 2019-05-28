@@ -116,7 +116,7 @@ public class LoginWithKey extends JFrame {
 				User user =	checkKey(); 
 				if(user != null) {
 					Global.user = user;
-					networkCardPage welcomePage = new networkCardPage();
+					NetworkCardPage welcomePage = new NetworkCardPage();
 					welcomePage.setVisible(true);
 					setVisible(false);
 				}else {

@@ -21,7 +21,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class networkCardPage extends JFrame {
+public class NetworkCardPage extends JFrame {
 
 	private static final long serialVersionUID = -4603485177943160649L;
 	private JPanel contentPane;
@@ -33,7 +33,7 @@ public class networkCardPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public networkCardPage() {
+	public NetworkCardPage() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 864, 587);
 		contentPane = new JPanel();
@@ -83,7 +83,6 @@ public class networkCardPage extends JFrame {
 				try {
 					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
 					Global.blockChainMainThread.start();
-					Thread.sleep(5000);
 					Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
 					setVisible(false);
 					Global.homepage = new Homepage();

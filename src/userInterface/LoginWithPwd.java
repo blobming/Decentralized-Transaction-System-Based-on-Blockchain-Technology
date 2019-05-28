@@ -75,7 +75,7 @@ public class LoginWithPwd extends JFrame {
 					JOptionPane.showMessageDialog(LoginWithPwd.getFrames()[0], "wrong username or password", "Wrong!", JOptionPane.WARNING_MESSAGE);
 				}else {
 					Global.user = user;
-					networkCardPage welcomePage = new networkCardPage();
+					NetworkCardPage welcomePage = new NetworkCardPage();
 					welcomePage.setVisible(true);
 					setVisible(false);
 				}

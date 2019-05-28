@@ -33,7 +33,7 @@ public class BlockChainMainThread extends Thread {
 	private File peerFile = new File("peers.list");
 	private String host;
 	
-	public BlockChainMainThread(String networkCard) throws IOException {
+	public BlockChainMainThread(String networkCardOption) throws IOException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		String strPath = "./DataFile";  
@@ -85,46 +85,24 @@ public class BlockChainMainThread extends Thread {
 		rpcAgent.start();
 		System.out.println("RPC agent is Started in port:"+(port+1));
 		
-		System.out.println("found that your computer has these following network Card");
+//		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
-		for(String key:hostList.keySet()) {
-			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-		}
-		System.out.println("Please Choose one");
-		host = hostList.get(networkCard);
+//		for(String key:hostList.keySet()) {
+//			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+//		}
+//		System.out.println("Please Choose one");
+		Global.ipAddress = hostList.get(networkCardOption);
 		
 		//如果peer.txt未创建，则创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
-			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,true);
+			FileUtils.writeStringToFile(peerFile,"59.110.140.54:8015",StandardCharsets.UTF_8,true);
 		}else { //如果peer.txt已经存在，就把它存的ip地址放入peers里面
 			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
 				String[] addr = peer.split(":");
-				if(NetworkUtils.isLocal(addr[0])&&String.valueOf(port).equals(addr[1])){
-					continue;
-				}
 				peers.add(peer);
-				//raw ipv4
-				//尝试连接
 				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
 			}
-			//如果peerlist的第一条不是自己的ip地址(当前自己的ip地址改变）
-			System.out.println("Replace local Address");
-			if(peers.size()>0) {
-				peers.set(0, host+":"+port);
-			}else {
-				peers.add(host+":"+port);
-			}
-			FileUtils.writeStringToFile(peerFile, host+":"+port,StandardCharsets.UTF_8,false);
-			for(int i=1;i<peers.size();i++) {
-				FileUtils.writeStringToFile(peerFile, "\r\n"+peers.get(i),StandardCharsets.UTF_8,true);
-			}
 		}
-//		//临时补救
-//		for(PeerThread pt : peerNetwork.peerThreads) {
-//			while(pt.peerReader == null || pt.peerWriter == null) {
-//				System.out.println("waiting for connecting");
-//			}
-//		}
 	}
 	
 	@Override
