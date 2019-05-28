@@ -53,7 +53,7 @@ public class Homepage extends JFrame {
 	private JPanel payPanel;
 	private JTextArea pubKeyText;
 	private JTextField amountText;
-	private JLabel showBalanceLabel;
+	public JLabel showBalanceLabel;
 
 	/**
 	 * Launch the application.
@@ -287,4 +287,3 @@ public class Homepage extends JFrame {
 		JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Pay successfully!", "", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
-

@@ -93,10 +93,14 @@ public class Transaction implements Serializable {
 	
 	public static boolean validateTransaction(Transaction tx, Block block) {
 		int count = 0;
+		if(Vout.FindVoutByTransactionId(tx.getTxid())!=null) {
+			return true;
+		}
 		for(Vin vin:tx.vin) {
 			//Get the vout which links to current vin
 			//Transaction transaction = Transaction.GetTransactionById(vin.getTxid());
 			HashSet<Vout> voutList = Vout.FindVoutByTransactionId(vin.getTxid());
+			System.out.println(voutList);
 			//得到相应的vout
 			Vout vout = null;
 			if(voutList != null) {

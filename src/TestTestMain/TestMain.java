@@ -5,7 +5,7 @@ import obj.UTXOSet;
 import userInterface.BlockChainMainThread;
 
 public class TestMain {
-	private static String networkCard = "en0";
+	private static String networkCard = "eth0";
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		BlockChainMainThread blockChainMainThread = new BlockChainMainThread(networkCard);
 		blockChainMainThread.start();
