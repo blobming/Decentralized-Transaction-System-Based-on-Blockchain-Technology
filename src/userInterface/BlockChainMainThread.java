@@ -30,7 +30,6 @@ public class BlockChainMainThread extends Thread {
 	public PeerNetwork peerNetwork;
 	public RpcServer rpcAgent;
 	private File peerFile = new File("peers.list");
-	private String host;
 	
 	public BlockChainMainThread() {
 		System.out.println("Starting daemon");
@@ -174,14 +173,14 @@ public class BlockChainMainThread extends Thread {
 							}
 						} else if ("ADDR".equalsIgnoreCase(cmd)) {
 							System.out.println("ADDR: "+payload);
-							if (!peerNetwork.peers.contains(payload)&&!(host+":"+port).equals(payload)) {
+							if (!peerNetwork.peers.contains(payload)&&!(Global.ipAddress+":"+port).equals(payload)) {
 								String peerAddr = payload.substring(0, payload.indexOf(':'));
 								int peerPort = Integer.parseInt(payload.substring(payload.indexOf(':') + 1));
 								peerNetwork.connect(peerAddr, peerPort);
 							}
 						} else if ("GET_ADDR".equalsIgnoreCase(cmd)) {
 							if(peerNetwork.peers.size() == 0) {
-								pt.peerWriter.write("ADDR " + host+":"+port);
+								pt.peerWriter.write("ADDR " + Global.ipAddress+":"+port);
 							}else {
 								Random random = new Random();
 								System.out.println(peerNetwork.peers.size());
