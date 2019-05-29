@@ -7,43 +7,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * p2p网络，负责处理peer之间的连接和通讯。每次起独立线程来处理
- * 与每一个peer的连接均新建线程保存在peerThreads里面，最终的
- * @author Mignet
- */
 public class PeerNetwork extends Thread {
 	
     private int port;
-    private boolean runFlag = true;
     
     public List<PeerThread> peerThreads;
     public List<String> peers;
-
-    /**
-     * 默认配置
-     */
-    public PeerNetwork() {
-        this.port = 8015;
-        this.peerThreads = new ArrayList<PeerThread>();
-        this.peers = new ArrayList<String>();
-    }
-    /**
-     * 传绑定端口
-     * @param port
-     */
+    
     public PeerNetwork(int port) {
     	this.port = port;
     	this.peerThreads = new ArrayList<PeerThread>();
     	this.peers = new ArrayList<String>();
     }
 
-    /**
-     * 建立连接
-     *
-     * @param 要连接的host
-     * @param 要连接的host的端口
-     */
     public void connect(String host, int port){
     	Socket socket =null;
     	try {
@@ -67,9 +43,10 @@ public class PeerNetwork extends Thread {
 
     @Override
     public void run() {
+    	ServerSocket listenSocket = null;
         try {
-            ServerSocket listenSocket = new ServerSocket(port);
-            while (runFlag) 
+            listenSocket = new ServerSocket(port);
+            while (true)
             {
             	Socket connectedSocket = listenSocket.accept();
             	peers.add(connectedSocket.getInetAddress().getHostAddress()+":"+connectedSocket.getPort());
@@ -77,16 +54,18 @@ public class PeerNetwork extends Thread {
                 peerThreads.add(peerThread);
                 peerThread.start();
             }
-            listenSocket.close();
         } catch (Exception e) {
-           System.err.println("{}");
+           System.err.println("Listen Socket Error!");
+        } finally{
+        	try {
+				listenSocket.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 
-    /**
-     * 广播消息
-     * @param data String to broadcast to peers
-     */
     public void broadcast(String data) {
         for (PeerThread pt: peerThreads) {
         	System.out.println("Sent:: " + data);

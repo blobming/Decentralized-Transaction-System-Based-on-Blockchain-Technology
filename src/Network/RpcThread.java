@@ -6,20 +6,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-/**
- * 处理单个rpc连接
- * @author Mignet
- */
 public class RpcThread extends Thread {
 	
     private Socket socket;
     public String response;
     public String request;
 
-    /**
-     * 默认构造函数
-     * @param socket
-     */
     public RpcThread(Socket socket){
         this.socket = socket;
     }

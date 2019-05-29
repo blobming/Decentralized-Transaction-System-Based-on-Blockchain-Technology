@@ -4,12 +4,6 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * RPC服务
- *
- * 注意：不要把这个端口开放给外网
- * @author Mignet
- */
 public class RpcServer extends Thread
 {
     private int port;
@@ -17,19 +11,6 @@ public class RpcServer extends Thread
 
     public List<RpcThread> rpcThreads;
 
-    /**
-     * 默认配置
-     */
-    public RpcServer()
-    {
-        this.port = 8016;
-        this.rpcThreads = new ArrayList<RpcThread>();
-    }
-
-    /**
-     * 指定端口
-     * @param port Port to listen on
-     */
     public RpcServer(int port)
     {
         this.port = port;

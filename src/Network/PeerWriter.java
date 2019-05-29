@@ -5,10 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-/**
- * OutputThread 负责写数据到peer
- * @author Mignet
- */
+
 public class PeerWriter extends Thread {
 
 	private Socket socket;
@@ -39,12 +36,7 @@ public class PeerWriter extends Thread {
 			 System.err.println("Peer " + socket.getInetAddress() + " disconnected."+e); 
 		}
 	}
-
-	/**
-	 * 写入缓冲
-	 *
-	 * @param data Data to write
-	 */
+	
 	public void write(String data) {
 		if (!outputBuffer.isEmpty()) {
 			if (outputBuffer.get(0) == null) {
