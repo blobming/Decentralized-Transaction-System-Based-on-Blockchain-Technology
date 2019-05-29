@@ -231,7 +231,7 @@ public class Homepage extends JFrame {
 				}
 			}
 		});
-		btnMining.setBounds(304, 435, 117, 29);
+		btnMining.setBounds(290, 435, 117, 29);
 		accountPanel.add(btnMining);
 		
 		JButton btnSyncTransactions = new JButton("Sync Transactions");
@@ -242,6 +242,15 @@ public class Homepage extends JFrame {
 		});
 		btnSyncTransactions.setBounds(146, 435, 146, 29);
 		accountPanel.add(btnSyncTransactions);
+		
+		JButton btnGetMoreAddress = new JButton("Get More Address");
+		btnGetMoreAddress.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Global.blockChainMainThread.peerNetwork.broadcast("GET_ADDR");
+			}
+		});
+		btnGetMoreAddress.setBounds(6, 435, 139, 29);
+		accountPanel.add(btnGetMoreAddress);
 		
 		historyPanel = new JPanel();
 		historyPanel.setVisible(false);

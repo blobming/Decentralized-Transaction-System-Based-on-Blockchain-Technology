@@ -54,6 +54,7 @@ public class TXPool {
 			}
 		}
 		if(transactionList.size() == 0) return transactionList;
+		transactionList = UTXOSet.sortTransaction(transactionList);
 		if(transactionList.size() % 2 == 0) {
 			transactionList.remove(transactionList.size()-1);
 		}
