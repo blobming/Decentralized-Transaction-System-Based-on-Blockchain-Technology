@@ -32,7 +32,7 @@ public class BlockChainMainThread extends Thread {
 	private File peerFile = new File("peers.list");
 	private String host;
 	
-	public BlockChainMainThread(String networkCardOption) throws IOException {
+	public BlockChainMainThread() {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		String strPath = "./DataFile";  
@@ -83,24 +83,6 @@ public class BlockChainMainThread extends Thread {
 		rpcAgent = new RpcServer(port+1);
 		rpcAgent.start();
 		System.out.println("RPC agent is Started in port:"+(port+1));
-		
-//		System.out.println("found that your computer has these following network Card");
-		Map<String, String> hostList = Utilities.getInternetIp();
-//		for(String key:hostList.keySet()) {
-//			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
-//		}
-//		System.out.println("Please Choose one");
-		Global.ipAddress = hostList.get(networkCardOption);
-		
-		//如果peer.txt未创建，则将默认地址创建一个并将自己的ip地址写入peer.txt
-		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
-			FileUtils.writeStringToFile(peerFile,"59.110.140.54:8015",StandardCharsets.UTF_8,true);
-		}else { //如果peer.txt已经存在，就把它存的ip地址放入peers里面
-			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
-				String[] addr = peer.split(":");
-				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
-			}
-		}
 	}
 	
 	@Override
@@ -304,6 +286,32 @@ public class BlockChainMainThread extends Thread {
 				}
 			}
 			TimeUnit.MILLISECONDS.sleep(100);
+		}
+	}
+	
+	public boolean tryingConnectToOtherNodes(String networkCardOption) throws NumberFormatException, IOException {
+
+//		System.out.println("found that your computer has these following network Card");
+		Map<String, String> hostList = Utilities.getInternetIp();
+//		for(String key:hostList.keySet()) {
+//			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
+//		}
+//		System.out.println("Please Choose one");
+		Global.ipAddress = hostList.get(networkCardOption);
+		
+		//如果peer.txt未创建，则将默认地址创建一个并将自己的ip地址写入peer.txt
+		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
+			FileUtils.writeStringToFile(peerFile,"59.110.140.54:8015",StandardCharsets.UTF_8,true);
+		}else { //如果peer.txt已经存在，就把它存的ip地址放入peers里面
+			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
+				String[] addr = peer.split(":");
+				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
+			}
+		}
+		if(peerNetwork.peers.size() == 0) {
+			return false;
+		}else {
+			return true;
 		}
 	}
 

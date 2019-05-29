@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class NetworkCardPage extends JFrame {
@@ -34,6 +35,7 @@ public class NetworkCardPage extends JFrame {
 	 * Create the frame.
 	 */
 	public NetworkCardPage() {
+		Global.blockChainMainThread = new BlockChainMainThread();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 864, 587);
 		contentPane = new JPanel();
@@ -81,14 +83,18 @@ public class NetworkCardPage extends JFrame {
 					JOptionPane.showMessageDialog(Register.getFrames()[0], "Please choose one network card", "Wrong!", JOptionPane.WARNING_MESSAGE);
 				}
 				try {
-					Global.blockChainMainThread = new BlockChainMainThread(table.getValueAt(selectedRow, 0).toString());
-					Global.blockChainMainThread.start();
-					Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
-					setVisible(false);
-					Global.homepage = new Homepage();
-					Global.homepage.setVisible(false);
-					Global.loadingPage = new Loading();
-					Global.loadingPage.setVisible(true);
+					Global.blockChainMainThread.tryingConnectToOtherNodes(table.getValueAt(selectedRow, 0).toString());
+					if(Global.blockChainMainThread.peerNetwork.peers.size()==0) {
+						JOptionPane.showMessageDialog(Register.getFrames()[0], "You cannot connect to Supbank Network! Please check your network connection", "Wrong!", JOptionPane.WARNING_MESSAGE);
+					}else {
+						Global.blockChainMainThread.start();
+						Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+						setVisible(false);
+						Global.homepage = new Homepage();
+						Global.homepage.setVisible(false);
+						Global.loadingPage = new Loading();
+						Global.loadingPage.setVisible(true);
+					}
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
