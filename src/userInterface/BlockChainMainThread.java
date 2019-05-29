@@ -178,12 +178,15 @@ public class BlockChainMainThread extends Thread {
 								String peerAddr = payload.substring(0, payload.indexOf(':'));
 								int peerPort = Integer.parseInt(payload.substring(payload.indexOf(':') + 1));
 								peerNetwork.connect(peerAddr, peerPort);
-								PrintWriter out = new PrintWriter(peerFile);
 							}
 						} else if ("GET_ADDR".equalsIgnoreCase(cmd)) {
-							Random random = new Random();
-							System.out.println(peerNetwork.peers.size());
-							pt.peerWriter.write("ADDR " + peerNetwork.peers.get(random.nextInt(peerNetwork.peers.size())));
+							if(peerNetwork.peers.size() == 0) {
+								pt.peerWriter.write("ADDR " + host+":"+port);
+							}else {
+								Random random = new Random();
+								System.out.println(peerNetwork.peers.size());
+								pt.peerWriter.write("ADDR " + peerNetwork.peers.get(random.nextInt(peerNetwork.peers.size())));
+							}
 						} else if("SYNC_TRANSACTION".equalsIgnoreCase(cmd)) {
 							pt.peerWriter.write("TRANSACTION_INV " + Base64.getEncoder().encodeToString(Utilities.toByteArray(TXPool.getAllHash())));
 						} else if("TRANSACTION_INV".equalsIgnoreCase(cmd)) {
