@@ -291,7 +291,7 @@ public class BlockChainMainThread extends Thread {
 		}
 	}
 	
-	public boolean tryingConnectToOtherNodes(String networkCardOption) throws NumberFormatException, IOException {
+	public void tryingConnectToOtherNodes(String networkCardOption) throws NumberFormatException, IOException {
 
 //		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
@@ -309,11 +309,6 @@ public class BlockChainMainThread extends Thread {
 				String[] addr = peer.split(":");
 				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
 			}
-		}
-		if(peerNetwork.peers.size() == 0) {
-			return false;
-		}else {
-			return true;
 		}
 	}
 

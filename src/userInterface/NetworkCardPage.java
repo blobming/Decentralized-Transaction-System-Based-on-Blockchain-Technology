@@ -84,6 +84,7 @@ public class NetworkCardPage extends JFrame {
 				}
 				try {
 					Global.blockChainMainThread.tryingConnectToOtherNodes(table.getValueAt(selectedRow, 0).toString());
+					System.out.println(Global.blockChainMainThread.peerNetwork.peers.size());
 					if(Global.blockChainMainThread.peerNetwork.peers.size()==0) {
 						JOptionPane.showMessageDialog(Register.getFrames()[0], "You cannot connect to Supbank Network! Please check your network connection", "Wrong!", JOptionPane.WARNING_MESSAGE);
 					}else {
