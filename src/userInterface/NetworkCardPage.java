@@ -81,23 +81,25 @@ public class NetworkCardPage extends JFrame {
 				int selectedRow = table.getSelectedRow();
 				if(selectedRow == -1) {
 					JOptionPane.showMessageDialog(Register.getFrames()[0], "Please choose one network card", "Wrong!", JOptionPane.WARNING_MESSAGE);
-				}
-				try {
-					Global.blockChainMainThread.tryingConnectToOtherNodes(table.getValueAt(selectedRow, 0).toString());
-					if(Global.blockChainMainThread.peerNetwork.peers.size()==0) {
-						JOptionPane.showMessageDialog(Register.getFrames()[0], "You cannot connect to Supbank Network! Please check your network connection", "Wrong!", JOptionPane.WARNING_MESSAGE);
-					}else {
-						Global.blockChainMainThread.start();
-						Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
-						setVisible(false);
-						Global.homepage = new Homepage();
-						Global.homepage.setVisible(false);
-						Global.loadingPage = new Loading();
-						Global.loadingPage.setVisible(true);
+				}else {
+					try {
+						Global.blockChainMainThread.tryingConnectToOtherNodes(table.getValueAt(selectedRow, 0).toString());
+						System.out.println(Global.blockChainMainThread.peerNetwork.peers.size());
+						if(Global.blockChainMainThread.peerNetwork.peers.size()==0) {
+							JOptionPane.showMessageDialog(Register.getFrames()[0], "You cannot connect to Supbank Network! Please check your network connection", "Wrong!", JOptionPane.WARNING_MESSAGE);
+						}else {
+							Global.blockChainMainThread.start();
+							Global.blockChainMainThread.peerNetwork.broadcast("HEIGHT "+ UTXOSet.blockchain.getHeight());
+							setVisible(false);
+							Global.homepage = new Homepage();
+							Global.homepage.setVisible(false);
+							Global.loadingPage = new Loading();
+							Global.loadingPage.setVisible(true);
+						}
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 			}
 		});
