@@ -93,6 +93,7 @@ public class Transaction implements Serializable {
 	
 	public static boolean validateTransaction(Transaction tx, Block block) {
 		int count = 0;
+		if(tx.isCoinBase)	return true;
 		if(Vout.FindVoutByTransactionId(tx.getTxid())!=null) {
 			return true;
 		}
