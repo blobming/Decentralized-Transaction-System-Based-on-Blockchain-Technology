@@ -49,7 +49,6 @@ import javax.swing.JTextField;
 public class Homepage extends JFrame {
 
 	private JPanel contentPane;
-	private JPanel historyPanel;
 	private JPanel accountPanel;
 	private JPanel payPanel;
 	private JTextArea pubKeyText;
@@ -94,12 +93,9 @@ public class Homepage extends JFrame {
 		manipulationMenu.add(mani_payItem);
 		JMenuItem myAccountItem = new JMenuItem("my account");
 		myAccountItem.addActionListener(new MenuActionListener());
-		JMenuItem historyItem = new JMenuItem("history");
-		historyItem.addActionListener(new MenuActionListener());
 		JMenuItem logoutItem = new JMenuItem("logout");
 		logoutItem.addActionListener(new MenuActionListener());
 		accountMenu.add(myAccountItem);
-		accountMenu.add(historyItem);
 		accountMenu.add(logoutItem);
 		menuBar.add(manipulationMenu);
 		menuBar.add(accountMenu);
@@ -251,12 +247,6 @@ public class Homepage extends JFrame {
 		});
 		btnGetMoreAddress.setBounds(6, 435, 139, 29);
 		accountPanel.add(btnGetMoreAddress);
-		
-		historyPanel = new JPanel();
-		historyPanel.setVisible(false);
-		historyPanel.setBounds(25, 68, 701, 404);
-		contentPane.add(historyPanel);
-		
 	}
 	class MenuActionListener implements ActionListener {
 		  public void actionPerformed(ActionEvent e) {
@@ -264,15 +254,9 @@ public class Homepage extends JFrame {
 		    	ReceivePubtextArea.setText("");
 		    	amountText.setText("");
 		    	payPanel.setVisible(true);
-		    	historyPanel.setVisible(false);
-		    	accountPanel.setVisible(false);
-		    }else if(e.getActionCommand().equals("history")) {
-		    	payPanel.setVisible(false);
-		    	historyPanel.setVisible(true);
 		    	accountPanel.setVisible(false);
 		    }else if(e.getActionCommand().equals("my account")) {
 		    	payPanel.setVisible(false);
-		    	historyPanel.setVisible(false);
 		    	accountPanel.setVisible(true);
 		    }else if(e.getActionCommand().equals("logout")) {
 		    	int n = JOptionPane.showOptionDialog(Homepage.getFrames()[0], "Are you sure to leave?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
