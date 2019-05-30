@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import javax.swing.JOptionPane;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
@@ -17,7 +20,9 @@ import Network.PeerNetwork;
 import Network.PeerThread;
 import Network.RpcServer;
 import Network.RpcThread;
+import Security.KeyValuePairs;
 import config.Global;
+import database.SQLDB;
 import obj.*;
 import serverProcess.TestAddData;
 import utilities.NetworkUtils;
@@ -282,6 +287,35 @@ public class BlockChainMainThread extends Thread {
 							tranArray.add(TXPool.get(t));
 						}
 						rpcthread.response = new Gson().toJson(new Status("1", tranArray))+"_FIN";
+					}else if("USER".equals(cmd)) {
+						try {
+							UserTransmissionGson transUser = new Gson().fromJson(payload, UserTransmissionGson.class);
+							if("REGISTER".equals(transUser.getOperation())){
+								if(!Utilities.checkUsername(transUser.getName())){
+									rpcthread.response = new Gson().toJson(new Status("0", "Invalid username"))+"_FIN";
+								}else if(!Utilities.checkPwd(transUser.getPass())) {
+									rpcthread.response = new Gson().toJson(new Status("0", "Invalid password"))+"_FIN";
+								}else if(!SQLDB.checkUsername(transUser.getName())) {
+									rpcthread.response = new Gson().toJson(new Status("0", "Username has been taken"))+"_FIN";
+								}else {
+									KeyValuePairs pair = new KeyValuePairs();
+									User theUser = new User(transUser.getName(),transUser.getPass(),pair.getPublicKey(), pair.getPrivateKey());
+									SQLDB.createUser(theUser);
+									rpcthread.response = new Gson().toJson(new Status("1", theUser))+"_FIN";
+								}
+							}else if("LOGIN".equals(transUser.getOperation())) {
+								User newUser = SQLDB.getUserByUsername(transUser.getName(), transUser.getPass());
+								if(newUser != null) {
+									rpcthread.response = new Gson().toJson(new Status("1", newUser))+"_FIN";
+								}else {
+									rpcthread.response = new Gson().toJson(new Status("0", "Login Failed"))+"_FIN";
+								}
+							}else {
+								rpcthread.response = new Gson().toJson(new Status("0", "Wrong operation"))+"_FIN";
+							}
+						}catch(Exception e) {
+							rpcthread.response = new Gson().toJson(new Status("0", "Wrong data format"))+"_FIN";
+						}
 					}else {
 						rpcthread.response = new Gson().toJson(new Status("0", "Unknown command: \"" + cmd + "\" "))+"_FIN";
 					}
@@ -291,7 +325,7 @@ public class BlockChainMainThread extends Thread {
 		}
 	}
 	
-	public boolean tryingConnectToOtherNodes(String networkCardOption) throws NumberFormatException, IOException {
+	public void tryingConnectToOtherNodes(String networkCardOption) throws NumberFormatException, IOException {
 
 //		System.out.println("found that your computer has these following network Card");
 		Map<String, String> hostList = Utilities.getInternetIp();
@@ -309,11 +343,6 @@ public class BlockChainMainThread extends Thread {
 				String[] addr = peer.split(":");
 				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
 			}
-		}
-		if(peerNetwork.peers.size() == 0) {
-			return false;
-		}else {
-			return true;
 		}
 	}
 

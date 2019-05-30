@@ -1,12 +1,14 @@
 package serverProcess;
 import java.io.IOException;
 
+import database.SQLDB;
 import obj.UTXOSet;
 import serverProcess.BlockChainMainThread;
 
 public class TestMain {
 	private static String networkCard = "eth0";
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
+		SQLDB.connSqlDB();
 		BlockChainMainThread blockChainMainThread = new BlockChainMainThread(networkCard);
 		blockChainMainThread.start();
 		
