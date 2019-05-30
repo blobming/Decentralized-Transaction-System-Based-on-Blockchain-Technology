@@ -221,7 +221,7 @@ public class Homepage extends JFrame {
 				if(txList.size()<=Global.minBlockTxNum) {
 					JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Currently We donot have enough transaction", "Wrong!", JOptionPane.WARNING_MESSAGE);
 				}else {
-					BlockBody body = new BlockBody(TXPool.gatherTransaction());
+					BlockBody body = new BlockBody(txList);
 					Block block = Blockchain.MiningBlock(new Block(body, 0, UTXOSet.blockchain.tip, new Date()));
 					System.out.println("==================Successfully Generate new Block! "+new Date()+"===============================");
 					System.out.println(new Gson().toJson(block));
@@ -237,6 +237,7 @@ public class Homepage extends JFrame {
 		JButton btnSyncTransactions = new JButton("Sync Transactions");
 		btnSyncTransactions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Successfully Synchronize Transactions!", "", JOptionPane.INFORMATION_MESSAGE);
 				Global.blockChainMainThread.peerNetwork.broadcast("SYNC_TRANSACTION");
 			}
 		});
@@ -246,6 +247,7 @@ public class Homepage extends JFrame {
 		JButton btnGetMoreAddress = new JButton("Get More Address");
 		btnGetMoreAddress.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(Homepage.getFrames()[0], "Successfully Got Address. Trying Connection!", "", JOptionPane.INFORMATION_MESSAGE);
 				Global.blockChainMainThread.peerNetwork.broadcast("GET_ADDR");
 			}
 		});
