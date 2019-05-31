@@ -24,13 +24,13 @@ public class RpcThread extends Thread {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String input;
-            out.println("[   Welcome RPC Daemon    ]");
+            out.println("[   Welcome RPC Daemon    ]_FIN");
             while((input = in.readLine()) != null){
                 if ("HELP".equalsIgnoreCase(input)){
                 	out.println("############################################## COMMANDS ###############################################\n"
                     + "#     1) getinfo       - Gets block chain infomations.                                                #\n"
                     + "#     2) send <vac>    - Write <vac> to blockChain                                                    #\n"
-                    + "#######################################################################################################");
+                    + "#######################################################################################################\r\n");
                 } else {
                     request = input;
                     while (response == null){

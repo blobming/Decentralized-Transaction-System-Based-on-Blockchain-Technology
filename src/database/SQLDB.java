@@ -111,7 +111,7 @@ public class SQLDB {
 	}
 	public static void ReConnect() {
 		try {
-			if(SQLDB.conn == null || SQLDB.conn.isValid(0)) {
+			if(SQLDB.conn == null || SQLDB.conn.isValid(0) || SQLDB.conn.isClosed()) {
 				SQLDB.connSqlDB();
 			}
 		} catch (SQLException e) {
