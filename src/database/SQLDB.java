@@ -112,6 +112,11 @@ public class SQLDB {
 	public static void ReConnect() {
 		try {
 			if(SQLDB.conn == null || SQLDB.conn.isValid(0) || SQLDB.conn.isClosed()) {
+				if(SQLDB.conn != null) {
+					System.out.println("valid: \t"+SQLDB.conn.isValid(0));
+					System.out.println("closed: \t"+SQLDB.conn.isClosed());
+				}
+				System.out.println("尝试重新连接");
 				SQLDB.connSqlDB();
 			}
 		} catch (SQLException e) {
