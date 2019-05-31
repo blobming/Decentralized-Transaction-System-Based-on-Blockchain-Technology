@@ -28,6 +28,7 @@ public class SQLDB {
 	
 	//用户名查重
 	public static boolean checkUsername(String username) {
+		SQLDB.ReConnect();
 		Statement statement;
 		try {
 			statement = conn.createStatement();
@@ -45,6 +46,7 @@ public class SQLDB {
 		return false;
 	}
 	public static void createUser(User user) {
+		SQLDB.ReConnect();
 		PreparedStatement psql;
 		try {
 			psql = conn.prepareStatement("insert into user (username,password,publickey,privatekey) "
@@ -60,6 +62,7 @@ public class SQLDB {
 	}
 	
 	public static void changePwd(User user) {
+		SQLDB.ReConnect();
 		//没有检查用户是不是存在...默认存在
 		PreparedStatement psql;
 		try {
@@ -73,6 +76,7 @@ public class SQLDB {
 	}
 	
 	public static User getUserByUsername(String username, String password) {
+		SQLDB.ReConnect();
 		User user = null;
 		Statement statement;
 		try {
@@ -89,6 +93,7 @@ public class SQLDB {
 		return user;
 	}
 	public static User getUserByKey(String pubkey) {
+		SQLDB.ReConnect();
 		User user = null;
 		Statement statement;
 		try {
@@ -103,5 +108,16 @@ public class SQLDB {
 			e.printStackTrace();
 		}
 		return user;
+	}
+	public static void ReConnect() {
+		try {
+			if(SQLDB.conn == null || SQLDB.conn.isValid(0)) {
+				SQLDB.connSqlDB();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("reconnect fail");
+			e.printStackTrace();
+		}
 	}
 }
