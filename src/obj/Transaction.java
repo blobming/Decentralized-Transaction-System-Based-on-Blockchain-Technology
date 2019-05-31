@@ -225,9 +225,12 @@ public class Transaction implements Serializable {
 				vins.add(new Vin(txID, vout.getSeqNum(), payerPubKey));
 			}
 		}
+		System.out.println("I am in checking transaction total:"+total+"\tamount"+amount);
 		if(total < amount) {
+			System.out.println("return False");
 			return false;
 		}else {
+			System.out.println("return True");
 			return true;
 		}
 	}
