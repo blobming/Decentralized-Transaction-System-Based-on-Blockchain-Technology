@@ -11,6 +11,7 @@ import database.SQLDB;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 
 @SuppressWarnings("serial")
@@ -38,6 +39,11 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		String strPath = "./DataFile";  
+		File file = new File(strPath);
+		if(!file.exists()){  
+		    file.mkdirs();  
+		}
 		SQLDB.connSqlDB();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 841, 467);
