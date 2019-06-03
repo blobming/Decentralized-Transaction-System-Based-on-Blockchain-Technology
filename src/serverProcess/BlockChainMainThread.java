@@ -119,7 +119,11 @@ public class BlockChainMainThread extends Thread {
 			//对新连接的peer写入文件
 			for (String peer : peerNetwork.peers) {
 				if(!FileUtils.readLines(peerFile,StandardCharsets.UTF_8).contains(peer)) {
-					FileUtils.writeStringToFile(peerFile, "\r\n"+peer,StandardCharsets.UTF_8,true);
+					if(this.getPeerFileList().size() == 0) {
+						FileUtils.writeStringToFile(peerFile, peer,StandardCharsets.UTF_8,true);
+					}else {
+						FileUtils.writeStringToFile(peerFile, "\r\n"+peer,StandardCharsets.UTF_8,true);
+					}
 				}
 			}
 			peerNetwork.peers.clear();
