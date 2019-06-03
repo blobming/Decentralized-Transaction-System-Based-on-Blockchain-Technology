@@ -25,12 +25,14 @@ public class TXPool {
 	public static Transaction get(String hashcode) {
 		return (Transaction) Global.txDB.get(hashcode);
 	}
-	//FIXME
-	/*
 	public static ArrayList<Transaction> getAll(){
 		ArrayList<Transaction> txs = new ArrayList<>();
+		ArrayList<String> hashList = TXPool.getAllHash();
+		for(String hash : hashList) {
+			txs.add(TXPool.get(hash));
+		}
 		return txs;
-	}*/
+	}
 	public static ArrayList<String> getAllHash(){
 		ArrayList<String> res = new ArrayList<>();
 		for(String s: Global.txDB.getAllKey().keySet())	res.add(s);

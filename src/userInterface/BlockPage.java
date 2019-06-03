@@ -33,6 +33,7 @@ public class BlockPage extends JFrame {
 	private String[] columnNames =  { "preHashCode","hashCode","merkleRootHash","timeStamp","nBits","nonce"};
 	private TableModel tableModel;
 	private ArrayList<Block> blockList;
+	private BlockPage blockPage;
 	/**
 	 * Create the frame.
 	 */
@@ -47,6 +48,7 @@ public class BlockPage extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		blockPage = this;
 		
 		
 		JLabel lblWelcomeToSupbank = new JLabel("Browser BlockChain");
@@ -89,12 +91,23 @@ public class BlockPage extends JFrame {
 		btnDetails.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
-				TransactionPage transactionPage = new TransactionPage(blockList.get(selectedRow));
+				TransactionPage transactionPage = new TransactionPage(blockList.get(selectedRow),blockPage);
 				transactionPage.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnDetails.setBounds(75, 381, 117, 29);
 		contentPane.add(btnDetails);
+		
+		JButton btnReturn = new JButton("Return");
+		btnReturn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				Global.homepage.setVisible(true);
+			}
+		});
+		btnReturn.setBounds(223, 381, 117, 29);
+		contentPane.add(btnReturn);
 	}
 	public void UpdateBlockChainValue() {
 		blockList = new ArrayList<Block>();

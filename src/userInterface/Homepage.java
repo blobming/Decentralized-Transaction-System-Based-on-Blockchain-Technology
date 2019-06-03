@@ -249,6 +249,28 @@ public class Homepage extends JFrame {
 		});
 		btnGetMoreAddress.setBounds(6, 435, 139, 29);
 		accountPanel.add(btnGetMoreAddress);
+		
+		JButton btnViewBlocks = new JButton("View Blocks");
+		btnViewBlocks.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				BlockPage blockPage = new BlockPage();
+				blockPage.setVisible(true);
+				Global.homepage.setVisible(false);
+			}
+		});
+		btnViewBlocks.setBounds(419, 435, 117, 29);
+		accountPanel.add(btnViewBlocks);
+		
+		JButton btnViewTransactions = new JButton("View Transactions");
+		btnViewTransactions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TransactionPage transactionPage = new TransactionPage();
+				transactionPage.setVisible(true);
+				Global.homepage.setVisible(false);
+			}
+		});
+		btnViewTransactions.setBounds(548, 435, 138, 29);
+		accountPanel.add(btnViewTransactions);
 	}
 	class MenuActionListener implements ActionListener {
 		  public void actionPerformed(ActionEvent e) {

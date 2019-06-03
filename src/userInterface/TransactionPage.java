@@ -1,12 +1,7 @@
 package userInterface;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,12 +12,20 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
+import config.Global;
 import obj.Block;
+import obj.TXPool;
 import obj.Transaction;
-import obj.UTXOSet;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class TransactionPage extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7288555578869366188L;
 	private JPanel contentPane;
 	private JTable table;
 	private Object[][] obj;
@@ -32,7 +35,7 @@ public class TransactionPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TransactionPage(Block block) {
+	public TransactionPage() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 864, 468);
 		contentPane = new JPanel();
@@ -49,7 +52,7 @@ public class TransactionPage extends JFrame {
 		scrollPane.setBounds(48, 97, 773, 260);
 		contentPane.add(scrollPane);
 		
-		ArrayList<Transaction> transactionList = block.getBlockBody().transactions;
+		ArrayList<Transaction> transactionList = TXPool.getAll();
 		obj = new Object[transactionList.size()][4];
 		int count = 0;
 		for(Transaction transaction : transactionList) {
@@ -72,15 +75,66 @@ public class TransactionPage extends JFrame {
         
 		scrollPane.setViewportView(table);
 		
-		JButton btnDetails = new JButton("Details");
-		btnDetails.addActionListener(new ActionListener() {
+		JButton btnReturn = new JButton("Return");
+		btnReturn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int selectedRow = table.getSelectedRow();
-				
+				setVisible(false);
+				Global.homepage.setVisible(true);
 			}
 		});
-		btnDetails.setBounds(75, 381, 117, 29);
-		contentPane.add(btnDetails);
+		btnReturn.setBounds(58, 369, 117, 29);
+		contentPane.add(btnReturn);
+	}
+	
+	public TransactionPage(Block b, BlockPage blockPage) {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 864, 468);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		
+		JLabel lblWelcomeToSupbank = new JLabel("Browser BlockChain");
+		lblWelcomeToSupbank.setBounds(264, 26, 346, 51);
+		contentPane.add(lblWelcomeToSupbank);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(48, 97, 773, 260);
+		contentPane.add(scrollPane);
+		
+		ArrayList<Transaction> transactionList = b.getBlockBody().transactions;
+		obj = new Object[transactionList.size()][4];
+		int count = 0;
+		for(Transaction transaction : transactionList) {
+			obj[count][0] = transaction.getTxid();
+			obj[count][1] = transaction.getHash();
+			obj[count][2] = transaction.getTimestamp();
+			obj[count][3] = transaction.isCoinBase();
+			count++;
+		}
+		
+		tableModel = new DefaultTableModel(obj, columnNames);
+        table = new JTable(tableModel);
+        TableColumn column = null;
+        int colunms = table.getColumnCount();  
+        for(int i = 0; i < colunms; i++)  
+        {
+            column = table.getColumnModel().getColumn(i);  
+            column.setPreferredWidth(100);
+        }
+        
+		scrollPane.setViewportView(table);
+		
+		JButton btnReturn = new JButton("Return");
+		btnReturn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				blockPage.setVisible(true);
+			}
+		});
+		btnReturn.setBounds(58, 369, 117, 29);
+		contentPane.add(btnReturn);
 	}
 
 }

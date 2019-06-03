@@ -124,15 +124,5 @@ public class NetworkCardPage extends JFrame {
 		});
 		btnResacan.setBounds(231, 452, 117, 29);
 		contentPane.add(btnResacan);
-		
-		JButton btnViewBlock = new JButton("View Block");
-		btnViewBlock.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				BlockPage blockPage = new BlockPage();
-				blockPage.setVisible(true);
-			}
-		});
-		btnViewBlock.setBounds(424, 452, 117, 29);
-		contentPane.add(btnViewBlock);
 	}
 }

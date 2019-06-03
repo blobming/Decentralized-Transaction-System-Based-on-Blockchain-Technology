@@ -6,10 +6,10 @@ import obj.UTXOSet;
 import serverProcess.BlockChainMainThread;
 
 public class TestMain {
-	private static String networkCard = "eth0";
+	//private static String networkCard = "eth0";
 	public static void main(String[] args) throws NumberFormatException, IOException, InterruptedException {
 		SQLDB.connSqlDB();
-		BlockChainMainThread blockChainMainThread = new BlockChainMainThread(networkCard);
+		BlockChainMainThread blockChainMainThread = new BlockChainMainThread();
 		blockChainMainThread.start();
 		
 		System.err.println("begin send broadcast");

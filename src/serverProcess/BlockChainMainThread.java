@@ -32,7 +32,7 @@ public class BlockChainMainThread extends Thread {
 	public RpcServer rpcAgent;
 	private File peerFile = new File("peers.list");
 	
-	public BlockChainMainThread(String networkCardOption) throws IOException {
+	public BlockChainMainThread() throws IOException {
 		System.out.println("Starting daemon");
 		System.out.println("Opening Database");
 		String strPath = "./DataFile";  
@@ -85,16 +85,18 @@ public class BlockChainMainThread extends Thread {
 		System.out.println("RPC agent is Started in port:"+(port+1));
 		
 //		System.out.println("found that your computer has these following network Card");
-		Map<String, String> hostList = Utilities.getInternetIp();
+//		Map<String, String> hostList = Utilities.getInternetIp();
 //		for(String key:hostList.keySet()) {
 //			System.out.println("key: "+key+"   "+"ip"+hostList.get(key));
 //		}
 //		System.out.println("Please Choose one");
-		Global.ipAddress = hostList.get(networkCardOption);
+		//Global.ipAddress = hostList.get(networkCardOption);
+		Global.ipAddress = "59.110.140.54";
 		
 		//如果peer.txt未创建，则将默认地址创建一个并将自己的ip地址写入peer.txt
 		if (!peerFile.exists()||FileUtils.readLines(peerFile,StandardCharsets.UTF_8).size()==0) {
-			FileUtils.writeStringToFile(peerFile,"",StandardCharsets.UTF_8,true);
+			//FileUtils.writeStringToFile(peerFile,"",StandardCharsets.UTF_8,true);
+			peerFile.createNewFile();
 		}else { //如果peer.txt已经存在，就把它存的ip地址放入peers里面
 			for (String peer : FileUtils.readLines(peerFile,StandardCharsets.UTF_8)) {
 				String[] addr = peer.split(":");
@@ -196,12 +198,13 @@ public class BlockChainMainThread extends Thread {
 								peerNetwork.connect(peerAddr, peerPort);
 							}
 						} else if ("GET_ADDR".equalsIgnoreCase(cmd)) {
-							if(peerNetwork.peers.size() == 0) {
+							List<String> addrList = getPeerFileList();
+							if(addrList.size() == 0) {
 								pt.peerWriter.write("ADDR " + Global.ipAddress+":"+port);
 							}else {
 								Random random = new Random();
-								System.out.println(peerNetwork.peers.size());
-								pt.peerWriter.write("ADDR " + peerNetwork.peers.get(random.nextInt(peerNetwork.peers.size())));
+								System.out.println(addrList.size());
+								pt.peerWriter.write("ADDR " + addrList.get(random.nextInt(addrList.size())));
 							}
 						} else if("SYNC_TRANSACTION".equalsIgnoreCase(cmd)) {
 							pt.peerWriter.write("TRANSACTION_INV " + Base64.getEncoder().encodeToString(Utilities.toByteArray(TXPool.getAllHash())));
@@ -336,5 +339,15 @@ public class BlockChainMainThread extends Thread {
 			TimeUnit.MILLISECONDS.sleep(100);
 		}
 	}
-
+	
+	public List<String> getPeerFileList(){
+		List<String> peerList = new ArrayList<>();
+		try {
+			peerList = FileUtils.readLines(peerFile,StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return peerList;
+	}
 }

@@ -184,12 +184,13 @@ public class BlockChainMainThread extends Thread {
 								peerNetwork.connect(peerAddr, peerPort);
 							}
 						} else if ("GET_ADDR".equalsIgnoreCase(cmd)) {
-							if(peerNetwork.peers.size() == 0) {
+							List<String> addrList = getPeerFileList();
+							if(addrList.size() == 0) {
 								pt.peerWriter.write("ADDR " + Global.ipAddress+":"+port);
 							}else {
 								Random random = new Random();
-								System.out.println(peerNetwork.peers.size());
-								pt.peerWriter.write("ADDR " + peerNetwork.peers.get(random.nextInt(peerNetwork.peers.size())));
+								System.out.println(addrList.size());
+								pt.peerWriter.write("ADDR " + addrList.get(random.nextInt(addrList.size())));
 							}
 						} else if("SYNC_TRANSACTION".equalsIgnoreCase(cmd)) {
 							pt.peerWriter.write("TRANSACTION_INV " + Base64.getEncoder().encodeToString(Utilities.toByteArray(TXPool.getAllHash())));
@@ -344,6 +345,16 @@ public class BlockChainMainThread extends Thread {
 				peerNetwork.connect(addr[0], Integer.parseInt(addr[1]));
 			}
 		}
+	}
+	public List<String> getPeerFileList(){
+		List<String> peerList = new ArrayList<>();
+		try {
+			peerList = FileUtils.readLines(peerFile,StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return peerList;
 	}
 
 }
