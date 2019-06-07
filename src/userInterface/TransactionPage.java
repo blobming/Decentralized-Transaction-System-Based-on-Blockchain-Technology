@@ -35,7 +35,7 @@ public class TransactionPage extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public TransactionPage() {
+	public TransactionPage(String identifyLabel) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 864, 468);
 		contentPane = new JPanel();
@@ -44,7 +44,7 @@ public class TransactionPage extends JFrame {
 		contentPane.setLayout(null);
 		
 		
-		JLabel lblWelcomeToSupbank = new JLabel("Browser BlockChain");
+		JLabel lblWelcomeToSupbank = new JLabel(identifyLabel);
 		lblWelcomeToSupbank.setBounds(264, 26, 346, 51);
 		contentPane.add(lblWelcomeToSupbank);
 		
@@ -95,7 +95,7 @@ public class TransactionPage extends JFrame {
 		contentPane.setLayout(null);
 		
 		
-		JLabel lblWelcomeToSupbank = new JLabel("Browser BlockChain");
+		JLabel lblWelcomeToSupbank = new JLabel("Browser Transaction Details in block "+b.getHashCode());
 		lblWelcomeToSupbank.setBounds(264, 26, 346, 51);
 		contentPane.add(lblWelcomeToSupbank);
 		

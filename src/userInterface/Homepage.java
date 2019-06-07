@@ -264,7 +264,7 @@ public class Homepage extends JFrame {
 		JButton btnViewTransactions = new JButton("View Transactions");
 		btnViewTransactions.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TransactionPage transactionPage = new TransactionPage();
+				TransactionPage transactionPage = new TransactionPage("Transaction Pool");
 				transactionPage.setVisible(true);
 				Global.homepage.setVisible(false);
 			}
